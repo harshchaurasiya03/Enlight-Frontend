@@ -41,9 +41,9 @@ const RentToOwn: React.FC = () => {
   ];
 
   return (
-    <div className="w-full px-4 sm:px-8 lg:px-16 mt-20">
+    <div className="container px-4 lg:px-30 sm:px-6 py-15 mx-auto ">
       {/* Main Heading */}
-      <div className="text-center mb-12">
+      <div className="text-left mb-12">
       <h2 className="text-3xl sm:text-3xl font-bold text-gray-900">
           Rent-to-Own: A New Way to Buy and Sell Property in Thailand
         </h2>

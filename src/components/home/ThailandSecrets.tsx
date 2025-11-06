@@ -5,8 +5,8 @@ type SecretItem = {
   title: string;
   description: string;
   image: string;
-  date: string; // e.g. "06"
-  month: string; // e.g. "NOV"
+  date: string; 
+  month: string;
 };
 
 const secretItems: SecretItem[] = [
@@ -59,17 +59,19 @@ const secretItems: SecretItem[] = [
 
 const ThailandSecrets: React.FC = () => {
   return (
-    <div className="container px-4 lg:px-30 sm:px-6 py-15 mx-auto">
+    <div className="container px-4 lg:px-30 sm:px-6 py-15 mx-auto ">
       {/* Heading */}
+      <div className="text-left mb-8">
       <h2 className="text-3xl sm:text-3xl font-bold text-gray-900">
         Find Secrets on Thailand Real Estate
       </h2>
        <p className="text-gray-600 mt-2">
         Discover clear answers to common questions about properties in Thailand, ownership, area guides, news and market trends in Thailand.
       </p>
+      </div>
 
       {/* Scrollable Cards */}
-      <div className="flex space-x-6 overflow-x-auto no-scrollbar pb-4">
+      <div className="flex space-x-6 overflow-x-auto no-scrollbar pb-4 gap-6">
         {secretItems.map((item) => (
           <div
             key={item.id}

@@ -32,12 +32,15 @@ const TrendingYoutube: React.FC = () => {
   return (
     <div className="container px-4 lg:px-30 sm:px-6 py-15 mx-auto">
       {/* Heading */}
-      <h2 className="text-3xl sm:text-3xl font-bold text-gray-900">
-        Enlight Real Estate Video Channel
-      </h2>
-      <p className="text-gray-600 mt-2">
-        Watch featured video reviews of top Real Estate Projects!
-      </p>
+      {/* Heading */}
+      <div className="text-left mb-8">
+        <h2 className="text-3xl sm:text-3xl font-bold text-gray-900">
+          Enlight Real Estate Video Channel
+        </h2>
+        <p className="text-gray-600 mt-2">
+          Watch featured video reviews of top Real Estate Projects!
+        </p>
+      </div>
 
       {/* Scrollable Video Section */}
       <div className="flex space-x-6 overflow-x-auto no-scrollbar pb-4">
