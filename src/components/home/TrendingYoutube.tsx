@@ -30,14 +30,14 @@ const TrendingYoutube: React.FC = () => {
   if (links.length === 0) return null;
 
   return (
-    <div className="w-full px-4 sm:px-8 lg:px-16 mt-20">
+    <div className="container px-4 lg:px-30 sm:px-6 py-15 mx-auto">
       {/* Heading */}
-      <h2 className="sm:text-4xl text-3xl text-start mb-2">
+      <h2 className="text-3xl sm:text-3xl font-bold text-gray-900">
         Enlight Real Estate Video Channel
       </h2>
-      <span className="text-start block mb-6 text-gray-600">
+      <p className="text-gray-600 mt-2">
         Watch featured video reviews of top Real Estate Projects!
-      </span>
+      </p>
 
       {/* Scrollable Video Section */}
       <div className="flex space-x-6 overflow-x-auto no-scrollbar pb-4">
@@ -47,7 +47,7 @@ const TrendingYoutube: React.FC = () => {
           return (
             <div
               key={video._id}
-              className="flex-none w-64 md:w-72 lg:w-80 bg-white rounded-xl shadow-md overflow-hidden relative"
+              className="flex-none w-64 md:w-72 lg:w-80  rounded-xl shadow-md overflow-hidden relative"
             >
               <div className="w-full h-48 md:h-56 lg:h-60 relative">
                 {!activeVideos[video._id] ? (
@@ -60,7 +60,7 @@ const TrendingYoutube: React.FC = () => {
                     />
                     <div
                       onClick={() => handlePlay(video._id)}
-                      className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 rounded-t-xl transition duration-300 cursor-pointer"
+                      className="absolute inset-0 flex items-center justify-center  rounded-t-xl transition duration-300 cursor-pointer"
                     >
                       <FaYoutube className="text-red-600 text-5xl" />
                     </div>
@@ -76,13 +76,6 @@ const TrendingYoutube: React.FC = () => {
                     allowFullScreen
                   ></iframe>
                 )}
-              </div>
-
-              {/* Bottom title area */}
-              <div className="px-3 py-3 text-center">
-                <p className="text-gray-700 text-sm font-semibold">
-                  Real Estate Project {index + 1}
-                </p>
               </div>
             </div>
           );

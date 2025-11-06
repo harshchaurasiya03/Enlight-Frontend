@@ -27,7 +27,7 @@ const PropertyCarousel: React.FC = () => {
   return (
     <div>
       {/* Heading Section */}
-      <div className="text-center mb-10">
+      <div className="text-left mb-10">
         <h2 className="text-3xl sm:text-3xl font-bold text-gray-900">
           Popular Videos
         </h2>

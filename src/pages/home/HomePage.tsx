@@ -1,11 +1,6 @@
 import Navbar from '../../components/Navbar';
 import HeroSearch from '../../components/home/HeroSearch';
 import FeaturedProjects from '../../components/home/FeaturedProjects';
-import PropertiesByLocation from '../../components/home/PropertiesByLocation';
-import PropertiesForSale from '../../components/home/PropertiesForSale';
-import PropertiesForRent from '../../components/home/PropertiesForRent';
-import FeaturedAgents from '../../components/home/FeaturedAgents';
-import NewsSection from '../../components/home/NewsSection';
 import Footer from '../../components/Footer';
 import PropertyCarousel from '../../components/home/PropertyCarousel';
 import TrendingYoutube from '../../components/home/TrendingYoutube';
@@ -16,6 +11,8 @@ import FutureProjects from '../../components/home/FutureProjects';
 import NewHomes from '../../components/home/NewHomes';
 import MostPopular from '../../components/home/MostPopular';
 import MustSellProperty from '../../components/home/MustSellProperty'
+import NewsProperty from '../../components/home/NewsProperty';
+import ThailandSecrets from '../../components/home/ThailandSecrets';
 
 
 const HomePage = () => {
@@ -24,7 +21,7 @@ const HomePage = () => {
       <Navbar />
       <HeroSearch />
       <FeaturedProjects />
-      <PropertyCarousel />
+      {/* <PropertyCarousel /> */}
       <SplitCard/>
       <RentToOwn/>
       <FutureProjects/>
@@ -33,11 +30,8 @@ const HomePage = () => {
       <GoogleReview/>
       <MustSellProperty/>
       <TrendingYoutube/>
-      <PropertiesByLocation />
-      <PropertiesForSale />
-      <PropertiesForRent />
-      <FeaturedAgents />
-      <NewsSection />
+<NewsProperty/>
+<ThailandSecrets/>
       <Footer />
     </div>
   );

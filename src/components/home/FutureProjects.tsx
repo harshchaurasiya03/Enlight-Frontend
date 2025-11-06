@@ -31,9 +31,9 @@ const FeaturedProjects: React.FC = () => {
   ];
 
   return (
-    <div className="w-full px-4 sm:px-8 lg:px-16 mt-20">
+    <div className="container px-4 lg:px-30 sm:px-6 py-15 mx-auto">
       {/* Heading */}
-      <div className="text-center mb-12">
+      <div className="text-left mb-12">
         <h2 className="font-bold text-3xl md:text-4xl">Featured Projects</h2>
         <p className="text-gray-600 mt-2">
           We make the best choices with the hottest and most prestigious projects, please visit the details below to find out more.

@@ -12,7 +12,8 @@ const SplitCard: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex-1 w-full px-4 sm:px-8 lg:px-16 mt-10">
+    <div className="container mx-auto  px-6 lg:px-30 py-10 pt-5">
+    <div className="flex-1 ">
       <div className="flex flex-col md:flex-row w-full h-full bg-white rounded-xl overflow-hidden shadow-lg">
         {/* Left: Video */}
         <div className="md:w-1/2 w-full h-96 md:h-auto relative">
@@ -72,6 +73,7 @@ const SplitCard: React.FC = () => {
         </div>
       </div>
     </div>
+     </div>
   );
 };
 

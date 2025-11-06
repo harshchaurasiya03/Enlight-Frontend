@@ -12,9 +12,10 @@ const HeroSearch = () => {
     >
       <div className="absolute inset-0 bg-black/40" />
       <div className="relative z-10 max-w-4xl mx-auto text-center text-white">
-        <h1 className="text-3xl md:text-4xl font-bold mb-24">
-          Find your favorite homes at Enlight Property
-        </h1>
+        <h1 className="text-2xl md:text-4xl font-bold mb-24">
+  Find your favorite homes at Enlight Property
+</h1>
+
     
 
         {/* Tabs: Projects / Sale / Rent */}

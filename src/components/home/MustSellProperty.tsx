@@ -78,9 +78,9 @@ const MustSellProperty: React.FC = () => {
   ];
 
   return (
-    <div className="w-full px-4 sm:px-8 lg:px-16 mt-20">
+    <div className="container px-4 lg:px-30 sm:px-6 py-15 mx-auto">
       {/* Heading */}
-      <div className="text-center mb-8">
+      <div className="text-left mb-8">
          <h2 className="text-3xl sm:text-3xl font-bold text-gray-900">
           Motivated Sellers and Must-Sell Property
         </h2>
