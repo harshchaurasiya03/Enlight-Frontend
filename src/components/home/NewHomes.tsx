@@ -39,6 +39,12 @@ const NewHomes: React.FC = () => {
       priceRange: "From 70L - 90L",
       location: "Bangkok",
     },
+    {
+      image: "/images/property22.jpeg",
+      projectName: "Golden Palm Residences",
+      priceRange: "From 1Cr - 1.2Cr",
+      location: "Thailand",
+    },
   ];
 
   return (

@@ -55,6 +55,15 @@ const newsItems: NewsItem[] = [
     date: "30",
     month: "OCT",
   },
+   {
+    id: 6,
+    title: "Pattaya Real Estate Market Expands Rapidly",
+    description:
+      "Pattaya’s property sector continues to grow, driven by tourism and infrastructure upgrades, making it a solid investment destination...",
+    image: "/images/property9.jpeg",
+    date: "30",
+    month: "OCT",
+  },
 ];
 
 const NewsProperty: React.FC = () => {

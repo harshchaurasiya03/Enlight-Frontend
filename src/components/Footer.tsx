@@ -2,7 +2,8 @@ import React from "react";
 
 const Footer: React.FC = () => {
   return (
-    <footer className="bg-gray-900 text-white mt-20">
+    <footer className="bg-gray-900 text-white">
+      <div className="container mx-auto px-6 lg:px-30 mt-10">
       <div className="w-full px-4 sm:px-8 lg:px-16 py-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
         {/* Section 1 */}
         <div>
@@ -80,6 +81,7 @@ const Footer: React.FC = () => {
         <div className="text-gray-400 text-sm">
           Copyrights © 2025, Enlight Group
         </div>
+      </div>
       </div>
     </footer>
   );

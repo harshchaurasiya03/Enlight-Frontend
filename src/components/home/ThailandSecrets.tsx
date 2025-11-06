@@ -47,11 +47,20 @@ const secretItems: SecretItem[] = [
     month: "NOV",
   },
   {
-   id: 4,
+   id: 5,
     title: "Frequently Asked Questions",
     description:
       "Get clear answers to common questions about property ownership, taxes, legal documentation, and more to make confident decisions.",
     image: "/images/property16.jpeg",
+    date: "01",
+    month: "NOV",
+  },
+  {
+   id: 6,
+    title: "Frequently Asked Questions",
+    description:
+      "Get clear answers to common questions about property ownership, taxes, legal documentation, and more to make confident decisions.",
+    image: "/images/property12.jpeg",
     date: "01",
     month: "NOV",
   }

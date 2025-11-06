@@ -1,9 +1,11 @@
 import { Plus, Menu } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import Login from "../pages/Login/Login"; // path adjust karo apke structure ke hisab se
 
 const MainNavbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
 
   return (
     <nav className="bg-white shadow-sm sticky top-0 z-40">
@@ -46,7 +48,11 @@ const MainNavbar = () => {
           </div>
 
           <div className="flex items-center space-x-4">
-            <button className="hidden md:flex items-center space-x-2 text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md text-sm font-medium transition">
+            {/* ✅ Login Button */}
+            <button
+              onClick={() => setShowLogin(true)}
+              className="hidden md:flex items-center space-x-2 text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md text-sm font-medium transition"
+            >
               <span>Login</span>
             </button>
 
@@ -63,7 +69,7 @@ const MainNavbar = () => {
         </div>
       </div>
 
-      {/* ✅ Mobile Menu */}
+      {/* Mobile Menu */}
       {isMobileMenuOpen && (
         <div className="md:hidden bg-white border-t shadow-inner">
           <div className="px-4 py-3 space-y-2">
@@ -93,6 +99,9 @@ const MainNavbar = () => {
           </div>
         </div>
       )}
+
+      {/* ✅ Login Modal */}
+      {showLogin && <Login onClose={() => setShowLogin(false)} />}
     </nav>
   );
 };
