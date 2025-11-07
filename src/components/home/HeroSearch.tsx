@@ -10,9 +10,9 @@ const HeroSearch = () => {
       className="relative bg-cover bg-center py-36 px-4 sm:px-6 lg:px-8"
       style={{ backgroundImage: "url('/images/banner.jpeg')" }}
     >
-      <div className="absolute inset-0 bg-black/40" />
+      <div className="absolute inset-0 " />
       <div className="relative z-10 max-w-4xl mx-auto text-center text-white">
-        <h1 className="text-2xl md:text-4xl font-bold mb-24">
+        <h1 className="text-2xl md:text-4xl font-bold mb-24 border-gray-200">
           Find your favorite homes at Enlight Property
         </h1>
 

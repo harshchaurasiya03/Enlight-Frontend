@@ -49,7 +49,7 @@ const popularRegions: City[] = [
   },
 ];
 
-const FeaturedProjects = () => {
+const LookingForProperties = () => {
   const sliderRef = useRef<HTMLDivElement | null>(null);
   const [hovered, setHovered] = useState(false);
 
@@ -64,32 +64,32 @@ const FeaturedProjects = () => {
 
   return (
     <section
-      className="container px-4 lg:px-30 sm:px-6 py-15 mx-auto "
+      className="container px-4 lg:px-30 sm:px-6 py-15 mx-auto"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
       <div className="text-left mb-10">
         <h2 className="text-3xl sm:text-3xl font-bold text-gray-900">
-          Popular Regions in Thailand
+          Looking for Property?
         </h2>
         <p className="text-gray-600 mt-2">
-          Explore properties in top locations and nearby areas
+          Explore available properties in top locations
         </p>
       </div>
 
       <div className="relative">
-        {/* Navigation Buttons */}
+        {/* Left/Right Buttons */}
         {hovered && (
           <>
             <button
               onClick={() => scroll("left")}
-              className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white text-gray-800 rounded-full p-3 shadow-md transition"
+              className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white text-gray-800 rounded-full w-10 h-10 flex items-center justify-center shadow-md transition text-3xl"
             >
               &#8249;
             </button>
             <button
               onClick={() => scroll("right")}
-              className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white text-gray-800 rounded-full p-3 shadow-md transition"
+              className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white text-gray-800 rounded-full w-10 h-10 flex items-center justify-center shadow-md transition text-3xl"
             >
               &#8250;
             </button>
@@ -106,24 +106,27 @@ const FeaturedProjects = () => {
               key={region.id}
               className="flex-shrink-0 w-[700px] h-[400px] bg-white rounded-xl shadow-lg overflow-hidden flex"
             >
-              
               {/* Left: Main City */}
               <div className="w-1/2 h-full p-3">
                 <div className="relative w-full h-full rounded-lg overflow-hidden group">
                   <img
                     src={region.image}
                     alt={region.name}
-                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
-                    <h3 className="text-white text-2xl font-semibold group-hover:text-blue-400 transition">
+                  <div className="absolute inset-0 bg-black/30 flex flex-col items-center justify-end group-hover:justify-center transition-all duration-300 px-2">
+                    <h1 className="text-white text-2xl font-semibold group-hover:text-blue-400 transition-colors text-center">
                       {region.name}
-                    </h3>
+                    </h1>
+                    <p className="text-white text-lg mb-1 group-hover:text-blue-400 transition-colors">
+                      Looking for property in
+                    </p>
                   </div>
                 </div>
               </div>
 
-              <div className="w-1/2 h-full p-3 bg-gray-50">
+              {/* Right: Sublocations */}
+              <div className="w-1/2 h-full p-3 bg-gray-60">
                 <div className="grid grid-cols-2 grid-rows-2 gap-3 w-full h-full">
                   {region.sublocations.map((sub) => (
                     <div
@@ -135,9 +138,12 @@ const FeaturedProjects = () => {
                         alt={sub.name}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       />
-                      <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
+                      <div className="absolute inset-0 bg-black/30 flex flex-col justify-end items-start pb-2 pl-2">
                         <p className="text-white text-lg font-medium group-hover:text-blue-400 transition">
                           {sub.name}
+                        </p>
+                        <p className="text-white text-sm group-hover:text-blue-400 transition-colors">
+                          367 properties for you
                         </p>
                       </div>
                     </div>
@@ -152,4 +158,4 @@ const FeaturedProjects = () => {
   );
 };
 
-export default FeaturedProjects;
+export default LookingForProperties;
