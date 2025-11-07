@@ -1,14 +1,34 @@
 import React, { useState } from "react";
 import { X } from "lucide-react";
+
 import SignupPopup from "./SignupPopup";
+import Loginmail from "./Loginmail";
 
 const Login: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const [email, setEmail] = useState("");
   const [showSignup, setShowSignup] = useState(false);
+  const [showLoginMail, setShowLoginMail] = useState(false);
 
-  // Show signup popup if user continues with email
+  // Dummy "existing email" for simulation
+  const existingEmails = ["test@example.com", "user@dummy.com"];
+
+  const handleContinue = () => {
+    if (email.trim() === "") return;
+
+    // Check if email already exists
+    if (existingEmails.includes(email.trim().toLowerCase())) {
+      setShowLoginMail(true);
+    } else {
+      setShowSignup(true);
+    }
+  };
+
   if (showSignup) {
     return <SignupPopup email={email} onClose={onClose} />;
+  }
+
+  if (showLoginMail) {
+    return <Loginmail onClose={onClose} />;
   }
 
   return (
@@ -84,9 +104,7 @@ const Login: React.FC<{ onClose: () => void }> = ({ onClose }) => {
 
           {/* Continue with Email Button */}
           <button
-            onClick={() => {
-              if (email.trim() !== "") setShowSignup(true);
-            }}
+            onClick={handleContinue}
             className="bg-[#0056D2] text-white font-semibold py-2 rounded-md hover:bg-[#0045B0] transition"
           >
             Continue with Email

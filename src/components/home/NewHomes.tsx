@@ -85,9 +85,9 @@ const NewHomes: React.FC = () => {
                 <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors" />
               </div>
               <div className="text-left mt-2 px-1">
-                <h3 className="font-semibold  transition-colors">{home.projectName}</h3>
-                <p className="text-black-bold  transition-colors">{home.priceRange}</p>
-                <p className="text-gray-500 text-sm  transition-colors">{home.location}</p>
+                <h3 className="font-semibold group-hover:text-black-500 transition-colors">{home.projectName}</h3>
+                <p className="text-black-bold group-hover:text-black-400 transition-colors">{home.priceRange}</p>
+                <p className="text-gray-500 text-sm group-hover:text-black-300 transition-colors">{home.location}</p>
               </div>
             </div>
           ))}

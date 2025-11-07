@@ -66,15 +66,15 @@ const MostPopular: React.FC = () => {
         {/* Scrollable container */}
         <div
           ref={sliderRef}
-          className="flex space-x-6 overflow-x-auto no-scrollbar pb-4"
+          className="flex space-x-6 overflow-x-auto no-scrollbar pb-4  "
         >
           {popularCards.map((card, idx) => (
             <div
               key={idx}
-              className="flex-none w-64 md:w-72 lg:w-80 bg-white rounded-xl shadow-lg p-4"
+              className="flex-none w-64 md:w-72 lg:w-80 bg-white rounded-xl shadow-lg p-4 border border-gray-100"
             >
               {/* Card heading */}
-              <h3 className="font-bold text-lg mb-3 min-h-[3rem] line-clamp-2 text-center">
+              <h3 className="font-bold text-lg mb-3 min-h-12 line-clamp-2 text-center">
                 {card.title}
               </h3>
 
