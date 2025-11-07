@@ -5,7 +5,6 @@ const HeroSearch = () => {
   const [activeTab, setActiveTab] = useState<"buy" | "rent" | "sell">("buy");
   const [hoveredTab, setHoveredTab] = useState<string | null>(null);
 
-
   return (
     <div
       className="relative bg-cover bg-center py-36 px-4 sm:px-6 lg:px-8"

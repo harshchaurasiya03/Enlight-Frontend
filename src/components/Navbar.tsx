@@ -1,7 +1,7 @@
 import { Plus, Menu } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import Login from "../pages/Login/Login"; // path adjust karo apke structure ke hisab se
+import Login from "../pages/Login/Login"; 
 
 const MainNavbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -68,11 +68,11 @@ const MainNavbar = () => {
           <div className="flex items-center space-x-4">
             {/* ✅ Login Button */}
             <button
-              onClick={() => setShowLogin(true)}
-              className="hidden md:flex items-center space-x-2 text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md text-sm font-medium transition"
-            >
-              <span>Login</span>
-            </button>
+  onClick={() => setShowLogin(true)}
+  className="hidden md:flex items-center space-x-2 hover:bg-blue-700 px-4 py-2 rounded-md text-sm font-medium transition"
+>
+  <span>Login</span>
+</button>
 
             {/* Mobile Menu Button */}
             <div className="md:hidden">
