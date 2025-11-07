@@ -2,7 +2,7 @@ import React from "react";
 
 type PopularCard = {
   title: string;
-  images: string[]; // 4 images per card
+  images: string[]; 
 };
 
 const MostPopular: React.FC = () => {

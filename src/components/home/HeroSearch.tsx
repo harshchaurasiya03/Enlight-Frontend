@@ -4,7 +4,6 @@ import { useState } from "react";
 const HeroSearch = () => {
   const [activeTab, setActiveTab] = useState<"buy" | "rent" | "sell">("buy");
 
-
   return (
     <div
       className="relative bg-cover bg-center py-36 px-4 sm:px-6 lg:px-8"
@@ -13,30 +12,27 @@ const HeroSearch = () => {
       <div className="absolute inset-0 bg-black/40" />
       <div className="relative z-10 max-w-4xl mx-auto text-center text-white">
         <h1 className="text-2xl md:text-4xl font-bold mb-24">
-  Find your favorite homes at Enlight Property
-</h1>
-
-    
+          Find your favorite homes at Enlight Property
+        </h1>
 
         {/* Tabs: Projects / Sale / Rent */}
-       <div className="flex justify-center bg-white rounded overflow-hidden w-fit mx-auto ">
-  {["Buy", "Rent", "Sell"].map((tab) => (
-    <button
-      key={tab}
-      onClick={() =>
-        setActiveTab(tab.toLowerCase() as "buy" | "rent" | "sell")
-      }
-      className={`px-6 py-3 font-medium capitalize transition flex${
-        activeTab.toLowerCase() === tab.toLowerCase()
-          ? "bg-white text-blue-600"
-          : "bg-gray-600/40 text-black hover:bg-gray-300/40"
-      }`}
-    >
-      {tab}
-    </button>
-  ))}
-</div>
-
+        <div className="flex justify-center bg-white rounded overflow-hidden w-fit mx-auto ">
+          {["Buy", "Rent", "Sell"].map((tab) => (
+            <button
+              key={tab}
+              onClick={() =>
+                setActiveTab(tab.toLowerCase() as "buy" | "rent" | "sell")
+              }
+              className={`px-6 py-3 font-medium capitalize transition flex${
+                activeTab.toLowerCase() === tab.toLowerCase()
+                  ? "bg-white text-blue-600"
+                  : "bg-gray-600/40 text-black hover:bg-gray-300/40"
+              }`}
+            >
+              {tab}
+            </button>
+          ))}
+        </div>
 
         {/* Search Bar */}
         <div className="bg-white rounded-lg shadow-lg flex max-w-2xl mx-auto mt-4 overflow-hidden">

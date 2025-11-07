@@ -1,6 +1,9 @@
+// FeaturedProjects.tsx
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { FaMapMarkerAlt } from "react-icons/fa";
 
+// Type definition for project
 type Project = {
   image: string;
   projectName: string;
@@ -9,6 +12,8 @@ type Project = {
 };
 
 const FeaturedProjects: React.FC = () => {
+  const navigate = useNavigate();
+
   const projects: Project[] = [
     {
       image: "/images/property8.jpeg",
@@ -30,6 +35,13 @@ const FeaturedProjects: React.FC = () => {
     },
   ];
 
+  // Map locations to routes (type-safe)
+  const locationToRoute: Record<string, string> = {
+    Bangkok: "/bangkok",
+    "Chiang Mai": "/chiang-mai",
+    Phuket: "/phuket",
+  };
+
   return (
     <div className="container px-4 lg:px-30 sm:px-6 py-15 mx-auto">
       {/* Heading */}
@@ -45,9 +57,14 @@ const FeaturedProjects: React.FC = () => {
         {projects.map((project, idx) => (
           <div
             key={idx}
-            className="bg-white rounded-xl shadow-lg overflow-hidden flex flex-col max-h-[406px] h-[406px]"
+            onClick={() => {
+              // Navigate safely; fallback to home page if not found
+              const route = locationToRoute[project.location] || "/";
+              navigate(route);
+            }}
+            className="cursor-pointer bg-white rounded-xl shadow-lg overflow-hidden flex flex-col max-h-[406px] h-[406px] hover:scale-105 transition-transform duration-300"
           >
-            {/* Image 70% of fixed height */}
+            {/* Image 70% */}
             <div className="h-[70%] w-full">
               <img
                 src={project.image}
@@ -56,7 +73,7 @@ const FeaturedProjects: React.FC = () => {
               />
             </div>
 
-            {/* Content 30% of fixed height */}
+            {/* Content 30% */}
             <div className="flex flex-col justify-center p-4 h-[30%]">
               <span className="text-gray-700 truncate">{project.projectName}</span>
               <h3 className="font-bold text-lg mt-1 truncate">{project.societyName}</h3>
