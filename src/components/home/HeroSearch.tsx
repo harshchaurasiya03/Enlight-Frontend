@@ -19,14 +19,14 @@ const HeroSearch = () => {
     
 
         {/* Tabs: Projects / Sale / Rent */}
-       <div className="flex justify-center bg-white rounded-t-lg overflow-hidden w-fit mx-auto ">
+       <div className="flex justify-center bg-white rounded overflow-hidden w-fit mx-auto ">
   {["Buy", "Rent", "Sell"].map((tab) => (
     <button
       key={tab}
       onClick={() =>
         setActiveTab(tab.toLowerCase() as "buy" | "rent" | "sell")
       }
-      className={`px-6 py-3 font-medium capitalize transition flex ${
+      className={`px-6 py-3 font-medium capitalize transition flex${
         activeTab.toLowerCase() === tab.toLowerCase()
           ? "bg-white text-blue-600"
           : "bg-gray-600/40 text-black hover:bg-gray-300/40"

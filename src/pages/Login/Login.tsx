@@ -51,7 +51,7 @@ const Login: React.FC<{ onClose: () => void }> = ({ onClose }) => {
         <div className="flex flex-col gap-3 px-6">
           <button className="flex items-center justify-center gap-2 border text-gray-800 font-semibold py-2 rounded-md hover:bg-gray-50 transition">
             <img
-              src="https://upload.wikimedia.org/wikipedia/commons/4/4e/Google_%22G%22_Logo.svg"
+              src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.png"
               alt="google"
               className="w-5 h-5"
             />
