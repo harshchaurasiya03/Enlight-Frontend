@@ -98,15 +98,14 @@ const SignupPopup: React.FC<SignupProps> = ({ email, onClose }) => {
             className="border rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
           />
 
-          <label className="flex items-center gap-2 text-sm text-gray-600 mt-1">
-            <input
-              type="checkbox"
-              name="agree"
-              checked={formData.agree}
-              onChange={handleChange}
-            />
-            I'm not a robot
-          </label>
+          <input
+            type="password"
+            name="password"
+            placeholder="Confirm Password"
+            value={formData.password}
+            onChange={handleChange}
+            className="border rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          />
 
           <button className="bg-[#0056D2] text-white font-semibold py-2 rounded-md hover:bg-[#0045B0] transition mt-2">
             Sign Up

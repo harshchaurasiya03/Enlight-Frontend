@@ -13,11 +13,13 @@ import MostPopular from '../../components/home/MostPopular';
 import MustSellProperty from '../../components/home/MustSellProperty'
 import NewsProperty from '../../components/home/NewsProperty';
 import ThailandSecrets from '../../components/home/ThailandSecrets';
+import Topheader from '../../components/Topheader'
 
 
 const HomePage = () => {
   return (
     <div className="min-h-screen bg-white">
+      <Topheader/>
       <Navbar />
       <HeroSearch />
       <FeaturedProjects />
