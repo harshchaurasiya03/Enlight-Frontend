@@ -1,11 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import { X } from "lucide-react";
+import SignupPopup from "./SignupPopup";
 
-interface LoginProps {
-  onClose: () => void;
-}
+const Login: React.FC<{ onClose: () => void }> = ({ onClose }) => {
+  const [email, setEmail] = useState("");
+  const [showSignup, setShowSignup] = useState(false);
 
-const Login: React.FC<LoginProps> = ({ onClose }) => {
+  // Show signup popup if user continues with email
+  if (showSignup) {
+    return <SignupPopup email={email} onClose={onClose} />;
+  }
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm">
       <div className="relative bg-white w-[360px] rounded-md shadow-lg border overflow-hidden">
@@ -46,7 +51,7 @@ const Login: React.FC<LoginProps> = ({ onClose }) => {
         <div className="flex flex-col gap-3 px-6">
           <button className="flex items-center justify-center gap-2 border text-gray-800 font-semibold py-2 rounded-md hover:bg-gray-50 transition">
             <img
-              src="https://upload.wikimedia.org/wikipedia/commons/4/4e/Google_%22G%22_Logo.svg"
+              src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.png"
               alt="google"
               className="w-5 h-5"
             />
@@ -68,13 +73,22 @@ const Login: React.FC<LoginProps> = ({ onClose }) => {
             <hr className="flex-1 border-gray-300" />
           </div>
 
+          {/* Email Input */}
           <input
             type="email"
             placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             className="border rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
           />
 
-          <button className="bg-[#0056D2] text-white font-semibold py-2 rounded-md hover:bg-[#0045B0] transition">
+          {/* Continue with Email Button */}
+          <button
+            onClick={() => {
+              if (email.trim() !== "") setShowSignup(true);
+            }}
+            className="bg-[#0056D2] text-white font-semibold py-2 rounded-md hover:bg-[#0045B0] transition"
+          >
             Continue with Email
           </button>
         </div>

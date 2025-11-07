@@ -26,22 +26,40 @@ const MainNavbar = () => {
 
             {/* Desktop Menu */}
             <div className="hidden md:flex items-center space-x-6">
-              <a href="#" className="text-gray-700 hover:text-blue-600 font-medium">
+              <a
+                href="#"
+                className="text-gray-700 hover:text-blue-600 font-medium"
+              >
                 Buy
               </a>
-              <a href="#" className="text-gray-700 hover:text-blue-600 font-medium">
+              <a
+                href="#"
+                className="text-gray-700 hover:text-blue-600 font-medium"
+              >
                 Rent
               </a>
-              <a href="#" className="text-gray-700 hover:text-blue-600 font-medium">
+              <a
+                href="#"
+                className="text-gray-700 hover:text-blue-600 font-medium"
+              >
                 Sell
               </a>
-              <a href="#" className="text-gray-700 hover:text-blue-600 font-medium">
+              <a
+                href="#"
+                className="text-gray-700 hover:text-blue-600 font-medium"
+              >
                 Rent-To-Own
               </a>
-              <a href="#" className="text-gray-700 hover:text-blue-600 font-medium">
+              <a
+                href="#"
+                className="text-gray-700 hover:text-blue-600 font-medium"
+              >
                 Projects
               </a>
-              <a href="#" className="text-gray-700 hover:text-blue-600 font-medium">
+              <a
+                href="#"
+                className="text-gray-700 hover:text-blue-600 font-medium"
+              >
                 Advice
               </a>
             </div>
@@ -74,27 +92,33 @@ const MainNavbar = () => {
         <div className="md:hidden bg-white border-t shadow-inner">
           <div className="px-4 py-3 space-y-2">
             <a href="#" className="block text-gray-700 hover:text-blue-600">
+              Buy
+            </a>
+            <a href="#" className="block text-gray-700 hover:text-blue-600">
+              Rent
+            </a>
+            <a href="#" className="block text-gray-700 hover:text-blue-600">
+              Sell
+            </a>
+            <a href="#" className="block text-gray-700 hover:text-blue-600">
+              Rent-To-Own
+            </a>
+            <a href="#" className="block text-gray-700 hover:text-blue-600">
               Projects
             </a>
             <a href="#" className="block text-gray-700 hover:text-blue-600">
-              Properties
-            </a>
-            <a href="#" className="block text-gray-700 hover:text-blue-600">
-              Agents
-            </a>
-            <a href="#" className="block text-gray-700 hover:text-blue-600">
-              News
-            </a>
-            <a href="#" className="block text-gray-700 hover:text-blue-600">
-              Careers
-            </a>
-            <a href="#" className="block text-gray-700 hover:text-blue-600">
-              Contact
+              Advice
             </a>
 
-            <button className="flex w-full items-center space-x-2 justify-center bg-blue-600 text-white py-2 rounded-md">
-              <Plus size={18} />
-              <span>Add Property</span>
+            {/* ✅ Mobile Login Button */}
+            <button
+              onClick={() => {
+                setShowLogin(true); // open modal
+                setIsMobileMenuOpen(false); // close mobile menu
+              }}
+              className="flex w-full items-center justify-center bg-blue-600 text-white py-2 rounded-md"
+            >
+              <span>Login</span>
             </button>
           </div>
         </div>
