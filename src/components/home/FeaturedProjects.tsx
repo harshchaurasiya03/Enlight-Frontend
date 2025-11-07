@@ -1,4 +1,5 @@
 import React, { useRef, useState } from "react";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 type SubLocation = {
   id: number;
@@ -64,11 +65,11 @@ const LookingForProperties = () => {
 
   return (
     <section
-      className="container px-4 lg:px-30 sm:px-6 py-8 mx-auto"
+      className="container px-4 lg:px-30 sm:px-6 py-15 mx-auto"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      <div className="text-left mb-10">
+      <div className="text-left">
         <h2 className="text-3xl sm:text-3xl font-bold text-gray-900">
           Looking for Property?
         </h2>
@@ -81,19 +82,19 @@ const LookingForProperties = () => {
         {/* Left/Right Buttons */}
         {hovered && (
           <>
-            <button
-              onClick={() => scroll("left")}
-              className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white text-gray-800 rounded-full w-10 h-10 flex items-center justify-center shadow-md transition text-3xl"
-            >
-              &#8249;
-            </button>
-            <button
-              onClick={() => scroll("right")}
-              className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white text-gray-800 rounded-full w-10 h-10 flex items-center justify-center shadow-md transition text-3xl"
-            >
-              &#8250;
-            </button>
-          </>
+                      <button
+                        onClick={() => scroll("left")}
+                        className="absolute left-5 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white text-gray-800 rounded-full p-1 flex items-center justify-center shadow-md transition text-2xl"
+                      >
+                        <FaChevronLeft />
+                      </button>
+                      <button
+                        onClick={() => scroll("right")}
+                        className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white text-gray-800 rounded-full p-1 flex items-center justify-center shadow-md transition text-2xl"
+                      >
+                       <FaChevronRight/>
+                      </button>
+                    </>
         )}
 
         {/* Scrollable Container */}
@@ -104,7 +105,7 @@ const LookingForProperties = () => {
           {popularRegions.map((region) => (
             <div
               key={region.id}
-              className="flex-shrink-0 w-[700px] h-[400px] bg-white rounded-xl shadow-lg overflow-hidden flex"
+              className="shrink-0 w-[700px] h-[400px] bg-white rounded-xl shadow-lg overflow-hidden flex"
             >
               {/* Left: Main City */}
               <div className="w-1/2 h-full p-3">
