@@ -33,22 +33,22 @@ const SplitCard: React.FC = () => {
           <div className="space-y-6">
 
             {/* Main heading */}
-            <h1 className="font-bold text-3xl md:text-4xl">Why buy with Enlight</h1>
+            <h1 className="font-semibold text-3xl md:text-4xl">Why buy with Enlight</h1>
 
             {/* Section 1 */}
             <div className="flex items-start space-x-4">
               <FaHome className="text-3xl mt-1" /> {/* Home icon */}
               <div>
-                <h4 className="font-bold text-xl">A simpler experience to search, visit & buy</h4>
+                <h4 className="font-semibold text-xl">A simpler experience to search, visit & buy</h4>
                 <p>Tour homes on your schedule and control your offer online.</p>
               </div>
             </div>
 
             {/* Section 2 */}
             <div className="flex items-start space-x-4">
-              <FaHandshake className="text-3xl mt-1" /> {/* Handshake icon */}
+              <FaHandshake className="text-5xl mt-1" /> {/* Handshake icon */}
               <div>
-                <h4 className="font-bold text-xl">Buy a home in a few taps. We’ll guide you through it.</h4>
+                <h4 className="font-semibold text-xl">Buy a home in a few taps. We’ll guide you through it.</h4>
                 <p>
                   Book tours on your schedule. When you find the perfect home,
                   start your offer online, and a dedicated buying agent will help
@@ -61,7 +61,7 @@ const SplitCard: React.FC = () => {
             <div className="flex items-start space-x-4">
               <FaUser className="text-3xl mt-1" /> {/* Client icon */}
               <div>
-                <h4 className="font-bold text-xl">We've done the walkthrough, so you don't have to.</h4>
+                <h4 className="font-semibold text-xl">We've done the walkthrough, so you don't have to.</h4>
                 <p>
                   Narrow down your search from the comfort of your own home with
                   our video tours of hundreds of projects and their units.

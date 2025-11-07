@@ -26,7 +26,7 @@ const HeroSearch = () => {
       }
       onMouseEnter={() => setHoveredTab(tab.toLowerCase())}
       onMouseLeave={() => setHoveredTab(null)}
-      className={`px-6 py-3 font-medium rounded-xl capitalize transition-all duration-300 ${
+      className={`px-8 py-3 font-medium rounded-xl capitalize transition-all duration-300 ${
         hoveredTab === tab.toLowerCase()
           ? "bg-white text-blue-600"
           : activeTab === tab.toLowerCase() && !hoveredTab
