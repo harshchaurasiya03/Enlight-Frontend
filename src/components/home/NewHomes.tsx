@@ -1,4 +1,5 @@
 import React, { useRef, useState } from "react";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 type NewHome = {
   image: string;
@@ -52,15 +53,15 @@ const NewHomes: React.FC = () => {
           <>
             <button
               onClick={() => scroll("left")}
-              className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white text-gray-800 rounded-full w-10 h-10 flex items-center justify-center shadow-md transition text-3xl"
+              className="absolute left-2 top-1/3 -translate-y-1/2 z-10 bg-white/80 hover:bg-white text-gray-800 rounded-full p-1 flex items-center justify-center shadow-md transition text-2xl"
             >
-              &#8249;
+              <FaChevronLeft />
             </button>
             <button
               onClick={() => scroll("right")}
-              className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white text-gray-800 rounded-full w-10 h-10 flex items-center justify-center shadow-md transition text-3xl"
+              className="absolute right-2 top-1/3 -translate-y-1/2 z-10 bg-white/80 hover:bg-white text-gray-800 rounded-full p-1 flex items-center justify-center shadow-md transition text-2xl"
             >
-              &#8250;
+             <FaChevronRight/>
             </button>
           </>
         )}
@@ -73,7 +74,7 @@ const NewHomes: React.FC = () => {
           {homes.map((home, idx) => (
             <div
               key={idx}
-              className="flex-none w-64 md:w-72 lg:w-80 rounded-xl overflow-hidden group shadow-md cursor-pointer hover:shadow-xl transition-all duration-300"
+              className="flex-none w-64 md:w-72 lg:w-80 rounded-xl overflow-hidden group  cursor-pointer  transition-all duration-300"
             >
               <div className="relative w-full h-40 md:h-48 lg:h-56 overflow-hidden rounded-lg">
                 <img

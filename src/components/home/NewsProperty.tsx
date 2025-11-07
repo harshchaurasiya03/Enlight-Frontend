@@ -1,4 +1,5 @@
 import React, { useRef, useState } from "react";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 type NewsItem = {
   id: number;
@@ -52,19 +53,19 @@ const NewsProperty: React.FC = () => {
         {/* Left/Right buttons */}
         {hovered && (
           <>
-            <button
-              onClick={() => scroll("left")}
-              className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white text-gray-800 rounded-full w-10 h-10 flex items-center justify-center shadow-md transition text-3xl"
-            >
-              &#8249;
-            </button>
-            <button
-              onClick={() => scroll("right")}
-              className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white text-gray-800 rounded-full w-10 h-10 flex items-center justify-center shadow-md transition text-3xl"
-            >
-              &#8250;
-            </button>
-          </>
+                      <button
+                        onClick={() => scroll("left")}
+                        className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white text-gray-800 rounded-full p-1 flex items-center justify-center shadow-md transition text-2xl"
+                      >
+                        <FaChevronLeft />
+                      </button>
+                      <button
+                        onClick={() => scroll("right")}
+                        className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white text-gray-800 rounded-full p-1 flex items-center justify-center shadow-md transition text-2xl"
+                      >
+                       <FaChevronRight/>
+                      </button>
+                    </>
         )}
 
         {/* Scrollable container */}
