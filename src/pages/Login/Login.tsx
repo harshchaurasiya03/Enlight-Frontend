@@ -64,7 +64,7 @@ const Login: React.FC<{ onClose: () => void }> = ({ onClose }) => {
         <div className="flex flex-col gap-2 px-4 sm:px-6 pb-4">
           <button className="flex items-center justify-center gap-2 border text-gray-800 font-semibold py-2 rounded-md hover:bg-gray-50 transition">
             <img
-              src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.png"
+              src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/24px.svg"
               alt="google"
               className="w-5 h-5"
             />
@@ -92,6 +92,7 @@ const Login: React.FC<{ onClose: () => void }> = ({ onClose }) => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="border rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            required
           />
 
           <button

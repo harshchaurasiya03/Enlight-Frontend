@@ -43,7 +43,7 @@ const PropertyCarousel: React.FC = () => {
           {videoSources.map((src, index) => (
             <div
               key={index}
-              className="flex-shrink-0 sm:flex-shrink-0 w-64 sm:w-auto rounded overflow-hidden shadow-md bg-white hover:shadow-lg transition-shadow duration-200 mr-2 sm:mr-0"
+              className="sm:shrink-0 w-64 sm:w-auto rounded overflow-hidden shadow-md bg-white hover:shadow-lg transition-shadow duration-200 mr-2 sm:mr-0"
             >
               {/* Video height same, border radius applied */}
               <div className="relative w-full pb-[177%] overflow-hidden rounded-md">

@@ -38,7 +38,7 @@ const SplitCard: React.FC = () => {
 
             {/* Section 1 */}
             <div className="flex items-start space-x-3 sm:space-x-4">
-              <FaHome className="text-2xl sm:text-3xl mt-1" />
+              <FaHome className="text-1xl sm:text-2xl mt-1" />
               <div>
                 <h4 className="font-semibold text-lg sm:text-xl">A simpler experience to search, visit & buy</h4>
                 <p className="text-sm sm:text-base">
