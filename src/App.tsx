@@ -28,7 +28,7 @@ import { ScrollToTop } from "./components/dashboard/common/ScrollToTop";
 import RequireAuth from "./routes/RequireAuth";
 import PropertyDetailsPage from "./pages/Future/PropertyDetailsPage";
 import VerifyEmailPage from "./pages/Auth/VerifyEmailPage";
-
+import Chatbot from "./components/Chatbot";
 
 function App() {
 
@@ -40,6 +40,7 @@ function App() {
   return (
     <>
       <ScrollToTop />
+      <Chatbot/>
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/propertydeatilspage" element={<PropertyDetailsPage />} />

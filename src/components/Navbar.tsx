@@ -7,7 +7,6 @@ const MainNavbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
 
-
   return (
     <nav className="bg-white shadow-sm sticky top-0 z-40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -28,26 +27,47 @@ const MainNavbar = () => {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-6">
-            <a href="#" className="text-gray-700 hover:text-blue-600 font-medium">
+            <a
+              href="#"
+              className="text-gray-700 hover:text-blue-600 font-medium"
+            >
               Buy
             </a>
-            <a href="#" className="text-gray-700 hover:text-blue-600 font-medium">
+            <a
+              href="#"
+              className="text-gray-700 hover:text-blue-600 font-medium"
+            >
               Rent
             </a>
-            <a href="#" className="text-gray-700 hover:text-blue-600 font-medium">
+            <a
+              href="#"
+              className="text-gray-700 hover:text-blue-600 font-medium"
+            >
               Sell
             </a>
-            <a href="#" className="text-gray-700 hover:text-blue-600 font-medium">
+            <a
+              href="#"
+              className="text-gray-700 hover:text-blue-600 font-medium"
+            >
               Rent-To-Own
             </a>
-            <a href="#" className="text-gray-700 hover:text-blue-600 font-medium">
+            <a
+              href="#"
+              className="text-gray-700 hover:text-blue-600 font-medium"
+            >
               Projects
             </a>
-            <a href="#" className="text-gray-700 hover:text-blue-600 font-medium">
+            <a
+              href="#"
+              className="text-gray-700 hover:text-blue-600 font-medium"
+            >
               Advice
             </a>
 
-            <button className="flex items-center space-x-2 text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded-md text-sm font-medium transition">
+            <button
+              onClick={() => setShowLogin(true)}
+              className="flex items-center space-x-2 text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded-md text-sm font-medium transition"
+            >
               <Plus size={18} />
               <span>Add Property</span>
             </button>
@@ -90,7 +110,10 @@ const MainNavbar = () => {
             </a>
 
             {/* Add Property Button */}
-            <button className="flex w-full items-center space-x-2 justify-center bg-red-600 text-white py-2 rounded-md">
+            <button
+              onClick={() => setShowLogin(true)}
+              className="flex items-center space-x-2 text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded-md text-sm font-medium transition"
+            >
               <Plus size={18} />
               <span>Add Property</span>
             </button>
@@ -117,17 +140,19 @@ const MainNavbar = () => {
 
               {/* Login */}
               <button
-              onClick={() => setShowLogin(true)}
-              className="flex items-center space-x-1 hover:text-blue-300 transition"
-            >
-              <User size={16} />
-              <span>Login</span>
-            </button>
-            {showLogin && <Login onClose={() => setShowLogin(false)} />}
+                onClick={() => setShowLogin(true)}
+                className="flex items-center space-x-1 hover:text-blue-300 transition"
+              >
+                <User size={16} />
+                <span>Login</span>
+              </button>
+              {showLogin && <Login onClose={() => setShowLogin(false)} />}
             </div>
           </div>
         </div>
       )}
+
+      {showLogin && <Login onClose={() => setShowLogin(false)} />}
     </nav>
   );
 };

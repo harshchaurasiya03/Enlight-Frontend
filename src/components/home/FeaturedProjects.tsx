@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 type SubLocation = {
@@ -63,6 +63,34 @@ const LookingForProperties = () => {
     });
   };
 
+  useEffect(() => {
+    const slider = sliderRef.current;
+    if (!slider) return;
+
+    // Clone all child nodes for seamless loop
+    const slides = Array.from(slider.children) as HTMLElement[];
+    slides.forEach((slide) => {
+      const clone = slide.cloneNode(true) as HTMLElement;
+      slider.appendChild(clone);
+    });
+
+    const step = 1; // pixels per frame
+    const intervalTime = 15; // ms per frame
+
+    const scrollLoop = setInterval(() => {
+      if (!slider) return;
+      slider.scrollLeft += step;
+      const firstSlideWidth = slides[0].clientWidth;
+
+      // Reset instantly when we've scrolled past the first set of slides
+      if (slider.scrollLeft >= firstSlideWidth * slides.length) {
+        slider.scrollLeft = 0;
+      }
+    }, intervalTime);
+
+    return () => clearInterval(scrollLoop);
+  }, []);
+
   return (
     <section
       className="container px-4 lg:px-30 sm:px-6 py-6 mx-auto"
@@ -82,19 +110,19 @@ const LookingForProperties = () => {
         {/* Left/Right Buttons */}
         {hovered && (
           <>
-                      <button
-                        onClick={() => scroll("left")}
-                        className="absolute left-5 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white text-gray-800 rounded-full p-1 flex items-center justify-center shadow-md transition text-2xl"
-                      >
-                        <FaChevronLeft />
-                      </button>
-                      <button
-                        onClick={() => scroll("right")}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white text-gray-800 rounded-full p-1 flex items-center justify-center shadow-md transition text-2xl"
-                      >
-                       <FaChevronRight/>
-                      </button>
-                    </>
+            <button
+              onClick={() => scroll("left")}
+              className="absolute left-5 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white text-gray-800 rounded-full p-1 flex items-center justify-center shadow-md transition text-2xl"
+            >
+              <FaChevronLeft />
+            </button>
+            <button
+              onClick={() => scroll("right")}
+              className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white text-gray-800 rounded-full p-1 flex items-center justify-center shadow-md transition text-2xl"
+            >
+              <FaChevronRight />
+            </button>
+          </>
         )}
 
         {/* Scrollable Container */}

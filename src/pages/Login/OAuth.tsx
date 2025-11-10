@@ -13,7 +13,7 @@ import { googleOk } from "../../redux/reducers/authSlice";
 import { useNavigate } from "react-router-dom";
 
 type BackendUser = {
-  id: string;           
+  id: string;
   name: string;
   email: string;
   role: string;
@@ -99,9 +99,14 @@ const OAuth: React.FC = () => {
   };
 
   return (
-    <Button type="button" outline onClick={handleGoogleClick}>
-      <AiFillGoogleCircle className="w-6 h-6 mr-2" />
-      Continue with Google
+    <Button
+      type="button"
+      outline
+      onClick={handleGoogleClick}
+      className="flex items-center justify-center gap-2 bg-[#1877F2] text-white font-semibold py-2 rounded-md hover:bg-[#166FE0] transition"
+    >
+      <AiFillGoogleCircle className="w-15 h-6" />
+      <span className="text-sm sm:text-base">CONTINUE WITH GOOGLE</span>
     </Button>
   );
 };

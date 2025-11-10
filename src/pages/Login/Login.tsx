@@ -19,7 +19,7 @@ const Login: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const [checking, setChecking] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 
-  // ✅ If user already logged in, redirect immediately
+
   useEffect(() => {
     if (user) {
       onClose();
@@ -36,7 +36,9 @@ const Login: React.FC<{ onClose: () => void }> = ({ onClose }) => {
 
     setChecking(true);
     try {
-      const exists = await dispatch(checkEmailExists(email.trim().toLowerCase()));
+      const exists = await dispatch(
+        checkEmailExists(email.trim().toLowerCase())
+      );
       if (exists) setShowLoginMail(true);
       else setShowSignup(true);
     } catch {
@@ -72,18 +74,20 @@ const Login: React.FC<{ onClose: () => void }> = ({ onClose }) => {
         </div>
 
         <div className="text-center px-6">
-          <h2 className="text-lg font-semibold text-gray-800">Get the full experience</h2>
+          <h2 className="text-lg font-semibold text-gray-800">
+            Get the full experience
+          </h2>
           <p className="text-gray-500 text-sm mt-1 mb-4">
-            Save your favorites, schedule viewings, make offers and get access to member-only deals.
+            Save your favorites, schedule viewings, make offers and get access
+            to member-only deals.
           </p>
         </div>
 
         <div className="flex flex-col gap-3 px-6">
-          <button className="flex items-center justify-center gap-2 border text-gray-800 font-semibold py-2 rounded-md hover:bg-gray-50 transition">
+          <button>
             <OAuth/>
-            <span className="text-sm sm:text-base">CONTINUE WITH GOOGLE</span>
           </button>
-
+{/* 
           <button
             type="button"
             className="flex items-center justify-center gap-2 bg-[#1877F2] text-white font-semibold py-2 rounded-md hover:bg-[#166FE0] transition"
@@ -94,7 +98,7 @@ const Login: React.FC<{ onClose: () => void }> = ({ onClose }) => {
               className="w-5 h-5 bg-white rounded"
             />
             <span className="text-sm sm:text-base">CONTINUE WITH FACEBOOK</span>
-          </button>
+          </button> */}
 
           <div className="flex items-center my-2">
             <hr className="flex-1 border-gray-300" />
@@ -112,7 +116,7 @@ const Login: React.FC<{ onClose: () => void }> = ({ onClose }) => {
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 e.preventDefault(); // prevent default form weirdness
-                handleContinue();    // call your function directly
+                handleContinue(); // call your function directly
               }
             }}
           />
@@ -126,7 +130,7 @@ const Login: React.FC<{ onClose: () => void }> = ({ onClose }) => {
           >
             {checking ? "Checking..." : "Continue with Email"}
           </button>
-        </form>
+        </div>
 
         <div className="text-center text-xs text-gray-500 mt-4 mb-3 px-4">
           By continuing, you agree to Enlight{" "}

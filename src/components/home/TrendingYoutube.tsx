@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { FaYoutube } from "react-icons/fa";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
@@ -40,6 +40,33 @@ const TrendingYoutube: React.FC = () => {
   };
 
   if (links.length === 0) return null;
+  useEffect(() => {
+  const slider = sliderRef.current;
+  if (!slider) return;
+
+  // Clone all child nodes for seamless loop
+  const slides = Array.from(slider.children) as HTMLElement[];
+  slides.forEach((slide) => {
+    const clone = slide.cloneNode(true) as HTMLElement;
+    slider.appendChild(clone);
+  });
+
+  const step = 1; // pixels per frame
+  const intervalTime = 15; // ms per frame
+
+  const scrollLoop = setInterval(() => {
+    if (!slider) return;
+    slider.scrollLeft += step;
+    const firstSlideWidth = slides[0].clientWidth;
+
+    // Reset instantly when we've scrolled past the first set of slides
+    if (slider.scrollLeft >= firstSlideWidth * slides.length) {
+      slider.scrollLeft = 0;
+    }
+  }, intervalTime);
+
+  return () => clearInterval(scrollLoop);
+}, []);
 
   return (
     <div

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, {useEffect, useRef, useState } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 type PopularCard = {
@@ -9,7 +9,7 @@ type PopularCard = {
 const MostPopular: React.FC = () => {
   const popularCards: PopularCard[] = [
     { title: "Access to BTS, MRT", images: ["/images/property10.jpeg","/images/property11.jpeg","/images/property12.jpeg","/images/property13.jpeg"] },
-    { title: "Luxury Villa in Phuket", images: ["/images/property14.jpeg","/images/property15.jpeg","/images/property16.jpeg","/images/property17.jpeg"] },
+    { title: "Luxury Villa in Phuket", images: ["/images/property14.jpeg","/images/property15.jpeg","/images/property13.jpeg","/images/property18.jpeg"] },
     { title: "For Investment Property in Hua Hin", images: ["/images/property18.jpeg","/images/property19.jpeg","/images/property20.jpeg","/images/property21.jpeg"] },
     { title: "Close to the beach in Pattaya", images: ["/images/property22.jpeg","/images/property23.jpeg","/images/property24.jpeg","/images/property25.jpeg"] },
     { title: "Close to the beach in Thailand", images: ["/images/property26.jpeg","/images/property27.jpeg","/images/property28.jpeg","/images/property29.jpeg"] },
@@ -26,6 +26,34 @@ const MostPopular: React.FC = () => {
       behavior: "smooth",
     });
   };
+
+  useEffect(() => {
+  const slider = sliderRef.current;
+  if (!slider) return;
+
+  // Clone all child nodes for seamless loop
+  const slides = Array.from(slider.children) as HTMLElement[];
+  slides.forEach((slide) => {
+    const clone = slide.cloneNode(true) as HTMLElement;
+    slider.appendChild(clone);
+  });
+
+  const step = 1; // pixels per frame
+  const intervalTime = 15; // ms per frame
+
+  const scrollLoop = setInterval(() => {
+    if (!slider) return;
+    slider.scrollLeft += step;
+    const firstSlideWidth = slides[0].clientWidth;
+
+    // Reset instantly when we've scrolled past the first set of slides
+    if (slider.scrollLeft >= firstSlideWidth * slides.length) {
+      slider.scrollLeft = 0;
+    }
+  }, intervalTime);
+
+  return () => clearInterval(scrollLoop);
+}, []);
 
   return (
     <div
