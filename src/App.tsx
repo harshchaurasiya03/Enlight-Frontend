@@ -1,3 +1,10 @@
+// App.tsx
+
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { loadUser } from "./redux/actions/authAction";
+import type { AppDispatch } from "./redux/store";
+
 import { Routes, Route } from "react-router-dom";
 import HomePage from "./pages/home/HomePage";
 import SignIn from "./pages/Dashboard/AuthPages/SignIn";
@@ -19,47 +26,61 @@ import Blank from "./pages/Dashboard/Blank";
 import AppLayout from "./layout/AppLayout";
 import { ScrollToTop } from "./components/dashboard/common/ScrollToTop";
 import DashboardHome from "./pages/Dashboard/Dashboard/Home";
-import Bangkok from "./pages/Future/PropertyDetailsPage";
+import Bangkok from "./pages/Future/Bangkok";
+import RequireAuth from "./routes/RequireAuth";
 
 
 function App() {
+
+  const dispatch = useDispatch<AppDispatch>();
+  useEffect(() => {
+    dispatch(loadUser());
+  }, [dispatch]);
+
   return (
     <>
       <ScrollToTop />
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/bangkok" element={<Bangkok />} /> 
-        <Route element={<AppLayout />}>
-        <Route index path="/dashboard" element={<DashboardHome />} />
+        <Route path="/bangkok" element={<Bangkok />} />
 
-          {/* Others Page */}
-    
-          <Route path="/profile" element={<UserProfiles />} />
-          <Route path="/calendar" element={<Calendar />} />
-          <Route path="/blank" element={<Blank />} />
+        <Route element={<RequireAuth />}>
+          <Route path="/dashboard" element={<AppLayout />}>
+            {/*/dashboard */}
+            <Route index element={<DashboardHome />} />
 
-          {/* Forms */}
-          <Route path="/form-elements" element={<FormElements />} />
+            <Route path="profile" element={<UserProfiles />} />
+            <Route path="calendar" element={<Calendar />} />
+            <Route path="blank" element={<Blank />} />
 
-          {/* Tables */}
-          <Route path="/basic-tables" element={<BasicTables />} />
+            {/* Forms */}
+            <Route path="form-elements" element={<FormElements />} />
 
-          {/* Ui Elements */}
-          <Route path="/alerts" element={<Alerts />} />
-          <Route path="/avatars" element={<Avatars />} />
-          <Route path="/badge" element={<Badges />} />
-          <Route path="/buttons" element={<Buttons />} />
-          <Route path="/images" element={<Images />} />
-          <Route path="/videos" element={<Videos />} />
+            {/* Tables */}
+            <Route path="basic-tables" element={<BasicTables />} />
 
-          {/* Charts */}
-          <Route path="/line-chart" element={<LineChart />} />
-          <Route path="/bar-chart" element={<BarChart />} />
+            {/* UI Elements */}
+            <Route path="alerts" element={<Alerts />} />
+            <Route path="avatars" element={<Avatars />} />
+            <Route path="badge" element={<Badges />} />
+            <Route path="buttons" element={<Buttons />} />
+            <Route path="images" element={<Images />} />
+            <Route path="videos" element={<Videos />} />
+
+            {/* Charts */}
+            <Route path="line-chart" element={<LineChart />} />
+            <Route path="bar-chart" element={<BarChart />} />
+
+            {/* Optional: 404 for unknown /dashboard/* */}
+            <Route path="*" element={<NotFound />} />
+          </Route>
         </Route>
 
-        {/* Auth Layout */}
+        {/* Public auth pages */}
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
+
+        {/* Global 404 */}
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>
