@@ -1,5 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { X } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch, RootState } from "../../redux/store";
+import { registerUser } from "../../redux/actions/authAction";
 
 interface SignupProps {
   email: string;
@@ -7,13 +10,22 @@ interface SignupProps {
 }
 
 const SignupPopup: React.FC<SignupProps> = ({ email, onClose }) => {
+  const dispatch = useDispatch<AppDispatch>();
+
+  const { loading, error, message } = useSelector(
+    (state: RootState) => state.auth
+  );
+
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
     phone: "",
     password: "",
     confirmPassword: "",
+    agree: false,
   });
+
+  const [localError, setLocalError] = useState<string | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -23,28 +35,41 @@ const SignupPopup: React.FC<SignupProps> = ({ email, onClose }) => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLocalError(null);
 
-    // ✅ Basic validation before sending
-    if (
-      !formData.firstName.trim() ||
-      !formData.lastName.trim() ||
-      !formData.phone.trim() ||
-      !formData.password.trim()
-    ) {
-      alert("Please fill in all required fields.");
-      return;
+    // --- Validate fields ---
+    if (!formData.firstName.trim() || !formData.lastName.trim()) {
+      return setLocalError("Please enter your full name.");
     }
-
+    if (!formData.password.trim() || !formData.confirmPassword.trim()) {
+      return setLocalError("Please enter and confirm your password.");
+    }
     if (formData.password !== formData.confirmPassword) {
-      alert("Passwords do not match!");
-      return;
+      return setLocalError("Passwords do not match.");
+    }
+    if (!formData.agree) {
+      return setLocalError("Please accept the terms and privacy policy.");
     }
 
-    // TODO: Dispatch signup action here
-    console.log("Signup data:", { ...formData, email });
+    const fullName = `${formData.firstName.trim()} ${formData.lastName.trim()}`;
+    const userData = {
+      name: fullName,
+      email: email.trim().toLowerCase(),
+      password: formData.password,
+      role: "user",
+    };
+
+    await dispatch(registerUser(userData));
   };
+
+  useEffect(() => {
+  if (message?.toLowerCase().includes("verification email sent")) {
+    onClose();
+  }
+}, [message, onClose]);
+
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm">
@@ -62,97 +87,97 @@ const SignupPopup: React.FC<SignupProps> = ({ email, onClose }) => {
           <X size={16} />
         </button>
 
-        <div className="text-center px-6 py-4">
-          <h2 className="text-lg font-semibold text-gray-800">
-            Create your account
-          </h2>
-          <p className="text-gray-500 text-sm mt-1 mb-4">
-            Please fill in the details below to continue.
-          </p>
-        </div>
-
-        {/* ✅ Form starts here (Enter key will trigger submit) */}
-        <form
-          onSubmit={handleSubmit}
-          className="px-6 flex flex-col gap-3"
-        >
-          <input
-            type="text"
-            name="firstName"
-            placeholder="First Name"
-            value={formData.firstName}
-            onChange={handleChange}
-            className="border rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
-            required
-          />
-
-          <input
-            type="text"
-            name="lastName"
-            placeholder="Last Name"
-            value={formData.lastName}
-            onChange={handleChange}
-            className="border rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
-            required
-          />
-
-          <div className="flex items-center gap-2">
-            <div className="flex items-center border rounded-md px-3 py-2 bg-gray-50 text-sm text-gray-700">
-              🇮🇳 +91
-            </div>
-            <input
-              type="tel"
-              name="phone"
-              placeholder="Phone Number"
-              value={formData.phone}
-              onChange={handleChange}
-              className="flex-1 border rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
-              required
-            />
+        <form onSubmit={handleSubmit}>
+          <div className="text-center px-6 py-1">
+            <h2 className="text-lg font-semibold text-gray-800">
+              Create your account
+            </h2>
+            <p className="text-gray-500 text-sm mt-1 mb-4">
+              Please fill in the details below to continue.
+            </p>
           </div>
 
-          <input
-            type="email"
-            value={email}
-            disabled
-            className="border rounded-md px-3 py-2 text-sm bg-gray-100 text-gray-600 cursor-not-allowed"
-          />
+          {/* Form Fields */}
+          <div className="px-6 pb-4 flex flex-col gap-3">
+            <input
+              type="text"
+              name="firstName"
+              placeholder="First Name"
+              value={formData.firstName}
+              onChange={handleChange}
+              className="border rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            />
 
-          <input
-            type="password"
-            name="password"
-            placeholder="Create Password"
-            value={formData.password}
-            onChange={handleChange}
-            className="border rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
-            required
-          />
+            <input
+              type="text"
+              name="lastName"
+              placeholder="Last Name"
+              value={formData.lastName}
+              onChange={handleChange}
+              className="border rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            />
 
-          <input
-            type="password"
-            name="confirmPassword"
-            placeholder="Confirm Password"
-            value={formData.confirmPassword}
-            onChange={handleChange}
-            className="border rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
-            required
-          />
+            <input
+              type="email"
+              value={email}
+              disabled
+              className="border rounded-md px-3 py-2 text-sm bg-gray-100 text-gray-600 cursor-not-allowed"
+            />
 
-          <button
-            type="submit" // ✅ makes Enter key work
-            className="bg-[#0056D2] text-white font-semibold py-2 rounded-md hover:bg-[#0045B0] transition mt-2"
-          >
-            Sign Up
-          </button>
+            <input
+              type="password"
+              name="password"
+              placeholder="Create Password"
+              value={formData.password}
+              onChange={handleChange}
+              className="border rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            />
+
+            <input
+              type="password"
+              name="confirmPassword"
+              placeholder="Confirm Password"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              className="border rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            />
+
+            <div className="flex items-center gap-2 mt-1">
+              <input
+                type="checkbox"
+                name="agree"
+                checked={formData.agree}
+                onChange={handleChange}
+                className="h-4 w-4 border-gray-300 rounded focus:ring-blue-500"
+              />
+              <span className="text-xs text-gray-600">
+                I agree to the{" "}
+                <a href="#" className="text-blue-600 underline">
+                  Terms & Privacy Policy
+                </a>
+              </span>
+            </div>
+
+            {/* Errors */}
+            {(localError || error) && (
+              <p className="text-red-600 text-xs mt-1">
+                {localError || error}
+              </p>
+            )}
+            {message && (
+              <p className="text-green-600 text-xs mt-1">{message}</p>
+            )}
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={loading}
+              className="bg-[#0056D2] disabled:opacity-60 text-white font-semibold py-2 rounded-md hover:bg-[#0045B0] transition mt-2"
+            >
+              {loading ? "Signing up..." : "Sign Up"}
+            </button>
+          </div>
         </form>
-
-        <div className="text-center text-xs text-gray-500 mt-4 mb-3 px-4">
-          By signing up, you agree to our{" "}
-          <a href="#" className="text-blue-600 underline">
-            Terms & Privacy Policy
-          </a>
-          .
-        </div>
       </div>
     </div>
   );

@@ -6,6 +6,7 @@ import { X } from "lucide-react";
 import { checkEmailExists } from "../../redux/actions/authAction";
 import SignupPopup from "./SignupPopup";
 import Loginmail from "./Loginmail";
+import OAuth from "./OAuth";
 
 const Login: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const dispatch = useDispatch<AppDispatch>();
@@ -77,23 +78,9 @@ const Login: React.FC<{ onClose: () => void }> = ({ onClose }) => {
           </p>
         </div>
 
-        {/* ✅ Wrapped input & button in a form so Enter key works */}
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleContinue();
-          }}
-          className="flex flex-col gap-3 px-6"
-        >
-          <button
-            type="button"
-            className="flex items-center justify-center gap-2 border text-gray-800 font-semibold py-2 rounded-md hover:bg-gray-50 transition"
-          >
-            <img
-              src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/24px.svg"
-              alt="google"
-              className="w-5 h-5"
-            />
+        <div className="flex flex-col gap-3 px-6">
+          <button className="flex items-center justify-center gap-2 border text-gray-800 font-semibold py-2 rounded-md hover:bg-gray-50 transition">
+            <OAuth/>
             <span className="text-sm sm:text-base">CONTINUE WITH GOOGLE</span>
           </button>
 
