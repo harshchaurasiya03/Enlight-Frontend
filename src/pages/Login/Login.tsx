@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
-import type { RootState } from "../../redux/store";
+import { useSelector, useDispatch } from "react-redux";
+import type { RootState, AppDispatch } from "../../redux/store";
 import { useNavigate } from "react-router-dom";
 import { X } from "lucide-react";
-import { useDispatch } from "react-redux";
-import type { AppDispatch } from "../../redux/store";
 import { checkEmailExists } from "../../redux/actions/authAction";
 import SignupPopup from "./SignupPopup";
 import Loginmail from "./Loginmail";
@@ -13,7 +11,7 @@ const Login: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
-  const { user } = useSelector((state: RootState) => state.auth); // 👈 access logged-in user
+  const { user } = useSelector((state: RootState) => state.auth);
   const [email, setEmail] = useState("");
   const [showSignup, setShowSignup] = useState(false);
   const [showLoginMail, setShowLoginMail] = useState(false);
@@ -23,8 +21,8 @@ const Login: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   // ✅ If user already logged in, redirect immediately
   useEffect(() => {
     if (user) {
-      onClose(); // close popup
-      navigate("/dashboard", { replace: true }); // go to dashboard
+      onClose();
+      navigate("/dashboard/profile", { replace: true });
     }
   }, [user, navigate, onClose]);
 
@@ -79,8 +77,18 @@ const Login: React.FC<{ onClose: () => void }> = ({ onClose }) => {
           </p>
         </div>
 
-        <div className="flex flex-col gap-3 px-6">
-          <button className="flex items-center justify-center gap-2 border text-gray-800 font-semibold py-2 rounded-md hover:bg-gray-50 transition">
+        {/* ✅ Wrapped input & button in a form so Enter key works */}
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleContinue();
+          }}
+          className="flex flex-col gap-3 px-6"
+        >
+          <button
+            type="button"
+            className="flex items-center justify-center gap-2 border text-gray-800 font-semibold py-2 rounded-md hover:bg-gray-50 transition"
+          >
             <img
               src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/24px.svg"
               alt="google"
@@ -89,7 +97,10 @@ const Login: React.FC<{ onClose: () => void }> = ({ onClose }) => {
             <span className="text-sm sm:text-base">CONTINUE WITH GOOGLE</span>
           </button>
 
-          <button className="flex items-center justify-center gap-2 bg-[#1877F2] text-white font-semibold py-2 rounded-md hover:bg-[#166FE0] transition">
+          <button
+            type="button"
+            className="flex items-center justify-center gap-2 bg-[#1877F2] text-white font-semibold py-2 rounded-md hover:bg-[#166FE0] transition"
+          >
             <img
               src="https://upload.wikimedia.org/wikipedia/commons/1/1b/Facebook_icon.svg"
               alt="facebook"
@@ -111,18 +122,24 @@ const Login: React.FC<{ onClose: () => void }> = ({ onClose }) => {
             onChange={(e) => setEmail(e.target.value)}
             className="border rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
             required
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault(); // prevent default form weirdness
+                handleContinue();    // call your function directly
+              }
+            }}
           />
 
           {err && <p className="text-red-600 text-xs">{err}</p>}
 
           <button
-            onClick={handleContinue}
+            type="submit"
             disabled={checking}
             className="bg-[#0056D2] disabled:opacity-60 text-white font-semibold py-2 rounded-md hover:bg-[#0045B0] transition"
           >
             {checking ? "Checking..." : "Continue with Email"}
           </button>
-        </div>
+        </form>
 
         <div className="text-center text-xs text-gray-500 mt-4 mb-3 px-4">
           By continuing, you agree to Enlight{" "}

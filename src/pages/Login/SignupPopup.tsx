@@ -12,15 +12,38 @@ const SignupPopup: React.FC<SignupProps> = ({ email, onClose }) => {
     lastName: "",
     phone: "",
     password: "",
-    agree: false,
+    confirmPassword: "",
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: value,
     }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // ✅ Basic validation before sending
+    if (
+      !formData.firstName.trim() ||
+      !formData.lastName.trim() ||
+      !formData.phone.trim() ||
+      !formData.password.trim()
+    ) {
+      alert("Please fill in all required fields.");
+      return;
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      alert("Passwords do not match!");
+      return;
+    }
+
+    // TODO: Dispatch signup action here
+    console.log("Signup data:", { ...formData, email });
   };
 
   return (
@@ -48,8 +71,11 @@ const SignupPopup: React.FC<SignupProps> = ({ email, onClose }) => {
           </p>
         </div>
 
-        {/* Form */}
-        <div className="px-6 flex flex-col gap-3">
+        {/* ✅ Form starts here (Enter key will trigger submit) */}
+        <form
+          onSubmit={handleSubmit}
+          className="px-6 flex flex-col gap-3"
+        >
           <input
             type="text"
             name="firstName"
@@ -57,6 +83,7 @@ const SignupPopup: React.FC<SignupProps> = ({ email, onClose }) => {
             value={formData.firstName}
             onChange={handleChange}
             className="border rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            required
           />
 
           <input
@@ -66,6 +93,7 @@ const SignupPopup: React.FC<SignupProps> = ({ email, onClose }) => {
             value={formData.lastName}
             onChange={handleChange}
             className="border rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            required
           />
 
           <div className="flex items-center gap-2">
@@ -79,6 +107,7 @@ const SignupPopup: React.FC<SignupProps> = ({ email, onClose }) => {
               value={formData.phone}
               onChange={handleChange}
               className="flex-1 border rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              required
             />
           </div>
 
@@ -96,21 +125,26 @@ const SignupPopup: React.FC<SignupProps> = ({ email, onClose }) => {
             value={formData.password}
             onChange={handleChange}
             className="border rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            required
           />
 
           <input
             type="password"
-            name="password"
+            name="confirmPassword"
             placeholder="Confirm Password"
-            value={formData.password}
+            value={formData.confirmPassword}
             onChange={handleChange}
             className="border rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            required
           />
 
-          <button className="bg-[#0056D2] text-white font-semibold py-2 rounded-md hover:bg-[#0045B0] transition mt-2">
+          <button
+            type="submit" // ✅ makes Enter key work
+            className="bg-[#0056D2] text-white font-semibold py-2 rounded-md hover:bg-[#0045B0] transition mt-2"
+          >
             Sign Up
           </button>
-        </div>
+        </form>
 
         <div className="text-center text-xs text-gray-500 mt-4 mb-3 px-4">
           By signing up, you agree to our{" "}

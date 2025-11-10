@@ -2,7 +2,6 @@ import Navbar from '../../components/Navbar';
 import HeroSearch from '../../components/home/HeroSearch';
 import FeaturedProjects from '../../components/home/FeaturedProjects';
 import Footer from '../../components/Footer';
-import PropertyCarousel from '../../components/home/PropertyCarousel';
 import TrendingYoutube from '../../components/home/TrendingYoutube';
 import GoogleReview from '../../components/home/GoogleReview';
 import SplitCard from '../../components/home/SplitCard';

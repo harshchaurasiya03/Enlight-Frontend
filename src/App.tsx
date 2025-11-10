@@ -25,7 +25,6 @@ import FormElements from "./pages/Dashboard/Forms/FormElements";
 import Blank from "./pages/Dashboard/Blank";
 import AppLayout from "./layout/AppLayout";
 import { ScrollToTop } from "./components/dashboard/common/ScrollToTop";
-import DashboardHome from "./pages/Dashboard/Dashboard/Home";
 import RequireAuth from "./routes/RequireAuth";
 import PropertyDetailsPage from "./pages/Future/PropertyDetailsPage";
 
@@ -47,7 +46,7 @@ function App() {
         <Route element={<RequireAuth />}>
           <Route path="/dashboard" element={<AppLayout />}>
             {/*/dashboard */}
-            <Route index element={<DashboardHome />} />
+            {/* <Route index element={<DashboardHome />} /> */}
 
             <Route path="profile" element={<UserProfiles />} />
             <Route path="calendar" element={<Calendar />} />

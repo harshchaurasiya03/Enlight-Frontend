@@ -1,7 +1,10 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import { useLocation } from "react-router-dom";
 import MainNavbar from "../../components/Navbar";
+import TopHeader from "../../components/Topheader";
+import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
 
-
+// Related properties type
 type RelatedProperty = {
   id: number;
   title: string;
@@ -13,6 +16,7 @@ type RelatedProperty = {
   image?: string;
 };
 
+// Sample related properties
 const sampleRelated: RelatedProperty[] = [
   {
     id: 1,
@@ -47,19 +51,31 @@ const sampleRelated: RelatedProperty[] = [
 ];
 
 export default function PropertyDetailsPage() {
+  const location = useLocation();
+  const project = location.state as { projectName: string; societyName: string; location: string; image: string } | undefined;
+
+  // Fallback in case someone visits directly
+  const displayProject = project || {
+    projectName: "The Ville Jomtien",
+    societyName: "Default Society",
+    location: "Bangkok, Thailand",
+    image: "/images/property1.jpeg",
+  };
+
   return (
     <div className="min-h-screen bg-white text-gray-800">
+      <TopHeader />
       <MainNavbar />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <HeroGallery />
+        <HeroGallery project={displayProject} />
 
         <div className="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main content */}
           <div className="lg:col-span-2">
             <ProjectOverview />
             <ProjectFAQ />
-            <ProjectMap />
+            <ProjectMap project={displayProject} />
             <ProjectVideo />
             <ProjectReview />
           </div>
@@ -88,15 +104,12 @@ export default function PropertyDetailsPage() {
   );
 }
 
-
-function HeroGallery() {
+function HeroGallery({ project }: { project: { projectName: string; societyName: string; location: string; image: string } }) {
   return (
     <section className="bg-white rounded shadow-sm overflow-hidden">
       <div className="w-full h-56 md:h-72 lg:h-96 bg-gray-200 relative">
-        {/* Big image placeholder */}
-        <img src="/images/property1.jpeg" alt="Hero" className="absolute inset-0 w-full h-full object-cover" />
+        <img src={project.image} alt={project.projectName} className="absolute inset-0 w-full h-full object-cover" />
 
-        {/* small thumbnail strip */}
         <div className="absolute bottom-0 left-0 right-0 py-3 px-6">
           <div className="bg-black/70 rounded-md p-2 flex items-center gap-3 overflow-x-auto">
             {Array.from({ length: 7 }).map((_, i) => (
@@ -112,8 +125,8 @@ function HeroGallery() {
       </div>
 
       <div className="px-6 py-4">
-        <h1 className="text-2xl font-bold">The Ville Jomtien</h1>
-        <p className="text-sm text-gray-500 mt-1">Pattaya, Thailand · 270 views · Nov 18, 2019</p>
+        <h1 className="text-2xl font-bold">{project.projectName}</h1>
+        <p className="text-sm text-gray-500 mt-1">{project.location} · 270 views · Nov 18, 2019</p>
       </div>
     </section>
   );
@@ -123,7 +136,6 @@ function ProjectOverview() {
   return (
     <section className="bg-white mt-6 p-6 rounded shadow-sm">
       <h2 className="text-xl font-semibold mb-4">Overview</h2>
-
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <ul className="space-y-2 text-sm">
@@ -138,29 +150,20 @@ function ProjectOverview() {
             </li>
           </ul>
         </div>
-
         <div>
           <ul className="space-y-2 text-sm">
-            <li>
-              <span className="font-semibold">Number of blocks:</span> 2
-            </li>
-            <li>
-              <span className="font-semibold">Number of floors:</span> 4
-            </li>
-            <li>
-              <span className="font-semibold">Number of flats:</span> 125
-            </li>
+            <li><span className="font-semibold">Number of blocks:</span> 2</li>
+            <li><span className="font-semibold">Number of floors:</span> 4</li>
+            <li><span className="font-semibold">Number of flats:</span> 125</li>
           </ul>
         </div>
       </div>
-
       <div className="mt-4 text-sm text-gray-700">
         <p>
           A profoundly special project amidst history and Istanbul. In the heart of the Historical Peninsula, Select
           Lifestyle Alternatives ranging from 1+1 to 6+1, in limited numbers... A timeless aesthetic enriched in perfect
           details.
         </p>
-
         <h3 className="mt-4 font-semibold">Why you should buy a house from this project?</h3>
         <ul className="list-disc list-inside mt-2 text-sm space-y-1">
           <li>Unique sea view with a historical texture of Istanbul.</li>
@@ -174,14 +177,8 @@ function ProjectOverview() {
 
 function ProjectFAQ() {
   const faqs = [
-    {
-      q: "What steps are involved in buying a home?",
-      a: "The home buying process involves several steps including getting pre-approved for a mortgage, finding a real estate agent, searching for homes, making an offer, getting a home inspection, and closing the deal.",
-    },
-    {
-      q: "How can I increase the value of my home before selling?",
-      a: "Keep the property well-maintained, update kitchens and bathrooms, improve curb appeal, and stage the home for showings.",
-    },
+    { q: "What steps are involved in buying a home?", a: "The home buying process involves several steps including getting pre-approved for a mortgage, finding a real estate agent, searching for homes, making an offer, getting a home inspection, and closing the deal." },
+    { q: "How can I increase the value of my home before selling?", a: "Keep the property well-maintained, update kitchens and bathrooms, improve curb appeal, and stage the home for showings." },
     { q: "What should I look for in a rental property?", a: "Location, neighbourhood amenities, rental yield, and maintenance costs." },
   ];
 
@@ -189,9 +186,7 @@ function ProjectFAQ() {
     <section className="mt-6 bg-white p-6 rounded shadow-sm">
       <h3 className="text-lg font-semibold mb-4">FAQs</h3>
       <div className="space-y-2">
-        {faqs.map((f, idx) => (
-          <FAQItem {...f} key={idx} />
-        ))}
+        {faqs.map((f, idx) => <FAQItem {...f} key={idx} />)}
       </div>
     </section>
   );
@@ -216,48 +211,36 @@ function ProjectContactForm() {
     <div className="bg-white rounded shadow p-6 border">
       <h4 className="font-semibold mb-3">Contact</h4>
       <label className="text-sm text-gray-600">Name *</label>
-      <input
-        value={form.name}
-        onChange={(e) => setForm({ ...form, name: e.target.value })}
-        className="w-full border rounded px-3 py-2 text-sm mt-1 mb-3"
-        placeholder="Johny Dane"
-      />
-
+      <input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} className="w-full border rounded px-3 py-2 text-sm mt-1 mb-3" placeholder="Johny Dane" />
       <label className="text-sm text-gray-600">Phone</label>
-      <input
-        value={form.phone}
-        onChange={(e) => setForm({ ...form, phone: e.target.value })}
-        className="w-full border rounded px-3 py-2 text-sm mt-1 mb-3"
-        placeholder="Ex 0123456789"
-      />
-
+      <input value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} className="w-full border rounded px-3 py-2 text-sm mt-1 mb-3" placeholder="Ex 0123456789" />
       <label className="text-sm text-gray-600">Email *</label>
-      <input
-        value={form.email}
-        onChange={(e) => setForm({ ...form, email: e.target.value })}
-        className="w-full border rounded px-3 py-2 text-sm mt-1 mb-3"
-        placeholder="email@example.com"
-      />
-
+      <input value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} className="w-full border rounded px-3 py-2 text-sm mt-1 mb-3" placeholder="email@example.com" />
       <label className="text-sm text-gray-600">Message *</label>
-      <textarea
-        value={form.message}
-        onChange={(e) => setForm({ ...form, message: e.target.value })}
-        className="w-full border rounded px-3 py-2 text-sm mt-1 mb-4 h-28 resize-none"
-        placeholder="Enter your message..."
-      />
-
+      <textarea value={form.message} onChange={e => setForm({ ...form, message: e.target.value })} className="w-full border rounded px-3 py-2 text-sm mt-1 mb-4 h-28 resize-none" placeholder="Enter your message..." />
       <button className="w-full bg-teal-600 hover:bg-teal-700 text-white py-2 rounded">Send Message</button>
     </div>
   );
 }
 
-function ProjectMap() {
+function ProjectMap({ project }: { project: { location: string } }) {
+  const { isLoaded, loadError } = useLoadScript({
+  googleMapsApiKey: "YOUR_REAL_API_KEY",
+});
+
+
+  const thailandCoords = { lat: 13.7563, lng: 100.5018 }; 
+
+  if (loadError) return <div>Error loading map</div>;
+  if (!isLoaded) return <div>Loading map...</div>;
+
   return (
     <section className="mt-6 bg-white p-6 rounded shadow-sm">
       <h3 className="text-lg font-semibold mb-4">Location</h3>
-      <div className="w-full h-64 bg-[url('/your-map-placeholder.png')] bg-cover bg-center rounded border" />
-      <p className="text-sm text-gray-500 mt-3">Thailand Island, Thailand</p>
+      <GoogleMap mapContainerStyle={{ width: "100%", height: "16rem" }} center={thailandCoords} zoom={6}>
+        <Marker position={thailandCoords} />
+      </GoogleMap>
+      <p className="text-sm text-gray-500 mt-3">{project.location}</p>
     </section>
   );
 }
@@ -267,7 +250,6 @@ function ProjectVideo() {
     <section className="mt-6 bg-white p-6 rounded shadow-sm">
       <h3 className="text-lg font-semibold mb-4">Project video</h3>
       <div className="w-full aspect-video bg-black rounded overflow-hidden flex items-center justify-center">
-        {/* Replace with your video or embed */}
         <video controls className="w-full h-full object-cover">
           <source src="/videos/PropertyCarousel/v3.mp4" type="video/mp4" />
           Your browser does not support the video tag.
@@ -290,13 +272,7 @@ function ProjectReview() {
         ))}
       </div>
 
-      <textarea
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        className="w-full border rounded px-3 py-2 text-sm mt-1 mb-3 h-20"
-        placeholder="Enter your message"
-      />
-
+      <textarea value={text} onChange={e => setText(e.target.value)} className="w-full border rounded px-3 py-2 text-sm mt-1 mb-3 h-20" placeholder="Enter your message" />
       <button className="bg-gray-200 text-gray-700 px-3 py-2 rounded">Submit review</button>
     </section>
   );
@@ -305,7 +281,7 @@ function ProjectReview() {
 function RelatedProperties({ items }: { items: RelatedProperty[] }) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-      {items.map((it) => (
+      {items.map(it => (
         <div key={it.id} className="bg-white rounded shadow-sm border overflow-hidden">
           <div className="w-full h-40 bg-gray-200">
             <img src={it.image} alt={it.title} className="w-full h-full object-cover" />
@@ -318,7 +294,6 @@ function RelatedProperties({ items }: { items: RelatedProperty[] }) {
               </div>
               <div className="text-sm font-semibold text-teal-600">{it.price}</div>
             </div>
-
             <div className="mt-3 text-xs text-gray-500 flex items-center gap-3">
               <div>🛏 {it.beds}</div>
               <div>🛁 {it.baths}</div>
