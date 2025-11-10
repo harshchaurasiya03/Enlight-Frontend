@@ -19,7 +19,7 @@ import Blank from "./pages/Dashboard/Blank";
 import AppLayout from "./layout/AppLayout";
 import { ScrollToTop } from "./components/dashboard/common/ScrollToTop";
 import DashboardHome from "./pages/Dashboard/Dashboard/Home";
-import Bangkok from "./pages/Future/Bangkok";
+import Bangkok from "./pages/Future/PropertyDetailsPage";
 
 
 function App() {

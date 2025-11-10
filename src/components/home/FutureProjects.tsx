@@ -38,8 +38,8 @@ const FeaturedProjects: React.FC = () => {
   // Map locations to routes (type-safe)
   const locationToRoute: Record<string, string> = {
     Bangkok: "/bangkok",
-    "Chiang Mai": "/chiang-mai",
-    Phuket: "/phuket",
+    "Chiang Mai": "/bangkok",
+    Phuket: "/bangkok",
   };
 
   return (
