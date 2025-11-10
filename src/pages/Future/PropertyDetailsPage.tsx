@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import MainNavbar from "../../components/Navbar";
 
 
 type RelatedProperty = {
@@ -48,7 +49,7 @@ const sampleRelated: RelatedProperty[] = [
 export default function PropertyDetailsPage() {
   return (
     <div className="min-h-screen bg-white text-gray-800">
-      <Header />
+      <MainNavbar />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <HeroGallery />
@@ -87,29 +88,6 @@ export default function PropertyDetailsPage() {
   );
 }
 
-function Header() {
-  return (
-    <header className="border-b">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-teal-500 to-cyan-600 flex items-center justify-center text-white font-bold">EP</div>
-          <div className="font-semibold text-lg">Enlight</div>
-        </div>
-        <nav className="hidden md:flex items-center gap-6 text-sm text-gray-600">
-          <a className="hover:text-gray-900">Buy</a>
-          <a className="hover:text-gray-900">Rent</a>
-          <a className="hover:text-gray-900">Sell</a>
-          <a className="hover:text-gray-900">Projects</a>
-        </nav>
-        <button className="md:hidden p-2 rounded border">
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16"></path>
-          </svg>
-        </button>
-      </div>
-    </header>
-  );
-}
 
 function HeroGallery() {
   return (
