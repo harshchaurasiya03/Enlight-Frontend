@@ -8,6 +8,7 @@ import type { AppDispatch } from "../../redux/store";
 import { checkEmailExists } from "../../redux/actions/authAction";
 import SignupPopup from "./SignupPopup";
 import Loginmail from "./Loginmail";
+import OAuth from "./OAuth";
 
 const Login: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const dispatch = useDispatch<AppDispatch>();
@@ -24,7 +25,7 @@ const Login: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   useEffect(() => {
     if (user) {
       onClose(); // close popup
-      navigate("/dashboard", { replace: true }); // go to dashboard
+      navigate("/dashboard/profile", { replace: true }); // go to dashboard
     }
   }, [user, navigate, onClose]);
 
@@ -81,11 +82,7 @@ const Login: React.FC<{ onClose: () => void }> = ({ onClose }) => {
 
         <div className="flex flex-col gap-3 px-6">
           <button className="flex items-center justify-center gap-2 border text-gray-800 font-semibold py-2 rounded-md hover:bg-gray-50 transition">
-            <img
-              src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/24px.svg"
-              alt="google"
-              className="w-5 h-5"
-            />
+            <OAuth/>
             <span className="text-sm sm:text-base">CONTINUE WITH GOOGLE</span>
           </button>
 

@@ -28,6 +28,7 @@ import { ScrollToTop } from "./components/dashboard/common/ScrollToTop";
 import DashboardHome from "./pages/Dashboard/Dashboard/Home";
 import RequireAuth from "./routes/RequireAuth";
 import PropertyDetailsPage from "./pages/Future/PropertyDetailsPage";
+import VerifyEmailPage from "./pages/Auth/VerifyEmailPage";
 
 
 function App() {
@@ -43,6 +44,7 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/propertydeatilspage" element={<PropertyDetailsPage />} />
+        <Route path="/verify-email/:token" element={<VerifyEmailPage />} />
 
         <Route element={<RequireAuth />}>
           <Route path="/dashboard" element={<AppLayout />}>
