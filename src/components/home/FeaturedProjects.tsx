@@ -53,60 +53,57 @@ const popularRegions: City[] = [
 const LookingForProperties = () => {
   const sliderRef = useRef<HTMLDivElement | null>(null);
   const [hovered, setHovered] = useState(false);
-
- const scroll = (direction: "left" | "right") => {
-  if (!sliderRef.current) return;
-  const scrollAmount = sliderRef.current.clientWidth * 0.8;
-  sliderRef.current.scrollBy({
-    left: direction === "left" ? -scrollAmount : scrollAmount,
-    behavior: "smooth",
-  });
-};
-
-
   const [isPaused, setIsPaused] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
- useEffect(() => {
-  const slider = sliderRef.current;
-  if (!slider) return;
+  const scroll = (direction: "left" | "right") => {
+    if (!sliderRef.current) return;
+    const containerWidth = sliderRef.current.clientWidth * 0.8;
+    sliderRef.current.scrollBy({
+      left: direction === "left" ? -containerWidth : containerWidth,
+      behavior: "smooth",
+    });
+  };
 
-  const slides = Array.from(slider.children) as HTMLElement[];
-  slides.forEach((slide) => {
-    const clone = slide.cloneNode(true) as HTMLElement;
-    slider.appendChild(clone);
-  });
+  // ✅ Auto scroll by region (not pixel)
+  useEffect(() => {
+    const slider = sliderRef.current;
+    if (!slider) return;
 
-  const step = 1; // pixels per frame
-  const intervalTime = 15; // ms
+    const slideWidth = slider.firstElementChild
+      ? (slider.firstElementChild as HTMLElement).offsetWidth + 16 // +gap
+      : 0;
 
-  const scrollLoop = setInterval(() => {
-    if (!slider || isPaused) return; // ✅ skip if paused
-    slider.scrollLeft += step;
+    const autoSlide = setInterval(() => {
+      if (isPaused) return;
 
-    const firstSlideWidth = slides[0].clientWidth;
-    if (slider.scrollLeft >= firstSlideWidth * slides.length) {
-      slider.scrollLeft = 0;
-    }
-  }, intervalTime);
+      setCurrentIndex((prev) => {
+        const nextIndex =
+          prev + 1 >= popularRegions.length ? 0 : prev + 1;
+        slider.scrollTo({
+          left: nextIndex * slideWidth,
+          behavior: "smooth",
+        });
+        return nextIndex;
+      });
+    }, 2000); // every 2 seconds
 
-  return () => clearInterval(scrollLoop);
-}, [isPaused]);
-
+    return () => clearInterval(autoSlide);
+  }, [isPaused]);
 
   return (
     <section
-    className="container px-4 sm:px-6 py-16 mx-auto"
-  onMouseEnter={() => {
-    setHovered(true);
-    setIsPaused(true); // stop auto-scroll
-  }}
-  onMouseLeave={() => {
-    setHovered(false);
-    setIsPaused(false); // resume auto-scroll
-  }}
->
-
-      <div className="text-left ">
+      className="container px-4 sm:px-6 py-16 mx-auto"
+      onMouseEnter={() => {
+        setHovered(true);
+        setIsPaused(true);
+      }}
+      onMouseLeave={() => {
+        setHovered(false);
+        setIsPaused(false);
+      }}
+    >
+      <div className="text-left">
         <h2 className="text-3xl sm:text-3xl font-bold text-gray-900">
           Looking for Property?
         </h2>
@@ -115,7 +112,7 @@ const LookingForProperties = () => {
         </p>
       </div>
 
-      <div className="relative">
+      <div className="relative mt-6">
         {/* Left/Right Buttons */}
         {hovered && (
           <>
