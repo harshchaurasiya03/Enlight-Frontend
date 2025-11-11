@@ -21,7 +21,7 @@ const HomePage = () => {
       <Navbarx/>
       <HeroSearch />
       <FeaturedProjects />
-      <PropertyCarousel />
+      {/* <PropertyCarousel /> */}
       <SplitCard/>
       <RentToOwn/>
       <FutureProjects/>

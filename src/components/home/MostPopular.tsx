@@ -19,19 +19,20 @@ const MostPopular: React.FC = () => {
   const [hovered, setHovered] = useState(false);
 
   const scroll = (direction: "left" | "right") => {
-    if (!sliderRef.current) return;
-    const scrollAmount = sliderRef.current.clientWidth * 0.8;
-    sliderRef.current.scrollBy({
-      left: direction === "left" ? -scrollAmount : scrollAmount,
-      behavior: "smooth",
-    });
-  };
+  if (!sliderRef.current) return;
+  const scrollAmount = sliderRef.current.clientWidth * 0.8;
+  sliderRef.current.scrollBy({
+    left: direction === "left" ? -scrollAmount : scrollAmount,
+    behavior: "smooth",
+  });
+};
 
-  useEffect(() => {
+  const [isPaused, setIsPaused] = useState(false);
+
+ useEffect(() => {
   const slider = sliderRef.current;
   if (!slider) return;
 
-  // Clone all child nodes for seamless loop
   const slides = Array.from(slider.children) as HTMLElement[];
   slides.forEach((slide) => {
     const clone = slide.cloneNode(true) as HTMLElement;
@@ -39,28 +40,33 @@ const MostPopular: React.FC = () => {
   });
 
   const step = 1; // pixels per frame
-  const intervalTime = 15; // ms per frame
+  const intervalTime = 15; // ms
 
   const scrollLoop = setInterval(() => {
-    if (!slider) return;
+    if (!slider || isPaused) return; // ✅ skip if paused
     slider.scrollLeft += step;
-    const firstSlideWidth = slides[0].clientWidth;
 
-    // Reset instantly when we've scrolled past the first set of slides
+    const firstSlideWidth = slides[0].clientWidth;
     if (slider.scrollLeft >= firstSlideWidth * slides.length) {
       slider.scrollLeft = 0;
     }
   }, intervalTime);
 
   return () => clearInterval(scrollLoop);
-}, []);
+}, [isPaused]);
 
   return (
     <div
-      className="container px-4 sm:px-6 py-8 mx-auto"
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
+         className="container px-4 sm:px-6 py-16 mx-auto"
+  onMouseEnter={() => {
+    setHovered(true);
+    setIsPaused(true); // stop auto-scroll
+  }}
+  onMouseLeave={() => {
+    setHovered(false);
+    setIsPaused(false); // resume auto-scroll
+  }}
+>
       {/* Heading */}
       <div className="text-left mb-8">
         <h2 className="text-3xl sm:text-3xl font-bold text-gray-900">
