@@ -126,7 +126,7 @@ const Login: React.FC<{ onClose: () => void }> = ({ onClose }) => {
           >
             {checking ? "Checking..." : "Continue with Email"}
           </button>
-        </form>
+        </div>
 
         <div className="text-center text-xs text-gray-500 mt-4 mb-3 px-4">
           By continuing, you agree to Enlight{" "}

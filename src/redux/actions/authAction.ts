@@ -12,8 +12,8 @@ import {
   verifyOk,
   authErr,
   clearMsg,
-  User,
 } from "../reducers/authSlice";
+import { User } from "../../types/User";
 
 const BASE_URL = import.meta.env.VITE_BACKEND_URL;
 
