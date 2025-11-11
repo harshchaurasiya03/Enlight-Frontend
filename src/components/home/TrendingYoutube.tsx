@@ -1,6 +1,5 @@
-import React, { useEffect, useState, useRef } from "react";
-import { FaYoutube } from "react-icons/fa";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import React, { useState, useRef } from "react";
+import { FaYoutube, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 interface Link {
   _id: string;
@@ -40,33 +39,6 @@ const TrendingYoutube: React.FC = () => {
   };
 
   if (links.length === 0) return null;
-  useEffect(() => {
-  const slider = sliderRef.current;
-  if (!slider) return;
-
-  // Clone all child nodes for seamless loop
-  const slides = Array.from(slider.children) as HTMLElement[];
-  slides.forEach((slide) => {
-    const clone = slide.cloneNode(true) as HTMLElement;
-    slider.appendChild(clone);
-  });
-
-  const step = 1; // pixels per frame
-  const intervalTime = 15; // ms per frame
-
-  const scrollLoop = setInterval(() => {
-    if (!slider) return;
-    slider.scrollLeft += step;
-    const firstSlideWidth = slides[0].clientWidth;
-
-    // Reset instantly when we've scrolled past the first set of slides
-    if (slider.scrollLeft >= firstSlideWidth * slides.length) {
-      slider.scrollLeft = 0;
-    }
-  }, intervalTime);
-
-  return () => clearInterval(scrollLoop);
-}, []);
 
   return (
     <div
@@ -89,19 +61,19 @@ const TrendingYoutube: React.FC = () => {
         {/* Left/Right buttons */}
         {hovered && (
           <>
-                      <button
-                        onClick={() => scroll("left")}
-                        className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white text-gray-800 rounded-full p-1 flex items-center justify-center shadow-md transition text-2xl"
-                      >
-                        <FaChevronLeft />
-                      </button>
-                      <button
-                        onClick={() => scroll("right")}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white text-gray-800 rounded-full p-1 flex items-center justify-center shadow-md transition text-2xl"
-                      >
-                       <FaChevronRight/>
-                      </button>
-                    </>
+            <button
+              onClick={() => scroll("left")}
+              className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white text-gray-800 rounded-full p-1 flex items-center justify-center shadow-md transition text-2xl"
+            >
+              <FaChevronLeft />
+            </button>
+            <button
+              onClick={() => scroll("right")}
+              className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white text-gray-800 rounded-full p-1 flex items-center justify-center shadow-md transition text-2xl"
+            >
+              <FaChevronRight />
+            </button>
+          </>
         )}
 
         {/* Scrollable content */}
