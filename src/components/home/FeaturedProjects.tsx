@@ -1,5 +1,6 @@
 import { useRef, useState, useEffect } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 type SubLocation = {
   id: number;
@@ -51,6 +52,7 @@ const popularRegions: City[] = [
 ];
 
 const LookingForProperties = () => {
+  const navigate = useNavigate();
   const sliderRef = useRef<HTMLDivElement | null>(null);
   const [hovered, setHovered] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
@@ -78,8 +80,7 @@ const LookingForProperties = () => {
       if (isPaused) return;
 
       setCurrentIndex((prev) => {
-        const nextIndex =
-          prev + 1 >= popularRegions.length ? 0 : prev + 1;
+        const nextIndex = prev + 1 >= popularRegions.length ? 0 : prev + 1;
         slider.scrollTo({
           left: nextIndex * slideWidth,
           behavior: "smooth",
@@ -93,7 +94,7 @@ const LookingForProperties = () => {
 
   return (
     <section
-      className="container px-4 sm:px-6 py-16 mx-auto"
+      className="container px-4 sm:px-6 py-8 mx-auto"
       onMouseEnter={() => {
         setHovered(true);
         setIsPaused(true);
@@ -139,6 +140,7 @@ const LookingForProperties = () => {
           {popularRegions.map((region) => (
             <div
               key={region.id}
+              onClick={() => navigate(`/city/${region.name}`)}
               className="shrink-0 w-[700px] h-[400px] bg-white rounded-xl shadow-lg overflow-hidden flex"
             >
               {/* Left: Main City */}
@@ -166,7 +168,11 @@ const LookingForProperties = () => {
                   {region.sublocations.map((sub) => (
                     <div
                       key={sub.id}
-                      className="relative w-full h-full rounded-lg overflow-hidden group shadow-sm"
+                      onClick={(e) => {
+                        e.stopPropagation(); 
+                        navigate(`/city/${sub.name}`);
+                      }}
+                      className="relative w-full h-full rounded-lg overflow-hidden group shadow-sm cursor-pointer"
                     >
                       <img
                         src={sub.image}

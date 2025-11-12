@@ -31,6 +31,7 @@ import SubscribePopup from "./components/SubscribePopup";
 import PostProperty from "./pages/Properties/PostProperty";
 import Blog from "./pages/blog/Blog";
 import BlogDetails from "./pages/blog/BlogDetails";
+import CityProperty from "./pages/Properties/CityProperty";
 
 function App() {
 
@@ -57,6 +58,7 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/blog" element={<Blog/>} />
         <Route path="/blog/:id" element={<BlogDetails />} />
+        <Route path="/city/:cityName" element={<CityProperty/>} />
         <Route path="/propertydeatilspage" element={<PropertyDetailsPage />} />
         <Route path="/verify-email/:token" element={<VerifyEmailPage />} />
 

@@ -3,8 +3,8 @@ import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 type MustSellProperty = {
   image: string;
-  originalPrice: string; // e.g., "86L"
-  price: string; // e.g., "82L"
+  originalPrice: string;
+  price: string;
   type: string;
   society: string;
   location: string;
@@ -12,14 +12,70 @@ type MustSellProperty = {
 
 const MustSellProperty: React.FC = () => {
   const properties: MustSellProperty[] = [
-    { image: "/images/Bangna.jpeg", originalPrice: "86L", price: "82L", type: "2BHK", society: "Skyline Society", location: "48 Oriental Avenue, Khwaeng Bang Rak, Bang Rak, Bangkok" },
-    { image: "/images/banner.jpeg", originalPrice: "90L", price: "75L", type: "Studio", society: "Riverfront Society", location: "88 Moo 4, T. Rawai, A. Mueang Phuket, Phuket 83130, Thailand" },
-    { image: "/images/chiangmai.jpeg", originalPrice: "72L", price: "60L", type: "1RK", society: "Golden Palm Society", location: "221/7 Beach Road, Tambon Nong Prue, Amphoe Bang Lamung, Chonburi (Pattaya) 20150, Thailand" },
-    { image: "/images/Chong.webp", originalPrice: "1.1Cr", price: "95L", type: "Condo", society: "Luxury Gardens", location: "150 Moo 2, Tambon Pai, Amphoe Pai, Mae Hong Son" },
-    { image: "/images/Ratchadapisek.jpeg", originalPrice: "85L", price: "70L", type: "2BHK", society: "Horizon Residences", location: "Viewpoint Road, Tambon Karon, Amphoe Mueang Phuket" },
-    { image: "/images/sathon.jpeg", originalPrice: "92L", price: "78L", type: "Studio", society: "Riverfront Towers", location: "Soi Ladprao 101, Khwaeng Khlong Chan, Khet Bueng Kum" },
-    { image: "/images/property4.jpeg", originalPrice: "80L", price: "65L", type: "1RK", society: "Skyline Society", location: "Tambon Patong, Amphoe Kathu, Phuket" },
-    { image: "/images/property5.jpeg", originalPrice: "1Cr", price: "85L", type: "Condo", society: "Golden Palm Society", location: "Nimmanhaemin Soi 9, Tambon Suthep, Amphoe Mueang Chiang Mai, Chiang Mai" },
+    {
+    image: "/images/Bangna.jpeg",
+    originalPrice: "86L",
+    price: "82L",
+    type: "2BHK, 3BHK, Studio, Condo, Villa",
+    society: "Skyline Society",
+    location: "48 Oriental Avenue, Khwaeng Bang Rak, Bangkok, Thailand"
+  },
+  {
+    image: "/images/banner.jpeg",
+    originalPrice: "90L",
+    price: "75L",
+    type: "1BHK, 2BHK, Studio, Villa, Penthouse",
+    society: "Riverfront Society",
+    location: "88 Moo 4, T. Rawai, Mueang Phuket, Phuket, Thailand"
+  },
+  {
+    image: "/images/chiangmai.jpeg",
+    originalPrice: "72L",
+    price: "60L",
+    type: "2BHK, 3BHK, Studio, Condo, Penthouse",
+    society: "Golden Palm Society",
+    location: "221/7 Beach Road, Tambon Nong Prue, Amphoe Bang Lamung, Chonburi, Thailand"
+  },
+  {
+    image: "/images/property12.jpeg",
+    originalPrice: "1.1Cr",
+    price: "95L",
+    type: "3BHK, Studio, Condo, Villa, Penthouse",
+    society: "Luxury Gardens",
+    location: "150 Moo 2, Tambon Pai, Amphoe Pai, Mae Hong Son, Thailand"
+  },
+  {
+    image: "/images/property13.jpeg",
+    originalPrice: "1.1Cr",
+    price: "95L",
+    type: "1BHK, 2BHK, Studio, Condo, Villa",
+    society: "Luxury Gardens",
+    location: "Viewpoint Road, Tambon Karon, Amphoe Mueang Phuket, Thailand"
+  },
+  {
+    image: "/images/property15.jpeg",
+    originalPrice: "1.1Cr",
+    price: "95L",
+    type: "2BHK, 3BHK, Studio, Villa, Penthouse",
+    society: "Luxury Gardens",
+    location: "Nimmanhaemin Soi 9, Tambon Suthep, Amphoe Mueang Chiang Mai, Chiang Mai, Thailand"
+  },
+  {
+    image: "/images/property22.jpeg",
+    originalPrice: "1.1Cr",
+    price: "95L",
+    type: "1BHK, 2BHK, Studio, Condo, Villa",
+    society: "Luxury Gardens",
+    location: "Viewpoint Road, Tambon Karon, Amphoe Mueang Phuket, Thailand"
+  },
+  {
+    image: "/images/property24.jpeg",
+    originalPrice: "1.1Cr",
+    price: "95L",
+    type: "2BHK, 3BHK, Studio, Villa, Penthouse",
+    society: "Luxury Gardens",
+    location: "Nimmanhaemin Soi 9, Tambon Suthep, Amphoe Mueang Chiang Mai, Chiang Mai, Thailand"
+  },
   ];
 
   const sliderRef = useRef<HTMLDivElement | null>(null);
@@ -64,7 +120,7 @@ const MustSellProperty: React.FC = () => {
 
   return (
     <div
-         className="container px-4 sm:px-6 py-16 mx-auto"
+         className="container px-4 sm:px-6 py-8 mx-auto bg-gray-100"
   onMouseEnter={() => {
     setHovered(true);
     setIsPaused(true); // stop auto-scroll
@@ -75,7 +131,7 @@ const MustSellProperty: React.FC = () => {
   }}
 >
       {/* Heading */}
-      <div className="text-left mb-8">
+      <div className="text-left py-6">
         <h2 className="text-3xl sm:text-3xl font-bold text-gray-900">
           Motivated Sellers and Must-Sell Property
         </h2>

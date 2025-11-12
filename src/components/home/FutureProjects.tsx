@@ -43,7 +43,7 @@ const FeaturedProjects: React.FC = () => {
   };
 
   return (
-    <div className="container px-4  sm:px-6 py-8 mx-auto">
+    <div className="container px-4  sm:px-6 py-8 mx-auto bg-gray-100">
       {/* Heading */}
       <div className="text-left mb-12">
         <h2 className="font-bold text-3xl md:text-4xl">Featured Projects</h2>
