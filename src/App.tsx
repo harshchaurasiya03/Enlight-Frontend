@@ -29,32 +29,44 @@ import VerifyEmailPage from "./pages/Auth/VerifyEmailPage";
 import Chatbot from "./components/Chatbot";
 import SubscribePopup from "./components/SubscribePopup";
 import PostProperty from "./pages/Properties/PostProperty";
+import DashboardHome from "./pages/Dashboard/Dashboard/Home";
+import LookingForPropertiesDashboard from "./pages/Dashboard/homeListing/LookingForPropertiesDashboard";
+import PropertyCarouselDashboard from "./pages/Dashboard/homeListing/PropertyCarouselDashboard";
+import RentToOwnDashboard from "./pages/Dashboard/homeListing/RentToOwnDashboard";
+import HeroSearchDashboard from "./pages/Dashboard/homeListing/HeroSearchDashboard";
+import SplitCardDashboard from "./pages/Dashboard/homeListing/SplitCardDashboard";
+import FeaturedProjectsDashboard from "./pages/Dashboard/homeListing/FeaturedProjectsDashboard";
+import NewHomesDashboard from "./pages/Dashboard/homeListing/NewHomesDashboard";
+import MostPopularDashboard from "./pages/Dashboard/homeListing/MostPopularDashboard";
+import MustSellPropertyDashboard from "./pages/Dashboard/homeListing/MustSellPropertyDashboard";
+import TrendingYoutubeDashboard from "./pages/Dashboard/homeListing/TrendingYoutubeDashboard";
+import NewsPropertyDashboard from "./pages/Dashboard/homeListing/NewsPropertyDashboard";
+import ThailandSecretsDashboard from "./pages/Dashboard/homeListing/ThailandSecretsDashboard";
 import Blog from "./pages/blog/Blog";
 import BlogDetails from "./pages/blog/BlogDetails";
 import CityProperty from "./pages/Properties/CityProperty";
 import BlogDashboard from "./pages/blog/BlogDashboard";
 
 function App() {
-
   const dispatch = useDispatch<AppDispatch>();
   const [showPopup, setShowPopup] = useState(true);
   useEffect(() => {
     dispatch(loadUser());
   }, [dispatch]);
 
-   useEffect(() => {
+  useEffect(() => {
     dispatch(loadUser());
   }, [dispatch]);
 
   return (
     <>
       <ScrollToTop />
-        {showPopup && (
+      {showPopup && (
         <SubscribePopup
           // handleClose={() => setShowPopup(false)} // <-- Pass handleClose here
         />
       )}
-      <Chatbot/>
+      <Chatbot />
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/blog" element={<Blog/>} />
@@ -66,7 +78,7 @@ function App() {
         <Route element={<RequireAuth />}>
           <Route path="/dashboard" element={<AppLayout />}>
             {/*/dashboard */}
-            {/* <Route index element={<DashboardHome />} /> */}
+            <Route index element={<DashboardHome/>} />
 
             <Route path="profile" element={<UserProfiles />} />
             <Route path="calendar" element={<Calendar />} />
@@ -74,12 +86,32 @@ function App() {
 
             {/* Forms */}
             <Route path="form-elements" element={<FormElements />} />
+            <Route
+              path="LookingForProperties"
+              element={<LookingForPropertiesDashboard />}
+            />
+            <Route
+              path="PropertyCarousel"
+              element={<PropertyCarouselDashboard />}
+            />
+            <Route path="RentToOwn" element={<RentToOwnDashboard />} />
+            <Route path="HeroSearchCrud" element={<HeroSearchDashboard />} />
+            <Route path="SplitCardCrud" element={<SplitCardDashboard />} />
+            <Route
+              path="FeaturedProjects"
+              element={<FeaturedProjectsDashboard />}
+            />
+            <Route path="NewHomes" element={<NewHomesDashboard />} />
+            <Route path="MostPopular" element={<MostPopularDashboard />} />
+            <Route path="MustSellProperty" element={<MustSellPropertyDashboard />} />
+            <Route path="TrendingYoutube" element={<TrendingYoutubeDashboard />} />
+            <Route path="NewsProperty" element={<NewsPropertyDashboard />} />
+            <Route path="ThailandSecrets" element={<ThailandSecretsDashboard />} />
 
             {/* Tables */}
             <Route path="basic-tables" element={<BasicTables />} />
             <Route path="PropertyTable" element={<PostProperty />} />
             <Route path="Blog" element={<BlogDashboard/>} />
-
 
             {/* UI Elements */}
             <Route path="alerts" element={<Alerts />} />

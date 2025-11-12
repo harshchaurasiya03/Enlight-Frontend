@@ -9,6 +9,7 @@ import {
   PlugInIcon,
   TableIcon,
   UserCircleIcon,
+  GridIcon,
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
 
@@ -20,11 +21,11 @@ type NavItem = {
 };
 
 const navItems: NavItem[] = [
-  // {
-  //   icon: <GridIcon />,
-  //   name: "Dashboard",
-  //   subItems: [{ name: "Ecommerce", path: "/", pro: false }],
-  // },
+  {
+    icon: <GridIcon />,
+    name: "Dashboard",
+    subItems: [{ name: "Dashboard", path: "/dashboard", pro: false }],
+  },
   // {
   //   icon: <CalenderIcon />,
   //   name: "Calendar",
@@ -38,17 +39,20 @@ const navItems: NavItem[] = [
   {
     name: "User Management",
     icon: <TableIcon />,
-    subItems: [{ name: "User Tables", path: "/dashboard/basic-tables", pro: false }],
+    subItems: [
+      { name: "User Tables", path: "/dashboard/basic-tables", pro: false },
+    ],
   },
-  
+
   {
     name: "Property",
     icon: <TableIcon />,
     subItems: [
-      { name: "Property tables", path: "/dashboard/PropertyTable", pro: false }
+      { name: "Property tables", path: "/dashboard/PropertyTable", pro: false },
     ],
   },
   {
+    name: "Home Listings",
     name: "Blog",
     icon: <TableIcon />,
     subItems: [
@@ -59,7 +63,33 @@ const navItems: NavItem[] = [
   {
     name: "Forms",
     icon: <ListIcon />,
-    subItems: [{ name: "Form Elements", path: "/dashboard/form-elements", pro: false }],
+    subItems: [
+      { name: "Main Banner", path: "/dashboard/HeroSearchCrud", pro: false },
+      {
+        name: "Looking For Properties",
+        path: "/dashboard/LookingForProperties",
+        pro: false,
+      },
+      {
+        name: "Property Carousel",
+        path: "/dashboard/PropertyCarousel",
+        pro: false,
+      },
+      { name: "Rent To Own", path: "/dashboard/RentToOwn", pro: false },
+      { name: "Split Card", path: "/dashboard/SplitCardCrud", pro: false },
+      {
+        name: "Featured Projects",
+        path: "/dashboard/FeaturedProjects",
+        pro: false,
+      },
+      { name: "New Homes", path: "/dashboard/NewHomes", pro: false },
+      { name: "Most Popular", path: "/dashboard/MostPopular", pro: false },
+      { name: "Must Sell Property", path: "/dashboard/MustSellProperty", pro: false },
+      { name: "Trending Youtube", path: "/dashboard/TrendingYoutube", pro: false },
+      { name: "News Property", path: "/dashboard/NewsProperty", pro: false },
+      { name: "Thailand Real Estate Secrets", path: "/dashboard/ThailandSecrets", pro: false },
+      { name: "Form Elements", path: "/dashboard/form-elements", pro: false },
+    ],
   },
   // {
   //   name: "Pages",
@@ -323,7 +353,6 @@ const AppSidebar: React.FC = () => {
                 width={80}
                 height={40}
               />
-              
             </>
           ) : (
             <img
