@@ -1,59 +1,50 @@
-import {
-  ArrowDownIcon,
-  ArrowUpIcon,
-  BoxIconLine,
-  GroupIcon,
-} from "../../../icons";
-import Badge from "../ui/badge/Badge";
+import React from "react";
+import { Briefcase } from "lucide-react";
 
-export default function EcommerceMetrics() {
+export default function PropertyStats() {
+  const cards = [
+    {
+      title: "Active properties",
+      value: 61,
+      bg: "bg-purple-500",
+      iconColor: "text-purple-300",
+    },
+    {
+      title: "Pending properties",
+      value: 5,
+      bg: "bg-teal-400",
+      iconColor: "text-teal-300",
+    },
+    {
+      title: "Expired properties",
+      value: 3,
+      bg: "bg-red-400",
+      iconColor: "text-red-300",
+    },
+    {
+      title: "Agents",
+      value: 12,
+      bg: "bg-blue-500",
+      iconColor: "text-blue-300",
+    },
+  ];
+
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6">
-      {/* <!-- Metric Item Start --> */}
-      <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
-        <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl dark:bg-gray-800">
-          <GroupIcon className="text-gray-800 size-6 dark:text-white/90" />
-        </div>
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      {cards.map((card, i) => (
+        <div
+          key={i}
+          className={`${card.bg} text-white p-6 rounded-xl relative overflow-hidden`}
+        >
+          <h3 className="text-lg font-semibold opacity-90">{card.title}</h3>
+          <p className="text-5xl font-bold mt-4">{card.value}</p>
 
-        <div className="flex items-end justify-between mt-5">
-          <div>
-            <span className="text-sm text-gray-500 dark:text-gray-400">
-              Customers
-            </span>
-            <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
-              3,782
-            </h4>
-          </div>
-          <Badge color="success">
-            <ArrowUpIcon />
-            11.01%
-          </Badge>
+          {/* Icon in background */}
+          <Briefcase
+            className={`absolute right-4 bottom-4 size-20 opacity-20 ${card.iconColor}`}
+          />
         </div>
-      </div>
-      {/* <!-- Metric Item End --> */}
-
-      {/* <!-- Metric Item Start --> */}
-      <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
-        <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl dark:bg-gray-800">
-          <BoxIconLine className="text-gray-800 size-6 dark:text-white/90" />
-        </div>
-        <div className="flex items-end justify-between mt-5">
-          <div>
-            <span className="text-sm text-gray-500 dark:text-gray-400">
-              Orders
-            </span>
-            <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
-              5,359
-            </h4>
-          </div>
-
-          <Badge color="error">
-            <ArrowDownIcon />
-            9.05%
-          </Badge>
-        </div>
-      </div>
-      {/* <!-- Metric Item End --> */}
+      ))}
     </div>
   );
 }

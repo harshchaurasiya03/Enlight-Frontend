@@ -1,47 +1,56 @@
 import React, { useState } from "react";
 
-export default function Blog() {
+export default function PropertiesTable() {
   const [selected, setSelected] = useState<string[]>([]);
   const [isEditMode, setIsEditMode] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const [editItem, setEditItem] = useState<any>(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const [data, setData] = useState([
     {
       id: "1",
       image: "/images/property1.jpeg",
-      name: "Bankok Property",
-      categories: "Buy,Rent",
-      author: "Alex",
+      name: "Bangkok Property",
+      views: 120,
+      uniqueId: "BKP-2025",
       created: "2025-10-22",
+      expire: "2025-12-30",
       status: "Published",
+      moderation: "Approved",
     },
     {
       id: "2",
       image: "/images/property2.jpeg",
-      name: "Phuket Property",
-      categories: "Rent, Sell",
-      author: "Lorna Mark",
+      name: "Thailand Property",
+      views: 75,
+      uniqueId: "PHP-2025",
       created: "2025-10-25",
+      expire: "2026-01-10",
       status: "Draft",
-    },
-    {
-      id: "1",
-      image: "/images/property6.jpeg",
-      name: "Sathon Property",
-      categories: "Buy,Rent",
-      author: "Rashid",
-      created: "2025-11-22",
-      status: "Published",
+      moderation: "Pending",
     },
     {
       id: "1",
       image: "/images/property5.jpeg",
-      name: "Banner Property",
-      categories: "Buy,Rent",
-      author: "Rai li",
-      created: "2025-11-22",
+      name: "Bali Property",
+      views: 120,
+      uniqueId: "BKP-2025",
+      created: "2025-08-22",
+      expire: "2025-11-30",
       status: "Draft",
+      moderation: "Rejected",
+    },
+    {
+      id: "2",
+      image: "/images/property8.jpeg",
+      name: "Phuket Property",
+      views: 75,
+      uniqueId: "PHP-2025",
+      created: "2025-12-25",
+      expire: "2026-01-10",
+      status: "Draft",
+      moderation: "Pending",
     },
   ]);
 
@@ -51,17 +60,22 @@ export default function Blog() {
     );
   };
 
+  const filteredData = data.filter(
+    (item) =>
+      item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.uniqueId.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="w-full p-6 bg-white">
       {/* Top bar */}
       <div className="flex items-center justify-between mb-4">
-        <div className="flex gap-3">
-          <button className="px-4 py-2 border rounded-md">Filters</button>
-          <input
-            placeholder="Search..."
-            className="w-64 px-3 py-2 border rounded-md"
-          />
-        </div>
+        <input
+          placeholder="Search..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-64 px-3 py-2 border rounded-md"
+        />
 
         <div className="flex gap-3">
           <button
@@ -94,16 +108,18 @@ export default function Blog() {
               <th className="p-3 text-left">ID</th>
               <th className="p-3 text-left">Image</th>
               <th className="p-3 text-left">Name</th>
-              <th className="p-3 text-left">Categories</th>
-              <th className="p-3 text-left">Author</th>
+              <th className="p-3 text-left">Views</th>
+              <th className="p-3 text-left">Unique ID</th>
               <th className="p-3 text-left">Created At</th>
+              <th className="p-3 text-left">Expire Date</th>
               <th className="p-3 text-left">Status</th>
+              <th className="p-3 text-left">Moderation Status</th>
               <th className="p-3 text-left">Operations</th>
             </tr>
           </thead>
 
           <tbody>
-            {data.map((row) => (
+            {filteredData.map((row) => (
               <tr key={row.id} className="border-b hover:bg-gray-50">
                 <td className="p-3">
                   <input
@@ -117,12 +133,30 @@ export default function Blog() {
                   <img src={row.image} alt={row.name} className="w-12 h-12" />
                 </td>
                 <td className="p-3">{row.name}</td>
-                <td className="p-3">{row.categories}</td>
-                <td className="p-3">{row.author}</td>
+                <td className="p-3">{row.views}</td>
+                <td className="p-3">{row.uniqueId}</td>
                 <td className="p-3">{row.created}</td>
+                <td className="p-3">{row.expire}</td>
                 <td className="p-3">
-                  <span className="px-3 py-1 bg-blue-500 text-white rounded-md text-xs">
+                  <span
+                    className={`px-3 py-1 rounded-md text-xs text-white ${
+                      row.status === "Published"
+                        ? "bg-green-500"
+                        : "bg-yellow-500"
+                    }`}
+                  >
                     {row.status}
+                  </span>
+                </td>
+                <td className="p-3">
+                  <span
+                    className={`px-3 py-1 rounded-md text-xs text-white ${
+                      row.moderation === "Approved"
+                        ? "bg-blue-500"
+                        : "bg-gray-500"
+                    }`}
+                  >
+                    {row.moderation}
                   </span>
                 </td>
                 <td className="p-3 flex gap-2">
@@ -137,7 +171,9 @@ export default function Blog() {
                     ✎ Edit
                   </button>
                   <button
-                    onClick={() => setData(data.filter((i) => i.id !== row.id))}
+                    onClick={() =>
+                      setData(data.filter((i) => i.id !== row.id))
+                    }
                     className="px-3 py-1 bg-red-500 text-white rounded-md text-xs"
                   >
                     🗑 Delete
@@ -150,10 +186,8 @@ export default function Blog() {
 
         <div className="p-4 text-gray-600 text-sm flex items-center gap-2">
           <span>
-            🌐 Show from {data.length} to {data.length} in
+            🌐 Showing {filteredData.length} of {data.length} records
           </span>
-          <span className="bg-gray-200 px-2 rounded">{data.length}</span>
-          <span>records</span>
         </div>
       </div>
 
@@ -162,38 +196,34 @@ export default function Blog() {
         <div className="flex items-center justify-center z-20 absolute inset-0 bg-opacity-40 backdrop-blur-sm">
           <div className="relative bg-white p-6 rounded shadow w-[700px] max-w-full translate-x-16">
             <h2 className="text-lg font-semibold mb-4">
-              {isEditMode ? "Edit Blog" : "Create Blog"}
+              {isEditMode ? "Edit Property" : "Create Property"}
             </h2>
 
-            {/* Name ONLY (Categories Removed) */}
+            {/* Name & Unique ID */}
             <div className="grid grid-cols-2 gap-4 mb-3">
               <div>
-                <label className="text-sm font-medium">Name</label>
+                <label className="text-sm font-medium">Property Name</label>
                 <input
                   className="w-full px-3 py-2 border rounded mt-1"
-                  placeholder="Enter blog name"
                   value={editItem?.name || ""}
                   onChange={(e) =>
                     setEditItem({ ...editItem, name: e.target.value })
                   }
                 />
               </div>
+              <div>
+                <label className="text-sm font-medium">Unique ID</label>
+                <input
+                  className="w-full px-3 py-2 border rounded mt-1"
+                  value={editItem?.uniqueId || ""}
+                  onChange={(e) =>
+                    setEditItem({ ...editItem, uniqueId: e.target.value })
+                  }
+                />
+              </div>
             </div>
 
-            {/* NEW: Content Section (WYSIWYG → stored in categories) */}
-            <div className="mb-4">
-              <label className="text-sm font-medium mb-2 block">Content</label>
-              <textarea
-                className="w-full px-3 py-2 border rounded h-40"
-                placeholder="Write your content here..."
-                value={editItem?.categories || ""}
-                onChange={(e) =>
-                  setEditItem({ ...editItem, categories: e.target.value })
-                }
-              />
-            </div>
-
-            {/* Image Upload */}
+            {/* Multiple Image Upload */}
             <div className="mb-4">
               <label className="text-sm font-medium mb-2 block">
                 Property Images
@@ -209,7 +239,10 @@ export default function Blog() {
                       file,
                       url: URL.createObjectURL(file),
                     }));
-                    setEditItem({ ...editItem, images: imagesPreview });
+                    setEditItem({
+                      ...editItem,
+                      images: [...(editItem?.images || []), ...imagesPreview],
+                    });
                   }
                 }}
                 className="w-full px-3 py-2 border rounded mt-1"
@@ -242,16 +275,16 @@ export default function Blog() {
               )}
             </div>
 
-            {/* Author & Status */}
-            <div className="grid grid-cols-2 gap-4 mb-4">
+            {/* Views, Status, and Moderation */}
+            <div className="grid grid-cols-3 gap-4 mb-4">
               <div>
-                <label className="text-sm font-medium">Author</label>
+                <label className="text-sm font-medium">Views</label>
                 <input
+                  type="number"
                   className="w-full px-3 py-2 border rounded mt-1"
-                  placeholder="Author name"
-                  value={editItem?.author || ""}
+                  value={editItem?.views || ""}
                   onChange={(e) =>
-                    setEditItem({ ...editItem, author: e.target.value })
+                    setEditItem({ ...editItem, views: e.target.value })
                   }
                 />
               </div>
@@ -268,9 +301,23 @@ export default function Blog() {
                   <option value="Published">Published</option>
                 </select>
               </div>
+              <div>
+                <label className="text-sm font-medium">Moderation</label>
+                <select
+                  className="w-full px-3 py-2 border rounded mt-1"
+                  value={editItem?.moderation || "Pending"}
+                  onChange={(e) =>
+                    setEditItem({ ...editItem, moderation: e.target.value })
+                  }
+                >
+                  <option value="Pending">Pending</option>
+                  <option value="Approved">Approved</option>
+                  <option value="Rejected">Rejected</option>
+                </select>
+              </div>
             </div>
 
-            {/* Buttons */}
+            {/* Save / Cancel Buttons */}
             <div className="flex gap-3">
               <button
                 onClick={() => {
@@ -285,12 +332,16 @@ export default function Blog() {
                   } else {
                     const newItem = {
                       id: (data.length + 1).toString(),
-                      image: "https://via.placeholder.com/50",
+                      image:
+                        editItem?.images?.[0]?.url ||
+                        "https://via.placeholder.com/50",
                       name: editItem?.name || "",
-                      categories: editItem?.categories || "", // content saved here
-                      author: editItem?.author || "",
+                      views: editItem?.views || 0,
+                      uniqueId: editItem?.uniqueId || `UID-${Date.now()}`,
                       created: new Date().toISOString().split("T")[0],
+                      expire: "2026-01-01",
                       status: editItem?.status || "Draft",
+                      moderation: editItem?.moderation || "Pending",
                     };
                     setData([...data, newItem]);
                   }

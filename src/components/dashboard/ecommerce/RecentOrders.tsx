@@ -16,55 +16,55 @@ interface Product {
   price: string; // Price of the product (as a string with currency symbol)
   // status: string; // Status of the product
   image: string; // URL or path to the product image
-  status: "Delivered" | "Pending" | "Canceled"; // Status of the product
+  status: "Sell" | "Pending" | "Buy"; // Status of the product
 }
 
 // Define the table data using the interface
 const tableData: Product[] = [
   {
     id: 1,
-    name: "MacBook Pro 13”",
+    name: "Azure Residences",
     variants: "2 Variants",
-    category: "Laptop",
-    price: "$2399.00",
-    status: "Delivered",
-    image: "/images/product/product-01.jpg", // Replace with actual image URL
+    category: "2BHK",
+    price: "$239999.00",
+    status: "Sell",
+    image: "/images/property3.jpeg", // Replace with actual image URL
   },
   {
     id: 2,
-    name: "Apple Watch Ultra",
+    name: "Luxe Haven",
     variants: "1 Variant",
-    category: "Watch",
-    price: "$879.00",
+    category: "PentHouse",
+    price: "$87900000.00",
     status: "Pending",
-    image: "/images/product/product-02.jpg", // Replace with actual image URL
+    image: "/images/Chong.webp", // Replace with actual image URL
   },
   {
     id: 3,
-    name: "iPhone 15 Pro Max",
+    name: "Golden Horizon",
     variants: "2 Variants",
-    category: "SmartPhone",
-    price: "$1869.00",
-    status: "Delivered",
-    image: "/images/product/product-03.jpg", // Replace with actual image URL
+    category: "Villa",
+    price: "$18699999.00",
+    status: "Buy",
+    image: "/images/property9.jpeg", // Replace with actual image URL
   },
   {
     id: 4,
-    name: "iPad Pro 3rd Gen",
+    name: "Crystal Heights",
     variants: "2 Variants",
-    category: "Electronics",
-    price: "$1699.00",
-    status: "Canceled",
-    image: "/images/product/product-04.jpg", // Replace with actual image URL
+    category: "4BHK",
+    price: "$169999.00",
+    status: "Sell",
+    image: "/images/property4.jpeg", // Replace with actual image URL
   },
   {
     id: 5,
-    name: "AirPods Pro 2nd Gen",
+    name: "Skyline Serenity",
     variants: "1 Variant",
-    category: "Accessories",
-    price: "$240.00",
-    status: "Delivered",
-    image: "/images/product/product-05.jpg", // Replace with actual image URL
+    category: "House",
+    price: "$24000.00",
+    status: "Buy",
+    image: "/images/property6.jpeg", // Replace with actual image URL
   },
 ];
 
@@ -74,7 +74,7 @@ export default function RecentOrders() {
       <div className="flex flex-col gap-2 mb-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
-            Recent Orders
+            Recent Properties
           </h3>
         </div>
 
@@ -131,7 +131,7 @@ export default function RecentOrders() {
                 isHeader
                 className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
               >
-                Products
+                Property
               </TableCell>
               <TableCell
                 isHeader
@@ -188,7 +188,7 @@ export default function RecentOrders() {
                   <Badge
                     size="sm"
                     color={
-                      product.status === "Delivered"
+                      product.status === "Buy"
                         ? "success"
                         : product.status === "Pending"
                         ? "warning"

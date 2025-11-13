@@ -46,6 +46,7 @@ import Blog from "./pages/blog/Blog";
 import BlogDetails from "./pages/blog/BlogDetails";
 import CityProperty from "./pages/Properties/CityProperty";
 import BlogDashboard from "./pages/blog/BlogDashboard";
+import CustomerManagement from "./pages/Dashboard/CustomerManagement";
 
 function App() {
   const dispatch = useDispatch<AppDispatch>();
@@ -110,6 +111,7 @@ function App() {
 
             {/* Tables */}
             <Route path="basic-tables" element={<BasicTables />} />
+            <Route path="/dashboard/CustomerManagement" element={<CustomerManagement />} />
             <Route path="PropertyTable" element={<PostProperty />} />
             <Route path="Blog" element={<BlogDashboard/>} />
 

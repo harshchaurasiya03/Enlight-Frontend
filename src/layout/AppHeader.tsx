@@ -4,6 +4,7 @@ import { Link } from "react-router";
 import { useSidebar } from "../context/SidebarContext";
 import NotificationDropdown from "../components/dashboard/header/NotificationDropdown";
 import UserDropdown from "../components/dashboard/header/UserDropdown";
+import LanguageIcon from "../components/dashboard/header/LanguageIcon";
 
 const AppHeader: React.FC = () => {
   const [isApplicationMenuOpen, setApplicationMenuOpen] = useState(false);
@@ -159,6 +160,7 @@ const AppHeader: React.FC = () => {
             {/* <!-- Dark Mode Toggler --> */}
             {/* <ThemeToggleButton /> */}
             {/* <!-- Dark Mode Toggler --> */}
+            <LanguageIcon/>
             <NotificationDropdown />
             {/* <!-- Notification Menu Area --> */}
           </div>

@@ -40,28 +40,53 @@ const navItems: NavItem[] = [
     name: "User Management",
     icon: <TableIcon />,
     subItems: [
-      { name: "User Tables", path: "/dashboard/basic-tables", pro: false },
+      { name: "Customer Management", path: "/dashboard/CustomerManagement", pro: false },
     ],
   },
 
   {
-    name: "Property",
+    name: "Real Estate",
     icon: <TableIcon />,
     subItems: [
       { name: "Property tables", path: "/dashboard/PropertyTable", pro: false },
+      { name: "Projects", path: " ", pro: false },
+      { name: "Features", path: " ", pro: false },
+      { name: "Facilities", path: " ", pro: false },
+      { name: "Investors", path: " ", pro: false },
+      { name: "Categories", path: " ", pro: false },
+      { name: "Reviews", path: " ", pro: false },
+      { name: "Invoices", path: " ", pro: false },
+      { name: "Custom Firlds", path: " ", pro: false },
+      { name: "Reports", path: " ", pro: false },
     ],
   },
   {
-    name: "Home Listings",
     name: "Blog",
     icon: <TableIcon />,
     subItems: [
-      { name: "Blog", path: "/dashboard/Blog", pro: false }
+      { name: "Post", path: "/dashboard/Blog", pro: false },
+      { name: "Categories", path: " ", pro: false },
+      { name: "Tags", path: " ", pro: false },
     ],
   },
-  
   {
-    name: "Forms",
+    name: "Payment",
+    icon: <TableIcon />,
+    subItems: [
+      { name: "Transactions", path: " ", pro: false },
+       { name: "Payment Logs", path: " ", pro: false },
+        { name: "Payment methods", path: " ", pro: false },
+    ],
+  },
+  {
+    name: "Careers",
+    icon: <TableIcon />,
+    subItems: [
+      { name: "Careers", path: " ", pro: false }
+    ],
+  },
+  {
+    name: "Home Listing",
     icon: <ListIcon />,
     subItems: [
       { name: "Main Banner", path: "/dashboard/HeroSearchCrud", pro: false },
