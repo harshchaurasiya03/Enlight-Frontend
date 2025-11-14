@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Poppins:wght@600&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+@import "react-quill/dist/quill.snow.css";
 
 /* your existing design system (everything you pasted) */
 @custom-variant dark (&:is(.dark *));

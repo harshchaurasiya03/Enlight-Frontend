@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 export default function PropertiesTable() {
   const [selected, setSelected] = useState<string[]>([]);
@@ -31,7 +31,7 @@ export default function PropertiesTable() {
       moderation: "Pending",
     },
     {
-      id: "1",
+      id: "3",
       image: "/images/property5.jpeg",
       name: "Bali Property",
       views: 120,
@@ -39,10 +39,10 @@ export default function PropertiesTable() {
       created: "2025-08-22",
       expire: "2025-11-30",
       status: "Draft",
-      moderation: "Rejected",
+      moderation: "Approved",
     },
     {
-      id: "2",
+      id: "4",
       image: "/images/property8.jpeg",
       name: "Phuket Property",
       views: 75,
@@ -67,14 +67,14 @@ export default function PropertiesTable() {
   );
 
   return (
-    <div className="w-full p-6 bg-white">
+    <div className="min-h-screen p-6 bg-gray-50">
       {/* Top bar */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
         <input
           placeholder="Search..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-64 px-3 py-2 border rounded-md"
+          className="w-full md:w-64 px-4 py-2 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
         />
 
         <div className="flex gap-3">
@@ -84,12 +84,12 @@ export default function PropertiesTable() {
               setIsEditMode(false);
               setShowPopup(true);
             }}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md"
+            className="px-5 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700"
           >
             + Create
           </button>
           <button
-            className="px-4 py-2 border rounded-md"
+            className="px-5 py-2 border rounded-xl hover:bg-gray-100"
             onClick={() => window.location.reload()}
           >
             🗘 Reload
@@ -98,8 +98,8 @@ export default function PropertiesTable() {
       </div>
 
       {/* Table */}
-      <div className="border rounded-xl shadow-sm overflow-hidden">
-        <table className="w-full text-sm">
+      <div className="bg-white shadow-md rounded-2xl overflow-x-auto">
+        <table className="w-full text-sm divide-y divide-gray-200">
           <thead className="bg-gray-100 text-gray-700">
             <tr>
               <th className="p-3">
@@ -120,7 +120,7 @@ export default function PropertiesTable() {
 
           <tbody>
             {filteredData.map((row) => (
-              <tr key={row.id} className="border-b hover:bg-gray-50">
+              <tr key={row.id} className="hover:bg-gray-50">
                 <td className="p-3">
                   <input
                     type="checkbox"
@@ -130,7 +130,11 @@ export default function PropertiesTable() {
                 </td>
                 <td className="p-3">{row.id}</td>
                 <td className="p-3">
-                  <img src={row.image} alt={row.name} className="w-12 h-12" />
+                  <img
+                    src={row.image}
+                    alt={row.name}
+                    className="w-14 h-14 rounded-lg object-cover"
+                  />
                 </td>
                 <td className="p-3">{row.name}</td>
                 <td className="p-3">{row.views}</td>
@@ -139,7 +143,7 @@ export default function PropertiesTable() {
                 <td className="p-3">{row.expire}</td>
                 <td className="p-3">
                   <span
-                    className={`px-3 py-1 rounded-md text-xs text-white ${
+                    className={`px-3 py-1 rounded-xl text-xs text-white ${
                       row.status === "Published"
                         ? "bg-green-500"
                         : "bg-yellow-500"
@@ -150,7 +154,7 @@ export default function PropertiesTable() {
                 </td>
                 <td className="p-3">
                   <span
-                    className={`px-3 py-1 rounded-md text-xs text-white ${
+                    className={`px-3 py-1 rounded-xl text-xs text-white ${
                       row.moderation === "Approved"
                         ? "bg-blue-500"
                         : "bg-gray-500"
@@ -159,14 +163,14 @@ export default function PropertiesTable() {
                     {row.moderation}
                   </span>
                 </td>
-                <td className="p-3 flex gap-2">
+                <td className="p-3 gap-2">
                   <button
                     onClick={() => {
                       setEditItem({ ...row });
                       setIsEditMode(true);
                       setShowPopup(true);
                     }}
-                    className="px-3 py-1 bg-blue-500 text-white rounded-md text-xs"
+                    className="px-3 py-1 bg-yellow-300 text-white rounded-lg hover:bg-yellow-500"
                   >
                     ✎ Edit
                   </button>
@@ -174,7 +178,7 @@ export default function PropertiesTable() {
                     onClick={() =>
                       setData(data.filter((i) => i.id !== row.id))
                     }
-                    className="px-3 py-1 bg-red-500 text-white rounded-md text-xs"
+                    className="px-3 py-1 bg-red-500 text-white rounded-lg hover:bg-red-600"
                   >
                     🗑 Delete
                   </button>
@@ -185,36 +189,34 @@ export default function PropertiesTable() {
         </table>
 
         <div className="p-4 text-gray-600 text-sm flex items-center gap-2">
-          <span>
-            🌐 Showing {filteredData.length} of {data.length} records
-          </span>
+          🌐 Showing {filteredData.length} of {data.length} records
         </div>
       </div>
 
       {/* Create/Edit Popup */}
       {showPopup && (
-        <div className="flex items-center justify-center z-20 absolute inset-0 bg-opacity-40 backdrop-blur-sm">
-          <div className="relative bg-white p-6 rounded shadow w-[700px] max-w-full translate-x-16">
-            <h2 className="text-lg font-semibold mb-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
+          <div className="relative bg-white p-6 rounded-2xl shadow-lg w-full max-w-3xl space-y-4">
+            <h2 className="text-lg font-semibold">
               {isEditMode ? "Edit Property" : "Create Property"}
             </h2>
 
             {/* Name & Unique ID */}
-            <div className="grid grid-cols-2 gap-4 mb-3">
-              <div>
-                <label className="text-sm font-medium">Property Name</label>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="flex flex-col">
+                <label className="text-sm font-medium mb-1">Property Name</label>
                 <input
-                  className="w-full px-3 py-2 border rounded mt-1"
+                  className="border border-gray-300 rounded-xl px-3 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
                   value={editItem?.name || ""}
                   onChange={(e) =>
                     setEditItem({ ...editItem, name: e.target.value })
                   }
                 />
               </div>
-              <div>
-                <label className="text-sm font-medium">Unique ID</label>
+              <div className="flex flex-col">
+                <label className="text-sm font-medium mb-1">Unique ID</label>
                 <input
-                  className="w-full px-3 py-2 border rounded mt-1"
+                  className="border border-gray-300 rounded-xl px-3 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
                   value={editItem?.uniqueId || ""}
                   onChange={(e) =>
                     setEditItem({ ...editItem, uniqueId: e.target.value })
@@ -224,10 +226,8 @@ export default function PropertiesTable() {
             </div>
 
             {/* Multiple Image Upload */}
-            <div className="mb-4">
-              <label className="text-sm font-medium mb-2 block">
-                Property Images
-              </label>
+            <div className="flex flex-col">
+              <label className="text-sm font-medium mb-2">Property Images</label>
               <input
                 type="file"
                 accept="image/*"
@@ -245,7 +245,7 @@ export default function PropertiesTable() {
                     });
                   }
                 }}
-                className="w-full px-3 py-2 border rounded mt-1"
+                className="border border-gray-300 rounded-xl px-3 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
               />
               {editItem?.images?.length > 0 && (
                 <div className="mt-2 flex gap-2 flex-wrap">
@@ -254,18 +254,18 @@ export default function PropertiesTable() {
                       <img
                         src={img.url}
                         alt={`Property ${index}`}
-                        className="w-24 h-24 object-cover rounded-md border"
+                        className="w-24 h-24 object-cover rounded-xl border"
                       />
                       <button
-                        onClick={() => {
+                        onClick={() =>
                           setEditItem({
                             ...editItem,
                             images: editItem.images.filter(
                               (_: any, i: number) => i !== index
                             ),
-                          });
-                        }}
-                        className="absolute top-0 right-0 bg-red-500 text-white text-xs px-1 rounded"
+                          })
+                        }
+                        className="absolute top-1 right-1 bg-red-500 text-white text-xs px-1 rounded"
                       >
                         ✕
                       </button>
@@ -275,23 +275,23 @@ export default function PropertiesTable() {
               )}
             </div>
 
-            {/* Views, Status, and Moderation */}
-            <div className="grid grid-cols-3 gap-4 mb-4">
-              <div>
-                <label className="text-sm font-medium">Views</label>
+            {/* Views, Status, Moderation */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="flex flex-col">
+                <label className="text-sm font-medium mb-1">Views</label>
                 <input
                   type="number"
-                  className="w-full px-3 py-2 border rounded mt-1"
+                  className="border border-gray-300 rounded-xl px-3 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
                   value={editItem?.views || ""}
                   onChange={(e) =>
                     setEditItem({ ...editItem, views: e.target.value })
                   }
                 />
               </div>
-              <div>
-                <label className="text-sm font-medium">Status</label>
+              <div className="flex flex-col">
+                <label className="text-sm font-medium mb-1">Status</label>
                 <select
-                  className="w-full px-3 py-2 border rounded mt-1"
+                  className="border border-gray-300 rounded-xl px-3 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
                   value={editItem?.status || "Draft"}
                   onChange={(e) =>
                     setEditItem({ ...editItem, status: e.target.value })
@@ -301,10 +301,10 @@ export default function PropertiesTable() {
                   <option value="Published">Published</option>
                 </select>
               </div>
-              <div>
-                <label className="text-sm font-medium">Moderation</label>
+              <div className="flex flex-col">
+                <label className="text-sm font-medium mb-1">Moderation</label>
                 <select
-                  className="w-full px-3 py-2 border rounded mt-1"
+                  className="border border-gray-300 rounded-xl px-3 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
                   value={editItem?.moderation || "Pending"}
                   onChange={(e) =>
                     setEditItem({ ...editItem, moderation: e.target.value })
@@ -317,8 +317,8 @@ export default function PropertiesTable() {
               </div>
             </div>
 
-            {/* Save / Cancel Buttons */}
-            <div className="flex gap-3">
+            {/* Save / Cancel */}
+            <div className="flex gap-4 mt-4">
               <button
                 onClick={() => {
                   if (isEditMode) {
@@ -349,7 +349,7 @@ export default function PropertiesTable() {
                   setIsEditMode(false);
                   setShowPopup(false);
                 }}
-                className="px-4 py-2 bg-blue-600 text-white rounded-md flex-1"
+                className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700"
               >
                 {isEditMode ? "Save Changes" : "Save"}
               </button>
@@ -360,7 +360,7 @@ export default function PropertiesTable() {
                   setEditItem(null);
                   setIsEditMode(false);
                 }}
-                className="px-4 py-2 bg-gray-300 text-black rounded-md flex-1"
+                className="flex-1 px-4 py-2 bg-gray-300 text-black rounded-xl hover:bg-gray-400"
               >
                 Cancel
               </button>

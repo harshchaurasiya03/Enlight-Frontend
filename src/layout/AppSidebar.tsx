@@ -22,9 +22,9 @@ type NavItem = {
 
 const navItems: NavItem[] = [
   {
-    icon: <GridIcon />,
+    icon: <UserCircleIcon />,
     name: "Dashboard",
-    subItems: [{ name: "Dashboard", path: "/dashboard", pro: false }],
+    path: "/dashboard",
   },
   // {
   //   icon: <CalenderIcon />,
@@ -49,15 +49,14 @@ const navItems: NavItem[] = [
     icon: <TableIcon />,
     subItems: [
       { name: "Property tables", path: "/dashboard/PropertyTable", pro: false },
-      { name: "Projects", path: " ", pro: false },
-      { name: "Features", path: " ", pro: false },
-      { name: "Facilities", path: " ", pro: false },
-      { name: "Investors", path: " ", pro: false },
-      { name: "Categories", path: " ", pro: false },
-      { name: "Reviews", path: " ", pro: false },
-      { name: "Invoices", path: " ", pro: false },
-      { name: "Custom Firlds", path: " ", pro: false },
-      { name: "Reports", path: " ", pro: false },
+      { name: "Projects", path: "/dashboard/Projects", pro: false },
+      { name: "Features", path: "/dashboard/Features", pro: false },
+      { name: "Investors", path: "/dashboard/Investors", pro: false },
+      { name: "Categories", path: "/dashboard/propertyCategories", pro: false },
+      { name: "Reviews", path: "/dashboard/reviews", pro: false },
+      // { name: "Invoices", path: " ", pro: false },
+      // { name: "Custom Firlds", path: " ", pro: false },
+      // { name: "Reports", path: " ", pro: false },
     ],
   },
   {
@@ -65,7 +64,7 @@ const navItems: NavItem[] = [
     icon: <TableIcon />,
     subItems: [
       { name: "Post", path: "/dashboard/Blog", pro: false },
-      { name: "Categories", path: " ", pro: false },
+      { name: "Categories", path: "/dashboard/Categories", pro: false },
       { name: "Tags", path: " ", pro: false },
     ],
   },
@@ -89,6 +88,8 @@ const navItems: NavItem[] = [
     name: "Home Listing",
     icon: <ListIcon />,
     subItems: [
+      { name: "Subscribe Popup", path: "/dashboard/subscribe-popup", pro: false },
+      { name: "Login Popup", path: "/dashboard/login-popup", pro: false },
       { name: "Main Banner", path: "/dashboard/HeroSearchCrud", pro: false },
       {
         name: "Looking For Properties",
@@ -107,6 +108,7 @@ const navItems: NavItem[] = [
         path: "/dashboard/FeaturedProjects",
         pro: false,
       },
+      
       { name: "New Homes", path: "/dashboard/NewHomes", pro: false },
       { name: "Most Popular", path: "/dashboard/MostPopular", pro: false },
       { name: "Must Sell Property", path: "/dashboard/MustSellProperty", pro: false },
@@ -114,6 +116,7 @@ const navItems: NavItem[] = [
       { name: "News Property", path: "/dashboard/NewsProperty", pro: false },
       { name: "Thailand Real Estate Secrets", path: "/dashboard/ThailandSecrets", pro: false },
       { name: "Form Elements", path: "/dashboard/form-elements", pro: false },
+      
     ],
   },
   // {

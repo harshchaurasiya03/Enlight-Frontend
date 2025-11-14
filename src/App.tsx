@@ -28,7 +28,7 @@ import PropertyDetailsPage from "./pages/Future/PropertyDetailsPage";
 import VerifyEmailPage from "./pages/Auth/VerifyEmailPage";
 import Chatbot from "./components/Chatbot";
 import SubscribePopup from "./components/SubscribePopup";
-import PostProperty from "./pages/Properties/PostProperty";
+import PostProperty from "./pages/Dashboard/RealEstate/PostProperty";
 import DashboardHome from "./pages/Dashboard/Dashboard/Home";
 import LookingForPropertiesDashboard from "./pages/Dashboard/homeListing/LookingForPropertiesDashboard";
 import PropertyCarouselDashboard from "./pages/Dashboard/homeListing/PropertyCarouselDashboard";
@@ -45,12 +45,21 @@ import ThailandSecretsDashboard from "./pages/Dashboard/homeListing/ThailandSecr
 import Blog from "./pages/blog/Blog";
 import BlogDetails from "./pages/blog/BlogDetails";
 import CityProperty from "./pages/Properties/CityProperty";
-import BlogDashboard from "./pages/blog/BlogDashboard";
+import BlogDashboard from "./pages/Dashboard/BlogDash/BlogDashboard";
 import CustomerManagement from "./pages/Dashboard/CustomerManagement";
+import LoginPopupDashboard from "./pages/Dashboard/homeListing/PopupDashboard";
+import SubscribePopupDashboard from "./components/dashboard/homeListing/SubscribePopupCrud";
+import Projects from "./pages/Dashboard/RealEstate/Projects";
+import Features from "./pages/Dashboard/RealEstate/Features"
+import Investores from "./pages/Dashboard/RealEstate/Investores";
+import BlogCategories from "./pages/Dashboard/BlogDash/BlogCategories";
+import Categories from "./pages/Dashboard/RealEstate/Categories";
+import Reviews from "./pages/Dashboard/RealEstate/Reviews"
+
 
 function App() {
   const dispatch = useDispatch<AppDispatch>();
-  const [showPopup, setShowPopup] = useState(true);
+  const [showPopup] = useState(true);
   useEffect(() => {
     dispatch(loadUser());
   }, [dispatch]);
@@ -96,6 +105,8 @@ function App() {
               element={<PropertyCarouselDashboard />}
             />
             <Route path="RentToOwn" element={<RentToOwnDashboard />} />
+            <Route path="/dashboard/login-popup"element={<LoginPopupDashboard />}/>
+            <Route path="/dashboard/subscribe-popup"element={<SubscribePopupDashboard />}/>
             <Route path="HeroSearchCrud" element={<HeroSearchDashboard />} />
             <Route path="SplitCardCrud" element={<SplitCardDashboard />} />
             <Route
@@ -109,11 +120,19 @@ function App() {
             <Route path="NewsProperty" element={<NewsPropertyDashboard />} />
             <Route path="ThailandSecrets" element={<ThailandSecretsDashboard />} />
 
+            {/* {Real EState} */}
+            <Route path="/dashboard/Projects" element={<Projects/>}/>
+            <Route path="/dashboard/Features" element={<Features/>}/>
+            <Route path="/dashboard/Investors" element={<Investores/>}/>
+            <Route path="/dashboard/propertyCategories" element={<Categories/>} />
+            <Route path="/dashboard/reviews" element={<Reviews/>} />
+
             {/* Tables */}
             <Route path="basic-tables" element={<BasicTables />} />
             <Route path="/dashboard/CustomerManagement" element={<CustomerManagement />} />
             <Route path="PropertyTable" element={<PostProperty />} />
             <Route path="Blog" element={<BlogDashboard/>} />
+            <Route path="/dashboard/Categories" element={<BlogCategories/>} />
 
             {/* UI Elements */}
             <Route path="alerts" element={<Alerts />} />

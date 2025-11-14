@@ -95,9 +95,9 @@ const Login: React.FC<LoginProps> = ({ onClose, redirectTo }) => {
         </div>
 
         <div className="flex flex-col gap-3 px-6">
-          <button>
+          <div>
             <OAuth />
-          </button>
+          </div>
 
           <div className="flex items-center my-2">
             <hr className="flex-1 border-gray-300" />

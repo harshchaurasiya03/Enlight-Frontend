@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import Navbarx from "../../components/Navbarx";
@@ -18,7 +18,7 @@ const CityProperty: React.FC = () => {
   const navigate = useNavigate();
 
   const [hovered, setHovered] = useState(false);
-  const [isPaused, setIsPaused] = useState(false);
+  const [] = useState(false);
   const sliderRefs = useRef<Array<HTMLDivElement | null>>([]);
 
   // Sample sections with properties
