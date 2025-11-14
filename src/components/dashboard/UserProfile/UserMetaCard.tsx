@@ -1,3 +1,9 @@
+import {
+  FaFacebookF,
+  FaTwitter,
+  FaLinkedinIn,
+  FaInstagram,
+} from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../../../redux/store";
@@ -15,6 +21,13 @@ import Label from "../form/Label";
 export default function UserMetaCard() {
   const { isOpen, openModal, closeModal } = useModal();
   const dispatch = useDispatch<AppDispatch>();
+
+  const socialIcons = [
+    { name: "facebook", icon: <FaFacebookF /> },
+    { name: "twitter", icon: <FaTwitter /> },
+    { name: "linkedin", icon: <FaLinkedinIn /> },
+    { name: "instagram", icon: <FaInstagram /> },
+  ];
 
   // Redux state
   const {
@@ -41,13 +54,11 @@ export default function UserMetaCard() {
   }, [isAuthenticated, dispatch]);
 
   useEffect(() => {
-  const userId = authUser?.id || authUser?._id;
-  if (userId) {
-    dispatch(fetchUserById(userId) as any);
-  }
-}, [authUser?.id, authUser?._id, dispatch]);
-
-
+    const userId = authUser?.id || authUser?._id;
+    if (userId) {
+      dispatch(fetchUserById(userId) as any);
+    }
+  }, [authUser?.id, authUser?._id, dispatch]);
 
   useEffect(() => {
     if (currentUser) {
@@ -78,7 +89,6 @@ export default function UserMetaCard() {
         ? currentUser.photo
         : `${import.meta.env.VITE_ASSET_URL}${currentUser.photo}`
       : "/images/user.png");
-
 
   const loading = authLoading || userLoading;
 
@@ -124,12 +134,12 @@ export default function UserMetaCard() {
 
             {/* Placeholder Socials (empty for now) */}
             <div className="flex items-center order-2 gap-2 grow xl:order-3 xl:justify-end">
-              {["facebook", "twitter", "linkedin", "instagram"].map((icon) => (
+              {socialIcons.map((social) => (
                 <button
-                  key={icon}
-                  className="flex h-11 w-11 items-center justify-center gap-2 rounded-full border border-gray-300 bg-white text-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
+                  key={social.name}
+                  className="flex h-11 w-11 items-center justify-center rounded-full border border-gray-300 bg-white text-gray-700 shadow-theme-xs hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
                 >
-                  <span className="capitalize">{icon[0]}</span>
+                  {social.icon}
                 </button>
               ))}
             </div>
