@@ -1,7 +1,20 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect, forwardRef } from "react";
 import { useLocation } from "react-router-dom";
 import Navbarx from "../../components/Navbarx";
-import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+import L from "leaflet";
+
+// Fix default Leaflet icon
+delete (L.Icon.Default.prototype as any)._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png",
+  iconUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png",
+  shadowUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png",
+});
 
 // Related properties type
 type RelatedProperty = {
@@ -51,6 +64,8 @@ const sampleRelated: RelatedProperty[] = [
 
 export default function PropertyDetailsPage() {
   const location = useLocation();
+  const mapRef = useRef<HTMLDivElement>(null); // scroll ref for map
+
   const project = location.state as
     | {
         projectName: string;
@@ -67,18 +82,24 @@ export default function PropertyDetailsPage() {
     image: "/images/property1.jpeg",
   };
 
+  const scrollToMap = () => {
+    if (mapRef.current) {
+      mapRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-white text-gray-800">
       <Navbarx />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 mt-20">
-        <HeroGallery project={displayProject} />
+        <HeroGallery project={displayProject} scrollToMap={scrollToMap} />
 
         <div className="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
             <ProjectOverview />
             <ProjectFAQ />
-            <ProjectMap project={displayProject} />
+            <ProjectMap project={displayProject} ref={mapRef} />
             <ProjectVideo />
             <ProjectReview />
           </div>
@@ -109,6 +130,7 @@ export default function PropertyDetailsPage() {
 // HeroGallery with video click-to-play/pause
 function HeroGallery({
   project,
+  scrollToMap,
 }: {
   project: {
     projectName: string;
@@ -116,6 +138,7 @@ function HeroGallery({
     location: string;
     image: string;
   };
+  scrollToMap: () => void;
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -161,6 +184,22 @@ function HeroGallery({
               loop
               onClick={handleVideoClick}
             />
+
+            {/* Map Thumbnail with white icon */}
+            <div
+              onClick={scrollToMap}
+              className="w-26 h-16 rounded border-2 border-white/40 cursor-pointer bg-gary-100 flex items-center justify-center"
+              title="View Map"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="Gray"
+                viewBox="0 0 24 24"
+                className="w-10 h-10"
+              >
+                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z" />
+              </svg>
+            </div>
           </div>
         </div>
       </div>
@@ -327,31 +366,52 @@ function ProjectContactForm() {
   );
 }
 
-// Project Map
-function ProjectMap({ project }: { project: { location: string } }) {
-  const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: "YOUR_REAL_API_KEY",
-  });
+// Project Map using Leaflet
+const ProjectMap = forwardRef<
+  HTMLDivElement,
+  { project: { location: string } }
+>(({ project }, ref) => {
+  const [coords, setCoords] = useState<[number, number]>([13.7563, 100.5018]); // Default Bangkok
 
-  const thailandCoords = { lat: 13.7563, lng: 100.5018 };
-
-  if (loadError) return <div>Error loading map</div>;
-  if (!isLoaded) return <div>Loading map...</div>;
+  useEffect(() => {
+    const fetchCoords = async () => {
+      try {
+        const res = await fetch(
+          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+            project.location
+          )}`
+        );
+        const data = await res.json();
+        if (data && data.length > 0) {
+          setCoords([parseFloat(data[0].lat), parseFloat(data[0].lon)]);
+        }
+      } catch (err) {
+        console.error("Error fetching map coords:", err);
+      }
+    };
+    fetchCoords();
+  }, [project.location]);
 
   return (
-    <section className="mt-6 bg-white p-6 rounded shadow-sm">
+    <section ref={ref} className="mt-6 bg-white p-6 rounded shadow-sm">
       <h3 className="text-lg font-semibold mb-4">Location</h3>
-      <GoogleMap
-        mapContainerStyle={{ width: "100%", height: "16rem" }}
-        center={thailandCoords}
-        zoom={6}
+      <MapContainer
+        center={coords}
+        zoom={13}
+        style={{ height: "24rem", width: "100%" }} // bigger map
       >
-        <Marker position={thailandCoords} />
-      </GoogleMap>
+        <TileLayer
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution="&copy; OpenStreetMap contributors"
+        />
+        <Marker position={coords}>
+          <Popup>{project.location}</Popup>
+        </Marker>
+      </MapContainer>
       <p className="text-sm text-gray-500 mt-3">{project.location}</p>
     </section>
   );
-}
+});
 
 // Project Video Section
 function ProjectVideo() {
