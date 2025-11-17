@@ -137,7 +137,7 @@ function App() {
             <Route path="CustomerManagement" element={<CustomerManagement />} />
             <Route path="PropertyTable" element={<PostProperty />} />
             <Route path="Blog" element={<BlogDashboard/>} />
-            <Route path="/tags" element={<BlogTag/>} />
+            <Route path="tags" element={<BlogTag/>} />
             <Route path="Categories" element={<BlogCategories/>} />
 
             {/* UI Elements */}
