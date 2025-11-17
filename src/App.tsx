@@ -28,7 +28,7 @@ import PropertyDetailsPage from "./pages/Future/PropertyDetailsPage";
 import VerifyEmailPage from "./pages/Auth/VerifyEmailPage";
 import Chatbot from "./components/Chatbot";
 import SubscribePopup from "./components/SubscribePopup";
-import PostProperty from "./pages/Dashboard/RealEstate/PostProperty";
+import PostProperty from "./components/dashboard/RealEstate/PostProperty";
 import DashboardHome from "./pages/Dashboard/Dashboard/Home";
 import LookingForPropertiesDashboard from "./pages/Dashboard/homeListing/LookingForPropertiesDashboard";
 import PropertyCarouselDashboard from "./pages/Dashboard/homeListing/PropertyCarouselDashboard";
@@ -45,16 +45,17 @@ import ThailandSecretsDashboard from "./pages/Dashboard/homeListing/ThailandSecr
 import Blog from "./pages/blog/Blog";
 import BlogDetails from "./pages/blog/BlogDetails";
 import CityProperty from "./pages/Properties/CityProperty";
-import BlogDashboard from "./pages/Dashboard/BlogDash/BlogDashboard";
-import CustomerManagement from "./pages/Dashboard/CustomerManagement";
+import BlogDashboard from "./components/dashboard/BlogDash/BlogDashboard";
+import CustomerManagement from "./components/dashboard/Management/CustomerManagement";
 import LoginPopupDashboard from "./pages/Dashboard/homeListing/PopupDashboard";
 import SubscribePopupDashboard from "./components/dashboard/homeListing/SubscribePopupCrud";
-import Projects from "./pages/Dashboard/RealEstate/Projects";
-import Features from "./pages/Dashboard/RealEstate/Features"
-import Investores from "./pages/Dashboard/RealEstate/Investores";
-import BlogCategories from "./pages/Dashboard/BlogDash/BlogCategories";
-import Categories from "./pages/Dashboard/RealEstate/Categories";
-import Reviews from "./pages/Dashboard/RealEstate/Reviews"
+import Projects from "./components/dashboard/RealEstate/Projects";
+import Features from "./components/dashboard/RealEstate/Features"
+import Investores from "./components/dashboard/RealEstate/Investors";
+import BlogCategories from "./components/dashboard/BlogDash/BlogCategories";
+import Categories from "./components/dashboard/RealEstate/Categories";
+import Reviews from "./components/dashboard/RealEstate/Reviews"
+import Subscription from "./pages/Dashboard/subscription/Subscription"
 
 
 function App() {
@@ -126,6 +127,9 @@ function App() {
             <Route path="/dashboard/Investors" element={<Investores/>}/>
             <Route path="/dashboard/propertyCategories" element={<Categories/>} />
             <Route path="/dashboard/reviews" element={<Reviews/>} />
+
+            {/* {Subscription} */}
+            <Route path="/dashboard/subscription" element={<Subscription/>} />
 
             {/* Tables */}
             <Route path="basic-tables" element={<BasicTables />} />

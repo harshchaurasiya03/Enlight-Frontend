@@ -41,6 +41,7 @@ const navItems: NavItem[] = [
     icon: <TableIcon />,
     subItems: [
       { name: "Customer Management", path: "/dashboard/CustomerManagement", pro: false },
+      {name: "User Tables", path: "/dashboard/basic-tables", pro: false},
     ],
   },
 
@@ -69,6 +70,11 @@ const navItems: NavItem[] = [
     ],
   },
   {
+    icon: <UserCircleIcon />,
+    name: "Subscription",
+    path: "/dashboard/subscription",
+  },
+  {
     name: "Payment",
     icon: <TableIcon />,
     subItems: [
@@ -84,6 +90,7 @@ const navItems: NavItem[] = [
       { name: "Careers", path: " ", pro: false }
     ],
   },
+  
   {
     name: "Home Listing",
     icon: <ListIcon />,
