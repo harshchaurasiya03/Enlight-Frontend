@@ -60,6 +60,7 @@ export const fetchUserById =
         authHeaders()
       );
       dispatch(userOk(data.user as User));
+       dispatch(fetchUsers());
     } catch (err: any) {
       dispatch(userErr(err?.response?.data?.message || "User not found"));
     }
@@ -72,11 +73,12 @@ export const updateUser =
     try {
       dispatch(userReq());
       const { data } = await axios.put(
-        `${BASE_URL}/user/users/${id}`,
+        `${BASE_URL}/user/${id}`,
         payload,
         authHeaders()
       );
       dispatch(updateOk({ message: data.message, user: data.user as User }));
+      dispatch(fetchUsers());
     } catch (err: any) {
       dispatch(userErr(err?.response?.data?.message || "Update failed"));
     }
@@ -88,11 +90,12 @@ export const patchUser =
     try {
       dispatch(userReq());
       const { data } = await axios.patch(
-        `${BASE_URL}/user/users/${id}`,
+        `${BASE_URL}/user/${id}`,
         payload,
         authHeaders()
       );
       dispatch(patchOk({ message: data.message, user: data.user as User }));
+      dispatch(fetchUsers());
     } catch (err: any) {
       dispatch(userErr(err?.response?.data?.message || "Patch failed"));
     }
@@ -104,10 +107,11 @@ export const deleteUserById =
     try {
       dispatch(userReq());
       const { data } = await axios.delete(
-        `${BASE_URL}/user/users/${id}`,
+        `${BASE_URL}/user/${id}`,
         authHeaders()
       );
       dispatch(deleteOk(data?.message || "User deleted"));
+      dispatch(fetchUsers());
     } catch (err: any) {
       dispatch(userErr(err?.response?.data?.message || "Delete failed"));
     }
@@ -157,6 +161,7 @@ export const updateMyProfile =
       );
 
       dispatch(profileOk(data.user as User));
+      dispatch(fetchUsers());
     } catch (err: any) {
       dispatch(
         userErr(err?.response?.data?.message || "Profile update failed")
@@ -179,6 +184,7 @@ export const addFavorite =
         authHeaders()
       );
       dispatch(favsOk(data.favorites));
+      dispatch(fetchUsers());
     } catch (err: any) {
       dispatch(
         userErr(err?.response?.data?.message || "Unable to add favorite")
@@ -196,6 +202,7 @@ export const removeFavorite =
         data: { propertyId },
       });
       dispatch(favsOk(data.favorites));
+      dispatch(fetchUsers());
     } catch (err: any) {
       dispatch(
         userErr(err?.response?.data?.message || "Unable to remove favorite")

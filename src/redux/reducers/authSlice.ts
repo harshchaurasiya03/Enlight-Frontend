@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-
 import { User } from "../../types/User";
 
 export interface AuthState {
@@ -111,6 +110,23 @@ const authSlice = createSlice({
       }
     },
 
+    createUserReq(state) {
+      state.loading = true;
+      state.error = null;
+      state.message = null;
+    },
+
+    createUserOk(state, action: PayloadAction<string>) {
+      state.loading = false;
+      state.message = action.payload || "User created successfully.";
+      state.error = null;
+    },
+
+    createUserErr(state, action: PayloadAction<string>) {
+      state.loading = false;
+      state.error = action.payload || "Unable to create user.";
+    },
+
     authErr(state, action: PayloadAction<string>) {
       state.loading = false;
       state.error = action.payload || "Something went wrong";
@@ -133,6 +149,9 @@ export const {
   forgotOk,
   resetOk,
   verifyOk,
+  createUserReq,
+  createUserOk,
+  createUserErr,
   authErr,
   clearMsg,
 } = authSlice.actions;

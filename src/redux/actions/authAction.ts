@@ -65,6 +65,32 @@ export const registerUser =
     }
   };
 
+  // Create User by SuperAdmin
+export const createUserBySuperAdmin =
+  (payload: { name: string; email: string; role: string }) =>
+  async (dispatch: AppDispatch) => {
+    try {
+      dispatch({ type: "auth/createUserReq" });
+
+      const { data } = await axios.post(
+        `${BASE_URL}/auth/admin/create-user`,
+        payload,
+        authHeaders() // attaches Bearer token automatically
+      );
+
+      dispatch({
+        type: "auth/createUserOk",
+        payload: data.message || "User created successfully",
+      });
+    } catch (error: any) {
+      dispatch({
+        type: "auth/createUserErr",
+        payload: error.response?.data?.message || "Unable to create user",
+      });
+    }
+  };
+
+
 // Login
 export const loginUser =
   (credentials: { email: string; password: string }) =>

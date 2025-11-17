@@ -134,11 +134,12 @@ function App() {
 
             {/* Tables */}
             <Route path="basic-tables" element={<BasicTables />} />
-            <Route path="/dashboard/CustomerManagement" element={<CustomerManagement />} />
+            <Route path="CustomerManagement" element={<CustomerManagement />} />
             <Route path="PropertyTable" element={<PostProperty />} />
             <Route path="Blog" element={<BlogDashboard/>} />
             <Route path="/dashboard/Categories" element={<BlogCategories/>} />
             <Route path="/dashboard/tags" element={<BlogTag/>} />
+            <Route path="Categories" element={<BlogCategories/>} />
 
             {/* UI Elements */}
             <Route path="alerts" element={<Alerts />} />
