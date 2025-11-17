@@ -1,182 +1,162 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useAppDispatch, useAppSelector } from "../../../redux/hooks/redux";
+import {
+  fetchUsers,
+  patchUser,
+  deleteUserById,
+} from "../../../redux/actions/userAction";
+import { createUserBySuperAdmin } from "../../../redux/actions/authAction";
+import { User } from "../../../types/User";
+
+type EditableUser = Partial<User> & { _id?: string; id?: string };
 
 export default function CustomerManagement() {
-  const [selected, setSelected] = useState<string[]>([]);
-  const [isEditMode, setIsEditMode] = useState(false);
-  const [showRolePopup, setShowRolePopup] = useState(false);
-  const [roleEditItem, setRoleEditItem] = useState<any>(null);
-  const [deleteTarget, setDeleteTarget] = useState<any>(null);
+  const dispatch = useAppDispatch();
+  const { users, loading, error } = useAppSelector((s) => s.user);
 
-  const [data, setData] = useState([
-    {
-      id: "1",
-      username: "Alex",
-      email: "ferry.hor@emmerich.com",
-      phone: "9898989898",
-      role: "Admin",
-      created: "2025-10-22",
-      status: "Activated",
-      isSuper: true,
-    },
-    {
-      id: "2",
-      username: "Lorna Mark",
-      email: "lorna@example.com",
-      phone: "9999999999",
-      role: "User",
-      created: "2025-10-25",
-      status: "Activated",
-      isSuper: false,
-    },
-      {
-      id: "3",
-      username: "Mark",
-      email: "lona@example.com",
-      phone: "9999995349",
-      role: "User",
-      created: "2025-12-25",
-      status: "Activated",
-      isSuper: false,
-    },
-  ]);
+  const ASSET_URL = import.meta.env.VITE_ASSET_URL || "";
 
-  const [showBulk, setShowBulk] = useState(false);
+  // UI states (matches your old UI)
   const [showCreatePopup, setShowCreatePopup] = useState(false);
-  const [editItem, setEditItem] = useState<any>(null);
-  const [bulkValues, setBulkValues] = useState({
-    username: "",
-    email: "",
-    status: "",
-    created: "",
-  });
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [editItem, setEditItem] = useState<EditableUser | null>(null);
 
-  const toggleSelect = (id: string) => {
-    setSelected((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
-    );
+  const [showRolePopup, setShowRolePopup] = useState(false);
+  const [roleEditItem, setRoleEditItem] = useState<EditableUser | null>(null);
+
+  const [deleteTarget, setDeleteTarget] = useState<EditableUser | null>(null);
+
+  useEffect(() => {
+    dispatch(fetchUsers());
+  }, [dispatch]);
+
+  const getUserId = (u: EditableUser) => u._id || u.id || "";
+
+  const getPhoto = (photo?: string) => {
+    if (!photo) return "/images/user.png";
+    return photo.startsWith("http") ? photo : `${ASSET_URL}${photo}`;
   };
 
-  const handleBulkApply = () => {
-    const updated = data.map((item) => {
-      if (selected.includes(item.id)) {
-        return {
-          ...item,
-          username: bulkValues.username || item.username,
-          email: bulkValues.email || item.email,
-          status: bulkValues.status || item.status,
-          created: bulkValues.created || item.created,
-        };
+  /* -------------------------
+     CREATE / SAVE (createUser or patchUser)
+     ------------------------- */
+  const handleSave = async () => {
+    if (!editItem) return;
+    if (!editItem.name || !editItem.email) {
+      alert("Name & Email are required");
+      return;
+    }
+
+    try {
+      if (isEditMode) {
+        const id = getUserId(editItem);
+        if (!id) {
+          alert("Invalid user id");
+          return;
+        }
+        await dispatch(
+          patchUser(id, {
+            name: editItem.name,
+            email: editItem.email,
+            phone: editItem.phone,
+            role: editItem.role,
+            agency: editItem.agency,
+          })
+        );
+      } else {
+        // createUserBySuperAdmin expects { name, email, role } per backend
+        await dispatch(
+          createUserBySuperAdmin({
+            name: editItem.name!,
+            email: editItem.email!,
+            role: editItem.role || "user",
+          })
+        );
+        // Note: phone/agency won't be saved by backend unless backend accepts them.
       }
-      return item;
-    });
 
-    setData(updated);
-    setShowBulk(false);
-    setSelected([]);
+      // Refresh list so UI shows the updated data immediately
+      await dispatch(fetchUsers());
+    } catch (err) {
+      // errors are handled in Redux; keep the UI responsive
+      console.error("Save failed", err);
+    } finally {
+      setShowCreatePopup(false);
+      setIsEditMode(false);
+      setEditItem(null);
+    }
   };
 
-  const handleDeleteSelected = () => {
-    setData(data.filter((item) => !selected.includes(item.id)));
-    setSelected([]);
-    setShowBulk(false);
+  /* -------------------------
+     DELETE
+     ------------------------- */
+  const handleConfirmDelete = async () => {
+    const id = getUserId(deleteTarget || {});
+    if (!id) return;
+
+    try {
+      await dispatch(deleteUserById(id));
+      await dispatch(fetchUsers());
+    } catch (err) {
+      console.error("Delete failed", err);
+    } finally {
+      setDeleteTarget(null);
+    }
   };
 
-  const confirmDelete = (item: any) => {
-    setDeleteTarget(item);
+  /* -------------------------
+     ROLE POPUP SAVE (patch role)
+     ------------------------- */
+  const handleRoleSave = async () => {
+    if (!roleEditItem) return;
+    const id = getUserId(roleEditItem);
+    if (!id) return;
+
+    try {
+      await dispatch(patchUser(id, { role: roleEditItem.role }));
+      await dispatch(fetchUsers());
+    } catch (err) {
+      console.error("Role update failed", err);
+    } finally {
+      setShowRolePopup(false);
+      setRoleEditItem(null);
+    }
   };
 
-  const handleEditSave = () => {
-    const updated = data.map((item) =>
-      item.id === editItem.id ? editItem : item
-    );
-    setData(updated);
-    setEditItem(null);
+  /* -------------------------
+     Dummy status toggle (kept as requested)
+     ------------------------- */
+  const toggleStatus = (u: EditableUser) => {
+    // purely UI — no backend call now
+    const id = getUserId(u);
+    // We'll mutate local users in-memory for instant visual feedback:
+    // but since users come from Redux, it's simpler to re-fetch later — so skip local mutation.
+    // For now do nothing (or you can implement optimistic UI if desired).
+    console.log("Toggled status for", id);
   };
 
   return (
-    <div className="w-full p-6 bg-white ">
+    <div className="w-full p-6 bg-white">
       {/* Top bar */}
       <div className="flex items-center justify-between mb-4">
-        <div className="flex gap-3 relative">
-          <button
-            onClick={() => setShowBulk(!showBulk)}
-            className="px-4 py-2 bg-white border rounded-md"
-          >
-            Bulk Actions
-          </button>
-
-          {/* BULK DROPDOWN */}
-          {showBulk && (
-            <div className="absolute top-12 left-0 bg-white border rounded-md shadow-md w-64 p-3 z-20">
-              <h3 className="font-semibold mb-2">Bulk Change</h3>
-
-              <input
-                placeholder="Username"
-                className="w-full mb-2 px-2 py-1 border rounded"
-                onChange={(e) =>
-                  setBulkValues({ ...bulkValues, username: e.target.value })
-                }
-              />
-              <input
-                placeholder="Email"
-                className="w-full mb-2 px-2 py-1 border rounded"
-                onChange={(e) =>
-                  setBulkValues({ ...bulkValues, email: e.target.value })
-                }
-              />
-              <input
-                placeholder="Status"
-                className="w-full mb-2 px-2 py-1 border rounded"
-                onChange={(e) =>
-                  setBulkValues({ ...bulkValues, status: e.target.value })
-                }
-              />
-              <input
-                placeholder="Created At"
-                className="w-full mb-2 px-2 py-1 border rounded"
-                onChange={(e) =>
-                  setBulkValues({ ...bulkValues, created: e.target.value })
-                }
-              />
-
-              <button
-                onClick={handleBulkApply}
-                className="w-full bg-blue-600 text-white py-1 rounded mb-2"
-              >
-                Apply
-              </button>
-
-              <hr className="my-3" />
-
-              <h3 className="font-semibold mb-2 text-red-600">Delete</h3>
-              <button
-                onClick={handleDeleteSelected}
-                className="w-full bg-red-600 text-white py-1 rounded"
-              >
-                Delete Selected
-              </button>
-            </div>
-          )}
-
-          <button className="px-4 py-2 border rounded-md">Filters</button>
-          <input
-            placeholder="Search..."
-            className="w-64 px-3 py-2 border rounded-md"
-          />
+        <div className="flex gap-3">
+          <h2 className="text-2xl font-semibold">Customer Management</h2>
         </div>
 
         <div className="flex gap-3">
           <button
-            onClick={() => setShowCreatePopup(true)}
+            onClick={() => {
+              setEditItem({ name: "", email: "", phone: "", role: "user", agency: "" });
+              setIsEditMode(false);
+              setShowCreatePopup(true);
+            }}
             className="px-4 py-2 bg-blue-600 text-white rounded-md"
           >
             + Create
           </button>
-          <button
-            className="px-4 py-2 border rounded-md"
-            onClick={() => window.location.reload()}
-          >
-            🗘Reload
+
+          <button className="px-4 py-2 border rounded-md" onClick={() => window.location.reload()}>
+            Reload
           </button>
         </div>
       </div>
@@ -186,24 +166,12 @@ export default function CustomerManagement() {
         <table className="w-full text-sm">
           <thead className="bg-gray-100 text-gray-700">
             <tr>
-              <th className="p-3">
-                <input
-                  type="checkbox"
-                  checked={selected.length === data.length && data.length > 0}
-                  onChange={() =>
-                    setSelected(
-                      selected.length === data.length
-                        ? []
-                        : data.map((d) => d.id)
-                    )
-                  }
-                />
-              </th>
-              <th className="p-3 text-left">USERNAME</th>
-              <th className="p-3 text-left">EMAIL</th>
-              <th className="p-3 text-left">PHONE</th>
-              <th className="p-3 text-left">ROLE</th>
-              <th className="p-3 text-left">CREATED AT</th>
+              <th className="p-3 text-left">Photo</th>
+              <th className="p-3 text-left">Name</th>
+              <th className="p-3 text-left">Email</th>
+              <th className="p-3 text-left">Role</th>
+              <th className="p-3 text-left">Agency</th>
+              <th className="p-3 text-left">Phone</th>
               <th className="p-3 text-left">STATUS</th>
               <th className="p-3 text-left">IS SUPER?</th>
               <th className="p-3 text-left">OPERATIONS</th>
@@ -211,241 +179,169 @@ export default function CustomerManagement() {
           </thead>
 
           <tbody>
-            {data.map((row) => (
-              <tr key={row.id} className="border-b hover:bg-gray-50">
-                <td className="p-3">
-                  <input
-                    type="checkbox"
-                    checked={selected.includes(row.id)}
-                    onChange={() => toggleSelect(row.id)}
-                  />
-                </td>
-
-                <td className="p-3">{row.username}</td>
-                <td className="p-3">{row.email}</td>
-                <td className="p-3">{row.phone}</td>
-                <td
-                  className="p-3 text-blue-600 cursor-pointer underline"
-                  onClick={() => {
-                    setRoleEditItem({ ...row });
-                    setShowRolePopup(true);
-                  }}
-                >
-                  {row.role}
-                </td>
-
-                <td className="p-3">{row.created}</td>
-
-                <td className="p-3">
-                  <span
-                    className={`px-3 py-1 rounded-md text-xs cursor-pointer ${
-                      row.status === "Activated"
-                        ? "bg-blue-500 text-white"
-                        : "bg-gray-400 text-white"
-                    }`}
-                    onClick={() => {
-                      setData((prev) =>
-                        prev.map((user) =>
-                          user.id === row.id
-                            ? {
-                                ...user,
-                                status:
-                                  user.status === "Activated"
-                                    ? "Deactivated"
-                                    : "Activated",
-                              }
-                            : user
-                        )
-                      );
-                    }}
-                  >
-                    {row.status}
-                  </span>
-                </td>
-
-                <td className="p-3">
-                  <span className="px-3 py-1 bg-green-500 text-white rounded-md text-xs">
-                    {row.isSuper ? "Yes" : "No"}
-                  </span>
-                </td>
-
-                <td className="p-3 flex gap-2">
-                  <button
-                    onClick={() =>
-                      setData((prev) =>
-                        prev.map((u) =>
-                          u.id === row.id ? { ...u, isSuper: false } : u
-                        )
-                      )
-                    }
-                    className="px-3 py-1 bg-yellow-500 text-white rounded-md text-xs"
-                  >
-                    Remove super
-                  </button>
-
-                  <button
-                    onClick={() => {
-                      setEditItem({ ...row });
-                      setIsEditMode(true);
-                      setShowCreatePopup(true);
-                    }}
-                    className="px-3 py-1 bg-blue-500 text-white rounded-md text-xs"
-                  >
-                    ✎
-                  </button>
-
-                  <button
-                    onClick={() => confirmDelete(row)}
-                    className="px-3 py-1 bg-red-500 text-white rounded-md text-xs"
-                  >
-                    🗑
-                  </button>
+            {loading ? (
+              <tr>
+                <td colSpan={11} className="py-5 text-center text-gray-500">
+                  Loading users...
                 </td>
               </tr>
-            ))}
+            ) : error ? (
+              <tr>
+                <td colSpan={11} className="py-5 text-center text-red-500">
+                  {error}
+                </td>
+              </tr>
+            ) : users.length === 0 ? (
+              <tr>
+                <td colSpan={11} className="py-5 text-center text-gray-500">
+                  No users found
+                </td>
+              </tr>
+            ) : (
+              users.map((user) => {
+                const uid = getUserId(user);
+                const isSuper = user.role === "superadmin";
+                return (
+                  <tr key={uid} className="border-b hover:bg-gray-50">
+
+                    <td className="p-3">
+                      <div className="w-10 h-10 overflow-hidden rounded-full">
+                        <img src={getPhoto(user.photo)} alt={user.name} className="w-full h-full object-cover" />
+                      </div>
+                    </td>
+
+                    <td className="p-3">{user.name}</td>
+                    <td className="p-3">{user.email}</td>
+
+                    <td
+                      className="p-3 text-blue-600 cursor-pointer underline"
+                      onClick={() => {
+                        setRoleEditItem({ ...user });
+                        setShowRolePopup(true);
+                      }}
+                    >
+                      {user.role}
+                    </td>
+
+                    <td className="p-3">{user.agency || "-"}</td>
+                    <td className="p-3">{user.phone || "-"}</td>
+
+
+                    <td className="p-3">
+                      <span
+                        className={`px-3 py-1 rounded-md text-xs cursor-pointer ${
+                          /* dummy: always Activated by default */
+                          "bg-blue-500 text-white"
+                        }`}
+                        onClick={() => toggleStatus(user)}
+                      >
+                        Activated
+                      </span>
+                    </td>
+
+                    <td className="p-3">
+                      <span className={`px-3 py-1 text-white rounded-md text-xs ${isSuper ? 'bg-green-800' : 'bg-gray-500'}`}>
+                        {isSuper ? "YES" : "NO"}
+                      </span>
+                    </td>
+
+                    <td className="p-3 flex gap-2">
+                      <button
+                        onClick={() => {
+                          setEditItem({ ...user });
+                          setIsEditMode(true);
+                          setShowCreatePopup(true);
+                        }}
+                        className="px-3 py-1 bg-blue-500 text-white rounded-md text-xs"
+                      >
+                        ✎
+                      </button>
+
+                      <button
+                        onClick={() => setDeleteTarget({ ...user })}
+                        className="px-3 py-1 bg-red-500 text-white rounded-md text-xs"
+                      >
+                        🗑
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })
+            )}
           </tbody>
         </table>
 
         <div className="p-4 text-gray-600 text-sm flex items-center gap-2">
-          <span>
-            🌐 Showing {data.length} record{data.length > 1 ? "s" : ""}
-          </span>
+          <span>🌐 Showing {users.length} record{users.length > 1 ? "s" : ""}</span>
         </div>
       </div>
 
-      {/* CREATE POPUP */}
-      {showCreatePopup && (
+      {/* CREATE / EDIT POPUP */}
+      {showCreatePopup && editItem && (
         <div className="flex items-center top-0 left-0 justify-center z-50 absolute inset-0 bg-opacity-40 backdrop-blur-sm">
           <div className="relative bg-white p-8 rounded shadow w-[700px] max-w-full translate-x-16">
-            <h2 className="text-lg font-semibold mb-4">
-              {isEditMode ? "Edit User" : "Create User"}
-            </h2>
+            <h2 className="text-lg font-semibold mb-4">{isEditMode ? "Edit User" : "Create User"}</h2>
 
             <div className="grid grid-cols-2 gap-4 mb-3">
               <div>
-                <label className="text-sm font-medium">First Name</label>
+                <label className="text-sm font-medium">Name</label>
                 <input
                   className="w-full px-3 py-2 border rounded mt-1"
-                  placeholder="Enter first name"
-                  value={editItem?.firstName || ""}
-                  onChange={(e) =>
-                    setEditItem({ ...editItem, firstName: e.target.value })
-                  }
+                  placeholder="Enter name"
+                  value={editItem.name || ""}
+                  onChange={(e) => setEditItem({ ...editItem, name: e.target.value })}
                 />
               </div>
-              <div>
-                <label className="text-sm font-medium">Last Name</label>
-                <input
-                  className="w-full px-3 py-2 border rounded mt-1"
-                  placeholder="Enter last name"
-                  value={editItem?.lastName || ""}
-                  onChange={(e) =>
-                    setEditItem({ ...editItem, lastName: e.target.value })
-                  }
-                />
-              </div>
-            </div>
 
-            <div className="grid grid-cols-2 gap-4 mb-3">
-              <div>
-                <label className="text-sm font-medium">Username</label>
-                <input
-                  className="w-full px-3 py-2 border rounded mt-1"
-                  placeholder="Enter username"
-                  value={editItem?.username || ""}
-                  onChange={(e) =>
-                    setEditItem({ ...editItem, username: e.target.value })
-                  }
-                />
-              </div>
               <div>
                 <label className="text-sm font-medium">Email</label>
                 <input
                   className="w-full px-3 py-2 border rounded mt-1"
                   placeholder="Ex: example@gmail.com"
-                  value={editItem?.email || ""}
-                  onChange={(e) =>
-                    setEditItem({ ...editItem, email: e.target.value })
-                  }
+                  value={editItem.email || ""}
+                  onChange={(e) => setEditItem({ ...editItem, email: e.target.value })}
                 />
               </div>
             </div>
 
-            <div className="mb-3">
-              <label className="text-sm font-medium">Phone</label>
-              <div className="flex gap-2 mt-1">
-                <span className="px-3 py-2 border rounded bg-gray-100">
-                  +91
-                </span>
+            <div className="grid grid-cols-2 gap-4 mb-3">
+              <div>
+                <label className="text-sm font-medium">Phone</label>
                 <input
-                  className="w-full px-3 py-2 border rounded"
+                  className="w-full px-3 py-2 border rounded mt-1"
                   placeholder="Phone"
-                  value={editItem?.phone || ""}
-                  onChange={(e) =>
-                    setEditItem({ ...editItem, phone: e.target.value })
-                  }
+                  value={editItem.phone || ""}
+                  onChange={(e) => setEditItem({ ...editItem, phone: e.target.value })}
+                />
+              </div>
+
+              <div>
+                <label className="text-sm font-medium">Agency</label>
+                <input
+                  className="w-full px-3 py-2 border rounded mt-1"
+                  placeholder="Agency"
+                  value={editItem.agency || ""}
+                  onChange={(e) => setEditItem({ ...editItem, agency: e.target.value })}
                 />
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4 mb-4">
-              <div>
-                <label className="text-sm font-medium">Password</label>
-                <input
-                  type="password"
-                  className="w-full px-3 py-2 border rounded mt-1"
-                  placeholder="Enter password"
-                  value={editItem?.password || ""}
-                  onChange={(e) =>
-                    setEditItem({ ...editItem, password: e.target.value })
-                  }
-                />
-              </div>
-              <div>
-                <label className="text-sm font-medium">Re-type Password</label>
-                <input
-                  type="password"
-                  className="w-full px-3 py-2 border rounded mt-1"
-                  placeholder="Re-type password"
-                  value={editItem?.repassword || ""}
-                  onChange={(e) =>
-                    setEditItem({ ...editItem, repassword: e.target.value })
-                  }
-                />
-              </div>
+            <div className="mb-4">
+              <label className="text-sm font-medium">Role</label>
+              <select
+                className="w-full px-3 py-2 border rounded mt-1"
+                value={editItem.role || "user"}
+                onChange={(e) => setEditItem({ ...editItem, role: e.target.value })}
+              >
+                <option value="user">user</option>
+                <option value="buyer">buyer</option>
+                <option value="owner">owner</option>
+                <option value="admin">admin</option>
+              </select>
             </div>
 
             <div className="flex gap-3">
-              <button
-                onClick={() => {
-                  if (isEditMode) {
-                    setData((prev) =>
-                      prev.map((user) =>
-                        user.id === editItem.id
-                          ? { ...user, ...editItem }
-                          : user
-                      )
-                    );
-                  } else {
-                    const newUser = {
-                      id: (data.length + 1).toString(),
-                      username: editItem?.username || "",
-                      email: editItem?.email || "",
-                      phone: editItem?.phone || "",
-                      role: "User",
-                      created: new Date().toISOString().split("T")[0],
-                      status: "Activated",
-                      isSuper: false,
-                    };
-                    setData([...data, newUser]);
-                  }
-
-                  setEditItem(null);
-                  setIsEditMode(false);
-                  setShowCreatePopup(false);
-                }}
-                className="px-4 py-2 bg-blue-600 text-white rounded-md flex-1"
-              >
+              <button onClick={handleSave} className="px-4 py-2 bg-blue-600 text-white rounded-md flex-1">
                 {isEditMode ? "Save Changes" : "Save"}
               </button>
 
@@ -464,41 +360,30 @@ export default function CustomerManagement() {
         </div>
       )}
 
-      {/* Role Popup */}
-      {showRolePopup && (
+      {/* ROLE POPUP */}
+      {showRolePopup && roleEditItem && (
         <div className="flex items-center justify-center z-20 absolute inset-0 bg-opacity-40 backdrop-blur-sm">
           <div className="relative bg-white p-6 rounded shadow w-[400px] max-w-full translate-x-16">
             <h2 className="text-lg font-semibold mb-4">Edit Role</h2>
 
             <div className="mb-4">
-              <label className="text-sm font-medium mb-2 block">
-                Select Role
-              </label>
+              <label className="text-sm font-medium mb-2 block">Select Role</label>
               <select
                 className="w-full px-3 py-2 border rounded mt-1"
-                value={roleEditItem?.role || "User"}
-                onChange={(e) =>
-                  setRoleEditItem({ ...roleEditItem, role: e.target.value })
-                }
+                value={roleEditItem.role || "user"}
+                onChange={(e) => setRoleEditItem({ ...roleEditItem, role: e.target.value })}
               >
-                <option value="Admin">Admin</option>
-                <option value="User">User</option>
+                <option value="user">user</option>
+                <option value="buyer">buyer</option>
+                <option value="owner">owner</option>
+                <option value="seller">seller</option>
+                <option value="admin">admin</option>
               </select>
             </div>
 
             <div className="flex gap-3">
               <button
-                onClick={() => {
-                  setData((prev) =>
-                    prev.map((user) =>
-                      user.id === roleEditItem.id
-                        ? { ...user, role: roleEditItem.role }
-                        : user
-                    )
-                  );
-                  setShowRolePopup(false);
-                  setRoleEditItem(null);
-                }}
+                onClick={handleRoleSave}
                 className="px-4 py-2 bg-blue-600 text-white rounded-md flex-1"
               >
                 Save
@@ -518,34 +403,21 @@ export default function CustomerManagement() {
         </div>
       )}
 
-      {/* Delete confirmation popup */}
+      {/* DELETE CONFIRM */}
       {deleteTarget && (
         <div className="flex items-center justify-center z-50 fixed inset-0 bg-black/30">
           <div className="bg-white p-6 rounded shadow w-full max-w-md">
             <h3 className="text-lg font-semibold mb-2">Delete User</h3>
             <p className="text-sm text-gray-600 mb-4">
-              Are you sure you want to delete{" "}
-              <strong>{deleteTarget.username}</strong>? This action cannot be
-              undone.
+              Are you sure you want to delete <strong>{deleteTarget.name}</strong>? This action cannot be undone.
             </p>
 
             <div className="flex gap-3 justify-end">
-              <button
-                onClick={() => setDeleteTarget(null)}
-                className="px-4 py-2 bg-gray-300 text-black rounded-md flex-1"
-              >
+              <button onClick={() => setDeleteTarget(null)} className="px-4 py-2 bg-gray-300 text-black rounded-md flex-1">
                 Cancel
               </button>
 
-              <button
-                onClick={() => {
-                  setData((prev) =>
-                    prev.filter((s) => s.id !== deleteTarget.id)
-                  );
-                  setDeleteTarget(null);
-                }}
-                className="px-4 py-2 bg-red-600 text-white rounded-md flex-1"
-              >
+              <button onClick={handleConfirmDelete} className="px-4 py-2 bg-red-600 text-white rounded-md flex-1">
                 Delete
               </button>
             </div>
