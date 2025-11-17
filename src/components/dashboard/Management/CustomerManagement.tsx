@@ -4,6 +4,7 @@ import {
   fetchUsers,
   patchUser,
   deleteUserById,
+  toggleBlockUser
 } from "../../../redux/actions/userAction";
 import { createUserBySuperAdmin } from "../../../redux/actions/authAction";
 import { User } from "../../../types/User";
@@ -122,11 +123,13 @@ export default function CustomerManagement() {
     }
   };
 
-  // ---------------- Dummy status toggle ----------------
-  const toggleStatus = (u: EditableUser) => {
-    const id = getUserId(u);
-    console.log("Toggled status for", id);
-  };
+const toggleStatus = (user: EditableUser) => {
+  const uid = getUserId(user);
+  if (!uid) return;
+  dispatch(toggleBlockUser(uid));
+};
+
+
 
   return (
     <div className="w-full p-6 bg-white">
@@ -217,13 +220,19 @@ export default function CustomerManagement() {
                     <td className="p-3">{user.agency || "-"}</td>
                     <td className="p-3">{user.phone || "-"}</td>
                     <td className="p-3">
-                      <span
-                        className="px-3 py-1 rounded-md text-xs cursor-pointer bg-blue-500 text-white"
-                        onClick={() => toggleStatus(user)}
-                      >
-                        Activated
-                      </span>
-                    </td>
+  <span
+    className={`px-3 py-1 rounded-md text-xs cursor-pointer ${
+      user.isBlocked
+        ? "bg-red-500 text-white"      // Blocked
+        : "bg-green-500 text-white"    // Active
+    }`}
+    onClick={() => toggleStatus(user)}
+  >
+    {user.isBlocked ? "Blocked" : "Active"}
+  </span>
+</td>
+
+
                     <td className="p-3">
                       <span
                         className={`px-3 py-1 text-white rounded-md text-xs ${

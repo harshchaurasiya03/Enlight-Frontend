@@ -35,10 +35,6 @@ const authHeaders = () => {
       };
 };
 
-/* =========================
-   ADMIN / GENERAL USER CRUD
-   ========================= */
-
 // GET /user/users — all users
 export const fetchUsers = () => async (dispatch: AppDispatch) => {
   try {
@@ -226,3 +222,29 @@ export const getFavorites = () => async (dispatch: AppDispatch) => {
 export const clearUserMessage = () => (dispatch: AppDispatch) => {
   dispatch(clearUserMsg());
 };
+
+// PATCH /user/block/:id — toggle block/unblock user
+export const toggleBlockUser =
+  (id: string) => async (dispatch: AppDispatch) => {
+    try {
+      dispatch(userReq());
+      const { data } = await axios.patch(
+        `${BASE_URL}/user/block/${id}`,
+        {},
+        authHeaders()
+      );
+
+      dispatch(
+        patchOk({
+          message: data.message,
+          user: data.user as User,
+        })
+      );
+
+      dispatch(fetchUsers());
+    } catch (err: any) {
+      dispatch(
+        userErr(err?.response?.data?.message || "Failed to toggle block status")
+      );
+    }
+  };
