@@ -5,6 +5,7 @@ export default function CustomerManagement() {
   const [isEditMode, setIsEditMode] = useState(false);
   const [showRolePopup, setShowRolePopup] = useState(false);
   const [roleEditItem, setRoleEditItem] = useState<any>(null);
+  const [deleteTarget, setDeleteTarget] = useState<any>(null);
 
   const [data, setData] = useState([
     {
@@ -22,8 +23,18 @@ export default function CustomerManagement() {
       username: "Lorna Mark",
       email: "lorna@example.com",
       phone: "9999999999",
-      role: "Member",
+      role: "User",
       created: "2025-10-25",
+      status: "Activated",
+      isSuper: false,
+    },
+      {
+      id: "3",
+      username: "Mark",
+      email: "lona@example.com",
+      phone: "9999995349",
+      role: "User",
+      created: "2025-12-25",
       status: "Activated",
       isSuper: false,
     },
@@ -61,11 +72,17 @@ export default function CustomerManagement() {
 
     setData(updated);
     setShowBulk(false);
+    setSelected([]);
   };
 
-  const handleDelete = () => {
+  const handleDeleteSelected = () => {
     setData(data.filter((item) => !selected.includes(item.id)));
     setSelected([]);
+    setShowBulk(false);
+  };
+
+  const confirmDelete = (item: any) => {
+    setDeleteTarget(item);
   };
 
   const handleEditSave = () => {
@@ -77,7 +94,7 @@ export default function CustomerManagement() {
   };
 
   return (
-    <div className="w-full p-6 bg-white">
+    <div className="w-full p-6 bg-white ">
       {/* Top bar */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex gap-3 relative">
@@ -89,7 +106,7 @@ export default function CustomerManagement() {
           </button>
 
           {/* BULK DROPDOWN */}
-          {/* {showBulk && (
+          {showBulk && (
             <div className="absolute top-12 left-0 bg-white border rounded-md shadow-md w-64 p-3 z-20">
               <h3 className="font-semibold mb-2">Bulk Change</h3>
 
@@ -124,7 +141,7 @@ export default function CustomerManagement() {
 
               <button
                 onClick={handleBulkApply}
-                className="w-full bg-blue-600 text-white py-1 rounded"
+                className="w-full bg-blue-600 text-white py-1 rounded mb-2"
               >
                 Apply
               </button>
@@ -133,13 +150,13 @@ export default function CustomerManagement() {
 
               <h3 className="font-semibold mb-2 text-red-600">Delete</h3>
               <button
-                onClick={handleDelete}
+                onClick={handleDeleteSelected}
                 className="w-full bg-red-600 text-white py-1 rounded"
               >
                 Delete Selected
               </button>
             </div>
-          )} */}
+          )}
 
           <button className="px-4 py-2 border rounded-md">Filters</button>
           <input
@@ -170,7 +187,17 @@ export default function CustomerManagement() {
           <thead className="bg-gray-100 text-gray-700">
             <tr>
               <th className="p-3">
-                <input type="checkbox" />
+                <input
+                  type="checkbox"
+                  checked={selected.length === data.length && data.length > 0}
+                  onChange={() =>
+                    setSelected(
+                      selected.length === data.length
+                        ? []
+                        : data.map((d) => d.id)
+                    )
+                  }
+                />
               </th>
               <th className="p-3 text-left">USERNAME</th>
               <th className="p-3 text-left">EMAIL</th>
@@ -200,7 +227,7 @@ export default function CustomerManagement() {
                 <td
                   className="p-3 text-blue-600 cursor-pointer underline"
                   onClick={() => {
-                    setRoleEditItem({ ...row }); // current user
+                    setRoleEditItem({ ...row });
                     setShowRolePopup(true);
                   }}
                 >
@@ -210,7 +237,28 @@ export default function CustomerManagement() {
                 <td className="p-3">{row.created}</td>
 
                 <td className="p-3">
-                  <span className="px-3 py-1 bg-blue-500 text-white rounded-md text-xs">
+                  <span
+                    className={`px-3 py-1 rounded-md text-xs cursor-pointer ${
+                      row.status === "Activated"
+                        ? "bg-blue-500 text-white"
+                        : "bg-gray-400 text-white"
+                    }`}
+                    onClick={() => {
+                      setData((prev) =>
+                        prev.map((user) =>
+                          user.id === row.id
+                            ? {
+                                ...user,
+                                status:
+                                  user.status === "Activated"
+                                    ? "Deactivated"
+                                    : "Activated",
+                              }
+                            : user
+                        )
+                      );
+                    }}
+                  >
                     {row.status}
                   </span>
                 </td>
@@ -223,7 +271,13 @@ export default function CustomerManagement() {
 
                 <td className="p-3 flex gap-2">
                   <button
-                    onClick={() => setData(data.filter((i) => i.id !== row.id))}
+                    onClick={() =>
+                      setData((prev) =>
+                        prev.map((u) =>
+                          u.id === row.id ? { ...u, isSuper: false } : u
+                        )
+                      )
+                    }
                     className="px-3 py-1 bg-yellow-500 text-white rounded-md text-xs"
                   >
                     Remove super
@@ -231,9 +285,9 @@ export default function CustomerManagement() {
 
                   <button
                     onClick={() => {
-                      setEditItem({ ...row }); // Fill popup with selected row
-                      setIsEditMode(true); // Enable edit mode
-                      setShowCreatePopup(true); // Open popup
+                      setEditItem({ ...row });
+                      setIsEditMode(true);
+                      setShowCreatePopup(true);
                     }}
                     className="px-3 py-1 bg-blue-500 text-white rounded-md text-xs"
                   >
@@ -241,7 +295,7 @@ export default function CustomerManagement() {
                   </button>
 
                   <button
-                    onClick={() => setData(data.filter((i) => i.id !== row.id))}
+                    onClick={() => confirmDelete(row)}
                     className="px-3 py-1 bg-red-500 text-white rounded-md text-xs"
                   >
                     🗑
@@ -254,22 +308,19 @@ export default function CustomerManagement() {
 
         <div className="p-4 text-gray-600 text-sm flex items-center gap-2">
           <span>
-            🌐 Show from {data.length} to {data.length} in
+            🌐 Showing {data.length} record{data.length > 1 ? "s" : ""}
           </span>
-          <span className="bg-gray-200 px-2 rounded">{data.length}</span>
-          <span>records</span>
         </div>
       </div>
 
       {/* CREATE POPUP */}
       {showCreatePopup && (
-        <div className="flex items-center justify-center z-20 absolute inset-0 bg-opacity-40 backdrop-blur-sm">
-          <div className="relative bg-white p-6 rounded shadow w-[700px] max-w-full translate-x-16">
+        <div className="flex items-center top-0 left-0 justify-center z-50 absolute inset-0 bg-opacity-40 backdrop-blur-sm">
+          <div className="relative bg-white p-8 rounded shadow w-[700px] max-w-full translate-x-16">
             <h2 className="text-lg font-semibold mb-4">
               {isEditMode ? "Edit User" : "Create User"}
             </h2>
 
-            {/* First Name & Last Name */}
             <div className="grid grid-cols-2 gap-4 mb-3">
               <div>
                 <label className="text-sm font-medium">First Name</label>
@@ -295,7 +346,6 @@ export default function CustomerManagement() {
               </div>
             </div>
 
-            {/* Username & Email */}
             <div className="grid grid-cols-2 gap-4 mb-3">
               <div>
                 <label className="text-sm font-medium">Username</label>
@@ -321,7 +371,6 @@ export default function CustomerManagement() {
               </div>
             </div>
 
-            {/* Phone */}
             <div className="mb-3">
               <label className="text-sm font-medium">Phone</label>
               <div className="flex gap-2 mt-1">
@@ -339,7 +388,6 @@ export default function CustomerManagement() {
               </div>
             </div>
 
-            {/* Password & Re-type Password */}
             <div className="grid grid-cols-2 gap-4 mb-4">
               <div>
                 <label className="text-sm font-medium">Password</label>
@@ -367,12 +415,10 @@ export default function CustomerManagement() {
               </div>
             </div>
 
-            {/* Buttons */}
             <div className="flex gap-3">
               <button
                 onClick={() => {
                   if (isEditMode) {
-                    // UPDATE existing user
                     setData((prev) =>
                       prev.map((user) =>
                         user.id === editItem.id
@@ -381,13 +427,12 @@ export default function CustomerManagement() {
                       )
                     );
                   } else {
-                    // CREATE new user
                     const newUser = {
                       id: (data.length + 1).toString(),
                       username: editItem?.username || "",
                       email: editItem?.email || "",
                       phone: editItem?.phone || "",
-                      role: "Member",
+                      role: "User",
                       created: new Date().toISOString().split("T")[0],
                       status: "Activated",
                       isSuper: false,
@@ -419,7 +464,7 @@ export default function CustomerManagement() {
         </div>
       )}
 
-      {/* Role Popup*/}
+      {/* Role Popup */}
       {showRolePopup && (
         <div className="flex items-center justify-center z-20 absolute inset-0 bg-opacity-40 backdrop-blur-sm">
           <div className="relative bg-white p-6 rounded shadow w-[400px] max-w-full translate-x-16">
@@ -431,20 +476,19 @@ export default function CustomerManagement() {
               </label>
               <select
                 className="w-full px-3 py-2 border rounded mt-1"
-                value={roleEditItem?.role || "Member"}
+                value={roleEditItem?.role || "User"}
                 onChange={(e) =>
                   setRoleEditItem({ ...roleEditItem, role: e.target.value })
                 }
               >
                 <option value="Admin">Admin</option>
-                <option value="Member">Member</option>
+                <option value="User">User</option>
               </select>
             </div>
 
             <div className="flex gap-3">
               <button
                 onClick={() => {
-                  // Update role in data
                   setData((prev) =>
                     prev.map((user) =>
                       user.id === roleEditItem.id
@@ -468,6 +512,41 @@ export default function CustomerManagement() {
                 className="px-4 py-2 bg-gray-300 text-black rounded-md flex-1"
               >
                 Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete confirmation popup */}
+      {deleteTarget && (
+        <div className="flex items-center justify-center z-50 fixed inset-0 bg-black/30">
+          <div className="bg-white p-6 rounded shadow w-full max-w-md">
+            <h3 className="text-lg font-semibold mb-2">Delete User</h3>
+            <p className="text-sm text-gray-600 mb-4">
+              Are you sure you want to delete{" "}
+              <strong>{deleteTarget.username}</strong>? This action cannot be
+              undone.
+            </p>
+
+            <div className="flex gap-3 justify-end">
+              <button
+                onClick={() => setDeleteTarget(null)}
+                className="px-4 py-2 bg-gray-300 text-black rounded-md flex-1"
+              >
+                Cancel
+              </button>
+
+              <button
+                onClick={() => {
+                  setData((prev) =>
+                    prev.filter((s) => s.id !== deleteTarget.id)
+                  );
+                  setDeleteTarget(null);
+                }}
+                className="px-4 py-2 bg-red-600 text-white rounded-md flex-1"
+              >
+                Delete
               </button>
             </div>
           </div>
