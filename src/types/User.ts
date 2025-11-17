@@ -8,6 +8,7 @@ export interface User {
   phone?: string;
   agency?: string;
   photo?: string;
+  isBlocked?: boolean;
   favorites?: string[] | any[];
   recentViews?: string[] | any[];
   subscription?: string;

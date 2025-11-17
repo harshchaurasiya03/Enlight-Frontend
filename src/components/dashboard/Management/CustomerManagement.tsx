@@ -4,6 +4,7 @@ import {
   fetchUsers,
   patchUser,
   deleteUserById,
+  toggleBlockUser
 } from "../../../redux/actions/userAction";
 import { createUserBySuperAdmin } from "../../../redux/actions/authAction";
 import { User } from "../../../types/User";
@@ -123,17 +124,13 @@ export default function CustomerManagement() {
     }
   };
 
-  /* -------------------------
-     Dummy status toggle (kept as requested)
-     ------------------------- */
-  const toggleStatus = (u: EditableUser) => {
-    // purely UI — no backend call now
-    const id = getUserId(u);
-    // We'll mutate local users in-memory for instant visual feedback:
-    // but since users come from Redux, it's simpler to re-fetch later — so skip local mutation.
-    // For now do nothing (or you can implement optimistic UI if desired).
-    console.log("Toggled status for", id);
-  };
+const toggleStatus = (user: EditableUser) => {
+  const uid = getUserId(user);
+  if (!uid) return;
+  dispatch(toggleBlockUser(uid));
+};
+
+
 
   return (
     <div className="w-full p-6 bg-white">
@@ -228,16 +225,18 @@ export default function CustomerManagement() {
 
 
                     <td className="p-3">
-                      <span
-                        className={`px-3 py-1 rounded-md text-xs cursor-pointer ${
-                          /* dummy: always Activated by default */
-                          "bg-blue-500 text-white"
-                        }`}
-                        onClick={() => toggleStatus(user)}
-                      >
-                        Activated
-                      </span>
-                    </td>
+  <span
+    className={`px-3 py-1 rounded-md text-xs cursor-pointer ${
+      user.isBlocked
+        ? "bg-red-500 text-white"      // Blocked
+        : "bg-green-500 text-white"    // Active
+    }`}
+    onClick={() => toggleStatus(user)}
+  >
+    {user.isBlocked ? "Blocked" : "Active"}
+  </span>
+</td>
+
 
                     <td className="p-3">
                       <span className={`px-3 py-1 text-white rounded-md text-xs ${isSuper ? 'bg-green-800' : 'bg-gray-500'}`}>
