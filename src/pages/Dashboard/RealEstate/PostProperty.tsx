@@ -1,5 +1,5 @@
 import PageMeta from "../../../components/dashboard/common/PageMeta";
-import PostProperty from "../../../components/dashboard/RealEstate/PostProperty";
+import PropertyTable from "../../../components/dashboard/RealEstate/property/PropertyTable";
 
 export default function PostPropertyPage() {
   return (
@@ -8,7 +8,7 @@ export default function PostPropertyPage() {
         title="Post Property Dashboard"
         description="Create and manage all property listings in the dashboard."
       />
-      <PostProperty />
+      <PropertyTable/>
     </div>
   );
 }
