@@ -30,6 +30,7 @@
     "clsx": "^2.1.1",
     "firebase": "^12.5.0",
     "flatpickr": "^4.6.13",
+    "flowbite-react": "^0.12.10",
     "leaflet": "^1.9.4",
     "lucide-react": "^0.344.0",
     "next": "^16.0.1",
