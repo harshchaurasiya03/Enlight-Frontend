@@ -57,6 +57,7 @@ import Categories from "./components/dashboard/RealEstate/Categories";
 import Reviews from "./components/dashboard/RealEstate/Reviews"
 import Subscription from "./pages/Dashboard/subscription/Subscription"
 import BlogTag from "./components/dashboard/BlogDash/BlogTag";
+import PostPropertyPage from "./pages/Dashboard/RealEstate/PostProperty";
 import AmenitiesProperty from "./pages/Amenities/AmenitiesProperty";
 import AmenitiesHome from "./components/home/AmenitiesHome";
 
@@ -139,7 +140,7 @@ function App() {
             {/* Tables */}
             <Route path="basic-tables" element={<BasicTables />} />
             <Route path="CustomerManagement" element={<CustomerManagement />} />
-            <Route path="PropertyTable" element={<PostProperty />} />
+            <Route path="PropertyTable" element={<PostPropertyPage />} />
             <Route path="Blog" element={<BlogDashboard/>} />
             <Route path="tags" element={<BlogTag/>} />
             <Route path="Categories" element={<BlogCategories/>} />

@@ -11,12 +11,15 @@ export default function PropertyStats() {
     dispatch(fetchProperties());
   }, [dispatch]);
 
-  const active = total; 
-  const pending = properties.filter((p) => p.status === "Pending").length;
-  const expired = properties.filter((p) => p.status === "Expired").length;
+  const active = total;
+  const forSale = properties.filter((p) => p.status === "For Sale").length;
+  const forRent = properties.filter((p) => p.status === "For Rent").length;
+  const sold = properties.filter((p) => p.status === "Sold").length;
 
   const agents = new Set(
-    properties.filter((p) => p.owner).map((p) => p.owner._id)
+    properties
+      .map((p) => p.owner?._id)
+      .filter((id): id is string => Boolean(id))
   ).size;
 
   const cards = [
@@ -27,14 +30,14 @@ export default function PropertyStats() {
       iconColor: "text-purple-300",
     },
     {
-      title: "Pending properties",
-      value: pending,
+      title: "Properties for Sale",
+      value: forSale,
       bg: "bg-teal-400",
       iconColor: "text-teal-300",
     },
     {
-      title: "Expired properties",
-      value: expired,
+      title: "Properties for Rent",
+      value: forRent,
       bg: "bg-red-400",
       iconColor: "text-red-300",
     },
