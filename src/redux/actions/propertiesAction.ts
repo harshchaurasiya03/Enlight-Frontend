@@ -15,7 +15,10 @@ import { Property } from "../../types/Property";
 
 const BASE_URL = import.meta.env.VITE_BACKEND_URL;
 
-const getToken = () => localStorage.getItem("Bearer");
+const getToken = () => {
+  const t = localStorage.getItem("Bearer");
+  return t?.replace("Bearer ", "").trim();
+};
 
 const jsonHeaders = () => {
   const token = getToken();
@@ -32,11 +35,11 @@ const formHeaders = () => {
   const token = getToken();
   return {
     headers: {
-      "Content-Type": "multipart/form-data",
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
     },
   };
 };
+
 
 // ==================================================
 // GET ALL PROPERTIES
@@ -97,7 +100,7 @@ export const updateProperty =
     try {
       dispatch(propReq());
 
-      const isForm = payload instanceof FormData;
+      const isForm = payload?.constructor?.name === "FormData";
       const headers = isForm ? formHeaders() : jsonHeaders();
 
       const { data } = await axios.put(
@@ -121,7 +124,7 @@ export const patchProperty =
     try {
       dispatch(propReq());
 
-      const isForm = payload instanceof FormData;
+      const isForm = payload?.constructor?.name === "FormData";
       const headers = isForm ? formHeaders() : jsonHeaders();
 
       const { data } = await axios.patch(

@@ -4,7 +4,7 @@ import { Property } from "../../../../types/Property";
 import { useDispatch } from "react-redux";
 import {
   createProperty,
-  updateProperty,
+  patchProperty,
 } from "../../../../redux/actions/propertiesAction";
 import { AppDispatch } from "../../../../redux/store";
 
@@ -246,13 +246,21 @@ export default function PropertyFormModal({ open, onClose, initial = {} }: Props
 
     // Send via redux actions
     if (isEditMode && initial._id) {
-      dispatch(updateProperty(initial._id, fd) as any);
+      dispatch(patchProperty(initial._id, fd) as any);
     } else {
       dispatch(createProperty(fd) as any);
     }
 
     onClose();
   };
+
+  const ASSET_URL = import.meta.env.VITE_ASSET_URL || "";
+
+  const getMediaUrl = (url?: string) => {
+    if (!url) return "";
+    return url.startsWith("http") ? url : `${ASSET_URL}${url}`;
+  };
+
 
   if (!open) return null;
 
@@ -435,7 +443,7 @@ export default function PropertyFormModal({ open, onClose, initial = {} }: Props
             {existingImages.map((img, i) => (
               <div key={i} className="relative">
                 <img
-                  src={img.url || ""}
+                src={getMediaUrl(img.url)}
                   alt={`img-${i}`}
                   className="w-28 h-20 object-cover rounded-lg border"
                 />
@@ -483,7 +491,7 @@ export default function PropertyFormModal({ open, onClose, initial = {} }: Props
             {existingVideos.map((v, i) => (
               <div key={i} className="relative">
                 <video
-                  src={v.url || ""}
+                  src={getMediaUrl(v.url)}
                   className="w-36 h-24 object-cover rounded-lg border"
                 />
                 <button

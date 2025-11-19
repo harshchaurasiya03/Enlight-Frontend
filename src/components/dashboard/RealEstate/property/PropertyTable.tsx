@@ -43,6 +43,14 @@ export default function PropertyTable() {
     );
   });
 
+  const ASSET_URL = import.meta.env.VITE_ASSET_URL || "";
+
+const getMediaUrl = (url?: string) => {
+  if (!url) return "";
+  return url.startsWith("http") ? url : `${ASSET_URL}${url}`;
+};
+
+
   return (
     <div className="p-6">
       <div className="flex justify-between gap-3 mb-4">
@@ -96,7 +104,7 @@ export default function PropertyTable() {
                     <td className="p-3">{p.propertyId || p._id}</td>
                     <td className="p-3">
                       <img
-                        src={p.images?.[0]?.url || "/images/property-placeholder.jpeg"}
+                      src={getMediaUrl(p.images?.[0]?.url) || "/images/property-placeholder.jpeg"}
                         alt={p.title}
                         className="w-20 h-16 object-cover rounded-md"
                       />
@@ -147,6 +155,15 @@ export default function PropertyTable() {
                               <strong>Address:</strong>
                               <p>{p.address}</p>
                             </div>
+                            <div>
+                              <strong>City/State:</strong>
+                              <p>{p.city}, {p.state}</p>
+                            </div>
+                            
+                            <div>
+                              <strong>Country:</strong>
+                              <p>{p.country}</p>
+                            </div>
 
                             <div>
                               <strong>Features:</strong>
@@ -182,7 +199,7 @@ export default function PropertyTable() {
                                   p.images.map((im, idx) => (
                                     <img
                                       key={idx}
-                                      src={im.url}
+                                      src={getMediaUrl(im.url)}
                                       alt={`img-${idx}`}
                                       className="w-28 h-20 object-cover rounded"
                                     />
@@ -194,7 +211,7 @@ export default function PropertyTable() {
                                   p.videos.map((v, idx) => (
                                     <video
                                       key={idx}
-                                      src={v.url}
+                                      src={getMediaUrl(v.url)}
                                       className="w-40 h-24 object-cover rounded"
                                       controls
                                     />
