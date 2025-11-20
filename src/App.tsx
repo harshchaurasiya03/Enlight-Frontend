@@ -59,7 +59,6 @@ import Subscription from "./pages/Dashboard/subscription/Subscription"
 import BlogTag from "./components/dashboard/BlogDash/BlogTag";
 import AmenitiesProperty from "./pages/Properties/AmenitiesProperty";
 import PostPropertyPage from "./pages/Dashboard/RealEstate/PostProperty";
-import AmenitiesProperty from "./pages/Amenities/AmenitiesProperty";
 import AmenitiesHome from "./components/home/AmenitiesHome";
 
 
