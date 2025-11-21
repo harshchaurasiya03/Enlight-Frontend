@@ -26,7 +26,7 @@ export interface Property {
   videos: { url: string; public_id: string }[];
 
   amenities: string[];
-
+  extraInfo?: Record<string, any>;
   // NEW FIELDS (missing earlier)
   propertyId: string;
   availableFrom: string; // ISO date string

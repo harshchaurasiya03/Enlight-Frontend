@@ -34,7 +34,11 @@ const PROPERTY_TYPES = [
   "Other",
 ];
 
-export default function PropertyFormModal({ open, onClose, initial = {} }: Props) {
+export default function PropertyFormModal({
+  open,
+  onClose,
+  initial = {},
+}: Props) {
   const dispatch = useDispatch<AppDispatch>();
 
   // Basic fields
@@ -48,7 +52,9 @@ export default function PropertyFormModal({ open, onClose, initial = {} }: Props
   const [propertyType, setPropertyType] = useState(
     (initial.propertyType as string) || PROPERTY_TYPES[0]
   );
-  const [status, setStatus] = useState((initial.status as string) || "For Sale");
+  const [status, setStatus] = useState(
+    (initial.status as string) || "For Sale"
+  );
 
   // Features (separate fields)
   const [BHK, setBHK] = useState<number | "">(initial.features?.BHK ?? "");
@@ -70,6 +76,12 @@ export default function PropertyFormModal({ open, onClose, initial = {} }: Props
   const [amenities, setAmenities] = useState<string[]>(
     (initial.amenities as string[]) ?? []
   );
+
+  const [extraInfo, setExtraInfo] = useState<{ key: string; value: string }[]>(
+    []
+  );
+
+  const [newAmenity, setNewAmenity] = useState("");
 
   // Geo
   const [latitude, setLatitude] = useState<number | "">(
@@ -101,50 +113,57 @@ export default function PropertyFormModal({ open, onClose, initial = {} }: Props
   const isEditMode = Boolean(initial && initial._id);
 
   useEffect(() => {
-  if (!open) return;
+    if (!open) return;
 
-  // populate form only ONCE when modal opens
-  const init = initial || {};
+    // populate form only ONCE when modal opens
+    const init = initial || {};
 
-  setTitle(init.title || "");
-  setDescription(init.description || "");
-  setAddress(init.address || "");
-  setCity(init.city || "");
-  setStateVal(init.state || "");
-  setCountry(init.country || "India");
-  setPrice(init.price ?? "");
-  setPropertyType(init.propertyType || "Apartment");
-  setStatus(init.status || "For Sale");
- 
+    setTitle(init.title || "");
+    setDescription(init.description || "");
+    setAddress(init.address || "");
+    setCity(init.city || "");
+    setStateVal(init.state || "");
+    setCountry(init.country || "India");
+    setPrice(init.price ?? "");
+    setPropertyType(init.propertyType || "Apartment");
+    setStatus(init.status || "For Sale");
 
-  setBHK(init.features?.BHK ?? "");
-  setArea(init.features?.area ?? "");
-  setParking(init.features?.parking ?? false);
-  setFurnished(init.features?.furnished ?? "Unfurnished");
-  setBathrooms(init.features?.bathrooms ?? "");
-  setBalconies(init.features?.balconies ?? "");
+    setBHK(init.features?.BHK ?? "");
+    setArea(init.features?.area ?? "");
+    setParking(init.features?.parking ?? false);
+    setFurnished(init.features?.furnished ?? "Unfurnished");
+    setBathrooms(init.features?.bathrooms ?? "");
+    setBalconies(init.features?.balconies ?? "");
 
-  setAmenities(init.amenities ?? []);
+    setAmenities(init.amenities ?? []);
 
-  setLatitude(init.location?.coordinates?.[1] ?? "");
-  setLongitude(init.location?.coordinates?.[0] ?? "");
+    setLatitude(init.location?.coordinates?.[1] ?? "");
+    setLongitude(init.location?.coordinates?.[0] ?? "");
 
-  setExistingImages(init.images ?? []);
-  setExistingVideos(init.videos ?? []);
+    setExistingImages(init.images ?? []);
+    setExistingVideos(init.videos ?? []);
 
-  setNewImages([]);
-  setNewImagePreviews([]);
-  setNewVideos([]);
-  setNewVideoPreviews([]);
-  setRemoveImageIds([]);
-  setRemoveVideoIds([]);
-
-}, [open]);
-
+    setNewImages([]);
+    setNewImagePreviews([]);
+    setNewVideos([]);
+    setNewVideoPreviews([]);
+    setRemoveImageIds([]);
+    setRemoveVideoIds([]);
+    setExtraInfo(
+      init.extraInfo
+        ? Object.entries(init.extraInfo).map(([key, value]) => ({
+            key,
+            value: String(value),
+          }))
+        : []
+    );
+  }, [open]);
 
   // helper: toggle amenity
   const toggleAmenity = (a: string) => {
-    setAmenities((prev) => (prev.includes(a) ? prev.filter((x) => x !== a) : [...prev, a]));
+    setAmenities((prev) =>
+      prev.includes(a) ? prev.filter((x) => x !== a) : [...prev, a]
+    );
   };
 
   // handle new image files
@@ -152,7 +171,10 @@ export default function PropertyFormModal({ open, onClose, initial = {} }: Props
     if (!files) return;
     const arr = Array.from(files);
     setNewImages((prev) => [...prev, ...arr]);
-    setNewImagePreviews((prev) => [...prev, ...arr.map((f) => URL.createObjectURL(f))]);
+    setNewImagePreviews((prev) => [
+      ...prev,
+      ...arr.map((f) => URL.createObjectURL(f)),
+    ]);
   };
 
   // handle new video files
@@ -160,7 +182,10 @@ export default function PropertyFormModal({ open, onClose, initial = {} }: Props
     if (!files) return;
     const arr = Array.from(files);
     setNewVideos((prev) => [...prev, ...arr]);
-    setNewVideoPreviews((prev) => [...prev, ...arr.map((f) => URL.createObjectURL(f))]);
+    setNewVideoPreviews((prev) => [
+      ...prev,
+      ...arr.map((f) => URL.createObjectURL(f)),
+    ]);
   };
 
   // remove existing image (mark for removal)
@@ -217,6 +242,12 @@ export default function PropertyFormModal({ open, onClose, initial = {} }: Props
       amenities.forEach((a) => fd.append("amenities[]", a));
     }
 
+    extraInfo.forEach((item) => {
+      if (item.key && item.value) {
+        fd.append(`extraInfo[${item.key}]`, item.value);
+      }
+    });
+
     // existing images/videos: send their public_id so backend can keep them if needed
     // Many backends ignore this; we include to be safe.
     existingImages.forEach((img) => {
@@ -260,7 +291,6 @@ export default function PropertyFormModal({ open, onClose, initial = {} }: Props
     if (!url) return "";
     return url.startsWith("http") ? url : `${ASSET_URL}${url}`;
   };
-
 
   if (!open) return null;
 
@@ -331,8 +361,6 @@ export default function PropertyFormModal({ open, onClose, initial = {} }: Props
             <option value="For Rent">For Rent</option>
             <option value="Sold">Sold</option>
           </select>
-
-          
         </div>
 
         {/* Description */}
@@ -402,6 +430,7 @@ export default function PropertyFormModal({ open, onClose, initial = {} }: Props
         <div className="mt-3">
           <h4 className="font-medium mb-2">Amenities</h4>
           <div className="flex flex-wrap gap-2">
+            {/* Predefined Amenities */}
             {AMENITIES.map((a) => {
               const active = amenities.includes(a);
               return (
@@ -417,7 +446,92 @@ export default function PropertyFormModal({ open, onClose, initial = {} }: Props
                 </button>
               );
             })}
+
+            {/* Custom-added Amenities */}
+            {amenities
+              .filter((a) => !AMENITIES.includes(a))
+              .map((custom) => (
+                <button
+                  key={custom}
+                  onClick={() => toggleAmenity(custom)}
+                  type="button"
+                  className="px-3 py-1 rounded-full border bg-purple-500 text-white"
+                >
+                  {custom}
+                </button>
+              ))}
+
+            <input
+              value={newAmenity}
+              onChange={(e) => setNewAmenity(e.target.value)}
+              placeholder="Add custom amenity (e.g. Private Pool, Rooftop Garden)"
+              className="border px-3 py-1 rounded-lg flex-1"
+            />
+
+            <button
+              onClick={() => {
+                const trimmed = newAmenity.trim();
+                if (trimmed && !amenities.includes(trimmed)) {
+                  setAmenities((prev) => [...prev, trimmed]);
+                }
+                setNewAmenity("");
+              }}
+              className="bg-blue-600 text-white px-3 rounded-lg"
+            >
+              Add
+            </button>
           </div>
+        </div>
+
+        {/* Extra Custom Fields */}
+        <div className="mt-4 p-3 border rounded-lg">
+          <h4 className="font-medium mb-2">Extra Fields (Custom)</h4>
+
+          {extraInfo.map((item, idx) => (
+            <div key={idx} className="flex gap-2 mb-2">
+              <input
+                value={item.key}
+                onChange={(e) =>
+                  setExtraInfo((prev) =>
+                    prev.map((x, i) =>
+                      i === idx ? { ...x, key: e.target.value } : x
+                    )
+                  )
+                }
+                placeholder="Field Name (e.g. flooring)"
+                className="border px-3 py-2 rounded-lg flex-1"
+              />
+              <input
+                value={item.value}
+                onChange={(e) =>
+                  setExtraInfo((prev) =>
+                    prev.map((x, i) =>
+                      i === idx ? { ...x, value: e.target.value } : x
+                    )
+                  )
+                }
+                placeholder="Value (e.g. Marble)"
+                className="border px-3 py-2 rounded-lg flex-1"
+              />
+              <button
+                onClick={() =>
+                  setExtraInfo((prev) => prev.filter((_, i) => i !== idx))
+                }
+                className="bg-red-500 text-white px-3 py-1 rounded-lg"
+              >
+                ✕
+              </button>
+            </div>
+          ))}
+
+          <button
+            onClick={() =>
+              setExtraInfo((prev) => [...prev, { key: "", value: "" }])
+            }
+            className="mt-2 bg-green-600 text-white px-3 py-1 rounded-lg"
+          >
+            + Add Field
+          </button>
         </div>
 
         {/* Location */}
@@ -443,7 +557,7 @@ export default function PropertyFormModal({ open, onClose, initial = {} }: Props
             {existingImages.map((img, i) => (
               <div key={i} className="relative">
                 <img
-                src={getMediaUrl(img.url)}
+                  src={getMediaUrl(img.url)}
                   alt={`img-${i}`}
                   className="w-28 h-20 object-cover rounded-lg border"
                 />
