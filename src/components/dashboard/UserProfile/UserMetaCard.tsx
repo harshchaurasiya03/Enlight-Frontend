@@ -8,7 +8,10 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../../../redux/store";
 import { loadUser } from "../../../redux/actions/authAction";
-import { fetchUserById, updateMyProfile } from "../../../redux/actions/userAction";
+import {
+  fetchUserById,
+  updateMyProfile,
+} from "../../../redux/actions/userAction";
 import { useModal } from "../../../hooks/useModal";
 import { Modal } from "../ui/modal";
 import Button from "../ui/button/Button";
@@ -20,10 +23,10 @@ export default function UserMetaCard() {
   const dispatch = useDispatch<AppDispatch>();
 
   const socialIcons = [
-    { name: "facebook", icon: <FaFacebookF /> },
-    { name: "twitter", icon: <FaTwitter /> },
-    { name: "linkedin", icon: <FaLinkedinIn /> },
-    { name: "instagram", icon: <FaInstagram /> },
+    { name: "facebook", icon: <FaFacebookF />, link: "https://facebook.com" },
+    { name: "twitter", icon: <FaTwitter />, link: "https://twitter.com" },
+    { name: "linkedin", icon: <FaLinkedinIn />, link: "https://linkedin.com" },
+    { name: "instagram", icon: <FaInstagram />, link: "https://instagram.com" },
   ];
 
   const [oldPassword, setOldPassword] = useState("");
@@ -150,6 +153,7 @@ export default function UserMetaCard() {
               {socialIcons.map((social) => (
                 <button
                   key={social.name}
+                  onClick={() => window.open(social.link, "_blank")}
                   className="flex h-11 w-11 items-center justify-center rounded-full border border-gray-300 bg-white text-gray-700 shadow-theme-xs hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/3 dark:hover:text-gray-200"
                 >
                   {social.icon}

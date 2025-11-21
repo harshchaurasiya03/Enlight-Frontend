@@ -8,7 +8,8 @@ import {
 } from "../../../../redux/actions/propertiesAction";
 import PropertyFormModal from "./PropertyFormModal";
 import { Property } from "../../../../types/Property";
-import { format } from "date-fns";
+import { RiDeleteBin5Line } from "react-icons/ri";
+import { FiEdit } from "react-icons/fi";
 
 export default function PropertyTable() {
   const dispatch = useDispatch<AppDispatch>();
@@ -86,9 +87,9 @@ export default function PropertyTable() {
           <table className="min-w-full text-sm">
             <thead className="bg-gray-100">
               <tr>
-                <th className="p-3 text-left">#</th>
                 <th className="p-3 text-left">Image</th>
                 <th className="p-3 text-left">Title</th>
+                <th className="p-3 text-left">ID</th>
                 <th className="p-3 text-left">City</th>
                 <th className="p-3 text-left">Price</th>
                 <th className="p-3 text-left">Status</th>
@@ -101,7 +102,6 @@ export default function PropertyTable() {
               {filtered.map((p) => (
                 <React.Fragment key={p._id}>
                   <tr className="border-b hover:bg-gray-50">
-                    <td className="p-3">{p.propertyId || p._id}</td>
                     <td className="p-3">
                       <img
                         src={
@@ -113,42 +113,43 @@ export default function PropertyTable() {
                       />
                     </td>
                     <td className="p-3">{p.title}</td>
+                    <td className="p-3">{p.propertyId || p._id}</td>
                     <td className="p-3">{p.city}</td>
                     <td className="p-3">₹{p.price?.toLocaleString()}</td>
-                    <td className="p-3">{p.status}</td>
+                    <td className="px-3">{p.status}</td>
                     <td className="p-3">{p.owner?.name || p.owner?.email}</td>
-                    <td className="p-3 flex gap-2">
+                    <td className="p-3">
                       <button
                         onClick={() => {
                           setEditingProperty(p);
                           setOpenModal(true);
                         }}
-                        className="px-3 py-1 rounded bg-yellow-400 text-white"
+                        className="p-2 mr-1  rounded bg-blue-400 text-white"
                       >
-                        ✎
+                        <FiEdit />
                       </button>
                       <button
                         onClick={() => handleDelete(p._id, p)}
-                        className="px-3 py-1 rounded bg-red-500 text-white"
+                        className="p-2 ml-1 rounded bg-red-500 text-white"
                       >
-                        🗑
+                        <RiDeleteBin5Line />
                       </button>
 
-                      <button
+                      {/* <button
                         onClick={() => toggleExpand(p._id)}
                         className="px-3 py-1 rounded bg-gray-200"
                       >
                         {expandedIds[p._id] ? "▲" : "▼"}
-                      </button>
+                      </button> */}
                     </td>
                   </tr>
 
                   {/* Expanded row */}
-                  {expandedIds[p._id] && (
+                  {/* {expandedIds[p._id] && (
                     <tr className="bg-gray-50">
                       <td colSpan={8} className="p-4">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          {/* Left Column */}
+                    
                           <div className="space-y-2">
                             <div>
                               <strong>Description:</strong>
@@ -240,7 +241,7 @@ export default function PropertyTable() {
                             </div>
                           </div>
 
-                          {/* Right Column */}
+                          
                           <div className="space-y-2">
                             <div>
                               <strong>Property ID:</strong> {p.propertyId}
@@ -297,7 +298,7 @@ export default function PropertyTable() {
                         </div>
                       </td>
                     </tr>
-                  )}
+                  )} */}
                 </React.Fragment>
               ))}
             </tbody>
@@ -311,35 +312,36 @@ export default function PropertyTable() {
         initial={editingProperty || undefined}
       />
       {deleteTarget && (
-      <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center">
-        <div className="bg-white p-6 rounded shadow-lg w-full max-w-md">
-          <h2 className="text-lg font-semibold mb-2">Delete Property</h2>
+        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center">
+          <div className="bg-white p-6 rounded shadow-lg w-full max-w-md">
+            <h2 className="text-lg font-semibold mb-2">Delete Property</h2>
 
-          <p className="text-sm text-gray-600 mb-4">
-            Are you sure you want to delete 
-            <strong> {deleteTarget.title}</strong>? This action cannot be undone.
-          </p>
+            <p className="text-sm text-gray-600 mb-4">
+              Are you sure you want to delete
+              <strong> {deleteTarget.title}</strong>? This action cannot be
+              undone.
+            </p>
 
-          <div className="flex gap-3 justify-end">
-            <button
-              onClick={() => setDeleteTarget(null)}
-              className="px-4 py-2 bg-gray-300 rounded-md flex-1"
-            >
-              Cancel
-            </button>
+            <div className="flex gap-3 justify-end">
+              <button
+                onClick={() => setDeleteTarget(null)}
+                className="px-4 py-2 bg-gray-300 rounded-md flex-1"
+              >
+                Cancel
+              </button>
 
-            <button
-              onClick={() => {
-                dispatch(deletePropertyById(deleteTarget._id!) as any);
-                setDeleteTarget(null);
-              }}
-              className="px-4 py-2 bg-red-600 text-white rounded-md flex-1"
-            >
-              Delete
-            </button>
+              <button
+                onClick={() => {
+                  dispatch(deletePropertyById(deleteTarget._id!) as any);
+                  setDeleteTarget(null);
+                }}
+                className="px-4 py-2 bg-red-600 text-white rounded-md flex-1"
+              >
+                Delete
+              </button>
+            </div>
           </div>
         </div>
-      </div>
       )}
     </div>
   );

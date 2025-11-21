@@ -37,19 +37,20 @@ const navItems: NavItem[] = [
     path: "/dashboard/profile",
   },
   {
-    name: "User Management",
+    name: "Management",
     icon: <TableIcon />,
     subItems: [
-      { name: "Customer Management", path: "/dashboard/CustomerManagement", pro: false },
-      {name: "User Tables", path: "/dashboard/basic-tables", pro: false},
+       {name: "Roles And Permissions", path: "AdminRole", pro: false},
+      { name: "User Management", path: "/dashboard/CustomerManagement", pro: false },
     ],
   },
 
   {
+
     name: "Real Estate",
     icon: <TableIcon />,
     subItems: [
-      { name: "Property tables", path: "/dashboard/PropertyTable", pro: false },
+      { name: "Properties", path: "/dashboard/PropertyTable", pro: false },
       { name: "Projects", path: "/dashboard/Projects", pro: false },
       { name: "Amenities", path: "/dashboard/amenities", pro: false },
       { name: "Investors", path: "/dashboard/Investors", pro: false },
@@ -72,7 +73,7 @@ const navItems: NavItem[] = [
   {
     icon: <UserCircleIcon />,
     name: "Subscription",
-    path: "/dashboard/subscription",
+    path: "/dashboard/subscriptions",
   },
   {
     name: "Payment",
@@ -125,6 +126,11 @@ const navItems: NavItem[] = [
       { name: "Form Elements", path: "/dashboard/form-elements", pro: false },
       
     ],
+  },
+   {
+    icon: <UserCircleIcon />,
+    name: "Platform Administration",
+    path: "/dashboard/platform-administration",
   },
   // {
   //   name: "Pages",

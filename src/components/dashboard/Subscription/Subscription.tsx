@@ -1,183 +1,143 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
-type Subscription = {
-  id: number;
-  name: string;
-  price: number; // base price in USD (or your currency)
-  offer: number; // percentage e.g. 20 means 20% off
-  description?: string;
-  createdAt: string; // YYYY-MM-DD
-  status: "Active" | "Inactive";
+export type Feature = {
+  title: string;
 };
 
-export default function SubscriptionDashboard() {
-  const [subscriptions, setSubscriptions] = useState<Subscription[]>([
-    {
-      id: 5,
-      name: "Premium Package",
-      price: 199,
-      offer: 20,
-      description: "All premium features",
-      createdAt: "2025-10-07",
-      status: "Active",
-    },
-    {
-      id: 4,
-      name: "Professional Package",
-      price: 129,
-      offer: 15,
-      description: "For professionals & small teams",
-      createdAt: "2025-10-07",
-      status: "Active",
-    },
-    {
-      id: 3,
-      name: "Standard Package",
-      price: 79,
-      offer: 10,
-      description: "Most popular",
-      createdAt: "2025-10-07",
-      status: "Active",
-    },
-    {
-      id: 2,
-      name: "Basic Listing",
-      price: 29,
-      offer: 0,
-      description: "Basic listing features",
-      createdAt: "2025-10-07",
-      status: "Active",
-    },
+export type Subscription = {
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+  currency: "USD" | "INR" | "EUR" | "GBP" | "THB" | string;
+  percentSave: number;
+  numberOfListings: number;
+  limitPerAccount: number;
+  features: Feature[];
+  order: number;
+  createdAt: string;
+  status: "Active" | "Inactive";
+  images?: string[];
+};
+
+const STORAGE_KEY = "subscriptions";
+
+// normalize any old data from localStorage (backward compatible)
+const normalizeSubscription = (raw: any, idx: number): Subscription => {
+  return {
+    id: raw.id ?? Date.now() + idx,
+    name: raw.name ?? "",
+    description: raw.description ?? "",
+    price: typeof raw.price === "number" ? raw.price : Number(raw.price || 0),
+    currency: raw.currency || "USD",
+    percentSave:
+      typeof raw.percentSave === "number"
+        ? raw.percentSave
+        : typeof raw.offer === "number"
+        ? raw.offer
+        : 0,
+    numberOfListings:
+      typeof raw.numberOfListings === "number"
+        ? raw.numberOfListings
+        : Number(raw.numberOfListings || 0),
+    limitPerAccount:
+      typeof raw.limitPerAccount === "number"
+        ? raw.limitPerAccount
+        : Number(raw.limitPerAccount || 0),
+    features: Array.isArray(raw.features)
+      ? raw.features.map((f: any) => ({
+          title: typeof f === "string" ? f : f?.title || "",
+        }))
+      : [],
+    order:
+      typeof raw.order === "number"
+        ? raw.order
+        : typeof idx === "number"
+        ? idx + 1
+        : 1,
+    createdAt: raw.createdAt || new Date().toISOString().slice(0, 10),
+    status: raw.status === "Inactive" ? "Inactive" : "Active",
+    images: Array.isArray(raw.images) ? raw.images : [],
+  };
+};
+
+const loadSubscriptions = (): Subscription[] => {
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) {
+    try {
+      const arr = JSON.parse(saved);
+      if (Array.isArray(arr)) return arr.map(normalizeSubscription);
+    } catch (err) {
+      console.error("Failed to parse subscriptions from storage", err);
+    }
+  }
+
+  // fallback demo data
+  const demo: Subscription[] = [
     {
       id: 1,
-      name: "Free Trial",
-      price: 0,
-      offer: 0,
-      description: "Free limited trial",
+      name: "Premium Package",
+      description: "Premium support, featured & priority placement",
+      price: 2500,
+      currency: "USD",
+      percentSave: 33,
+      numberOfListings: 15,
+      limitPerAccount: 20,
+      features: [
+        { title: "15 listings allowed" },
+        { title: "20 photos per listing" },
+        { title: "Premium support" },
+        { title: "Featured listings" },
+        { title: "Priority listing placement" },
+      ],
+      order: 1,
       createdAt: "2025-10-07",
       status: "Active",
+      images: [],
     },
-  ]);
+  ];
 
-  // --- UI state ---
-  const [showModal, setShowModal] = useState(false); // create/edit modal
-  const [isEditing, setIsEditing] = useState(false);
-  const [editItem, setEditItem] = useState<Subscription | null>(null);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(demo));
+  return demo;
+};
+
+const saveSubscriptions = (subs: Subscription[]) => {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(subs));
+};
+
+const discountedPrice = (price: number, percentSave: number) =>
+  Math.round((price - price * (percentSave / 100) + Number.EPSILON) * 100) /
+  100;
+
+const SubscriptionPage: React.FC = () => {
+  const navigate = useNavigate();
+
+  const [subscriptions, setSubscriptions] = useState<Subscription[]>(() =>
+    loadSubscriptions()
+  );
+
+  const [search, setSearch] = useState("");
+  const [sortBy, setSortBy] = useState<"id" | "name" | "createdAt" | "order">(
+    "order"
+  );
+  const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
+  const [page, setPage] = useState(1);
+  const pageSize = 6;
 
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<Subscription | null>(null);
 
-  // form state for create/edit
-  const [form, setForm] = useState<
-    Partial<Subscription> & {
-      images?: File[]; // new: uploaded images
-      imageLimit?: number;
-    }
-  >({
-    name: "",
-    price: 0,
-    offer: 0,
-    description: "",
-    status: "Active",
-    createdAt: new Date().toISOString().slice(0, 10),
-    images: [],
-    imageLimit: 5,
-  });
+  useEffect(() => {
+    saveSubscriptions(subscriptions);
+  }, [subscriptions]);
 
-  // search / sort / pagination
-  const [search, setSearch] = useState("");
-  const [sortBy, setSortBy] = useState<"id" | "name" | "createdAt">("id");
-  const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
-  const [page, setPage] = useState(1);
-  const pageSize = 6;
-
-  // --- helpers ---
-  const resetForm = () =>
-    setForm({
-      name: "",
-      price: 0,
-      offer: 0,
-      description: "",
-      status: "Active",
-      createdAt: new Date().toISOString().slice(0, 10),
-    });
-
-  const openCreate = () => {
-    resetForm();
-    setEditItem(null);
-    setIsEditing(false);
-    setShowModal(true);
-  };
-
-  const openEdit = (sub: Subscription) => {
-    setForm({ ...sub });
-    setEditItem(sub);
-    setIsEditing(true);
-    setShowModal(true);
-  };
-
-  const saveSubscription = () => {
-    if (!form.name || form.name.trim() === "") {
-      alert("Name is required");
-      return;
-    }
-    if (form.price == null || Number.isNaN(Number(form.price))) {
-      alert("Price must be a number");
-      return;
-    }
-    if (form.offer == null || Number.isNaN(Number(form.offer))) {
-      alert("Offer must be a number (percent)");
-      return;
-    }
-
-    // sanitize
-    const payload: Subscription = {
-      id: isEditing && editItem ? editItem.id : Date.now(), // unique id
-      name: String(form.name).trim(),
-      price: Number(form.price),
-      offer: Math.max(0, Math.min(100, Number(form.offer))), // clamp 0-100
-      description: form.description || "",
-      createdAt: form.createdAt || new Date().toISOString().slice(0, 10),
-      status: (form.status as "Active" | "Inactive") || "Active",
-    };
-
-    if (isEditing && editItem) {
-      setSubscriptions((prev) =>
-        prev.map((s) => (s.id === editItem.id ? payload : s))
-      );
-    } else {
-      setSubscriptions((prev) => [payload, ...prev]); // add to top
-    }
-
-    setShowModal(false);
-    setEditItem(null);
-    setIsEditing(false);
-    resetForm();
-  };
-
-  const confirmDelete = (sub: Subscription) => {
-    setDeleteTarget(sub);
-    setShowDeleteConfirm(true);
-  };
-
-  const doDelete = () => {
-    if (!deleteTarget) return;
-    setSubscriptions((prev) => prev.filter((s) => s.id !== deleteTarget.id));
-    setShowDeleteConfirm(false);
-    setDeleteTarget(null);
-  };
-
-  // discount calculation helper
-  const discountedPrice = (price: number, offer: number) =>
-    Math.round((price - price * (offer / 100) + Number.EPSILON) * 100) / 100;
-
-  // filtered + sorted + paginated
   const processed = useMemo(() => {
     const lowered = search.trim().toLowerCase();
     let list = subscriptions.filter(
       (s) =>
         s.name.toLowerCase().includes(lowered) ||
-        (s.description || "").toLowerCase().includes(lowered) ||
+        s.description.toLowerCase().includes(lowered) ||
         String(s.id).includes(lowered)
     );
 
@@ -185,8 +145,8 @@ export default function SubscriptionDashboard() {
       let cmp = 0;
       if (sortBy === "id") cmp = a.id - b.id;
       else if (sortBy === "name") cmp = a.name.localeCompare(b.name);
+      else if (sortBy === "order") cmp = a.order - b.order;
       else cmp = a.createdAt.localeCompare(b.createdAt);
-
       return sortDir === "asc" ? cmp : -cmp;
     });
 
@@ -198,142 +158,153 @@ export default function SubscriptionDashboard() {
     return { total, pages, pageItems };
   }, [subscriptions, search, sortBy, sortDir, page]);
 
-  // when subscriptions or search change, ensure current page is valid
-  React.useEffect(() => {
+  useEffect(() => {
     if (page > processed.pages) setPage(1);
   }, [processed.pages, page]);
 
-  // toggle sort helper
-  const toggleSort = (key: "id" | "name" | "createdAt") => {
-    if (sortBy === key) setSortDir((d) => (d === "asc" ? "desc" : "asc"));
+  const toggleSort = (key: "id" | "name" | "createdAt" | "order") => {
+    if (sortBy === key) setSortDir((prev) => (prev === "asc" ? "desc" : "asc"));
     else {
       setSortBy(key);
       setSortDir("asc");
     }
   };
 
+  const confirmDelete = (item: Subscription) => {
+    setDeleteTarget(item);
+    setShowDeleteConfirm(true);
+  };
+
+  const doDelete = () => {
+    if (!deleteTarget) return;
+    const updated = subscriptions.filter((s) => s.id !== deleteTarget.id);
+    setSubscriptions(updated);
+    setShowDeleteConfirm(false);
+    setDeleteTarget(null);
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      {/* header */}
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6">
-        <h1 className="text-2xl font-semibold text-gray-800">Subscriptions</h1>
-
-        <div className="flex items-center gap-3 w-full md:w-auto">
-          <input
-            value={search}
-            onChange={(e) => {
-              setSearch(e.target.value);
-              setPage(1);
-            }}
-            placeholder="Search by name, id or description..."
-            className="w-full md:w-64 px-4 py-2 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
-          />
-          <button
-            onClick={() => {
-              setSearch("");
-              setPage(1);
-            }}
-            className="px-4 py-2 border rounded-xl hover:bg-gray-100"
-          >
-            Clear
-          </button>
-
-          <button
-            onClick={openCreate}
-            className="px-5 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700"
-          >
-            + Create
-          </button>
+    <div className="p-6 bg-gray-100 min-h-screen">
+      {/* Search */}
+      <div className="flex justify-between">
+        <div className="gap-3 mb-4">
+        <input
+          value={search}
+          onChange={(e) => {
+            setSearch(e.target.value);
+            setPage(1);
+          }}
+          className="px-4 py-2 border rounded-xl max-w-xs"
+          placeholder="Search by name, id or description…"
+        />
+        <button
+          className="px-4 py-2 border rounded-xl"
+          onClick={() => setSearch("")}
+        >
+          Clear
+        </button>
         </div>
+
+        <button
+          onClick={() => navigate("create")}
+          className="flex mb-4 px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700"
+        >
+          + Create
+        </button>
       </div>
 
-      {/* table */}
-      <div className="bg-white shadow-md rounded-2xl overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200">
+      {/* Table */}
+      <div className="bg-white rounded-2xl shadow overflow-x-auto">
+        <table className="min-w-full text-sm">
           <thead className="bg-gray-100">
             <tr>
               <th
-                className="px-6 py-3 text-left text-sm font-semibold text-gray-700 cursor-pointer"
+                className="px-4 py-3 cursor-pointer text-left"
+                onClick={() => toggleSort("order")}
+              >
+                Order {sortBy === "order" && (sortDir === "asc" ? "▲" : "▼")}
+              </th>
+              <th
+                className="px-4 py-3 cursor-pointer text-left"
                 onClick={() => toggleSort("id")}
               >
-                ID {sortBy === "id" ? (sortDir === "asc" ? "▲" : "▼") : null}
+                ID {sortBy === "id" && (sortDir === "asc" ? "▲" : "▼")}
               </th>
               <th
-                className="px-6 py-3 text-left text-sm font-semibold text-gray-700 cursor-pointer"
+                className="px-4 py-3 cursor-pointer text-left"
                 onClick={() => toggleSort("name")}
               >
-                Name{" "}
-                {sortBy === "name" ? (sortDir === "asc" ? "▲" : "▼") : null}
+                Name {sortBy === "name" && (sortDir === "asc" ? "▲" : "▼")}
               </th>
-              <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
-                Price
-              </th>
-              <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
-                Offer
-              </th>
-              <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
-                Discounted
-              </th>
+              <th className="px-4 py-3 text-left">Price</th>
+              <th className="px-4 py-3 text-left">% Save</th>
+              <th className="px-4 py-3 text-left">Listings</th>
+              <th className="px-4 py-3 text-left">Limit/Account</th>
               <th
-                className="px-6 py-3 text-left text-sm font-semibold text-gray-700 cursor-pointer"
+                className="px-4 py-3 cursor-pointer text-left"
                 onClick={() => toggleSort("createdAt")}
               >
-                Created At{" "}
-                {sortBy === "createdAt"
-                  ? sortDir === "asc"
-                    ? "▲"
-                    : "▼"
-                  : null}
+                Created {sortBy === "createdAt" && (sortDir === "asc" ? "▲" : "▼")}
               </th>
-              <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
-                Status
-              </th>
-              <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
-                Operations
-              </th>
+              <th className="px-4 py-3 text-left">Status</th>
+              <th className="px-4 py-3 text-left">Actions</th>
             </tr>
           </thead>
 
-          <tbody className="divide-y divide-gray-200">
+          <tbody>
             {processed.pageItems.map((s) => (
               <tr key={s.id} className="hover:bg-gray-50">
-                <td className="px-6 py-4">{s.id}</td>
-                <td className="px-6 py-4">{s.name}</td>
-                <td className="px-6 py-4">${s.price.toFixed(2)}</td>
-                <td className="px-6 py-4">{s.offer}%</td>
-                <td className="px-6 py-4">
-                  ${discountedPrice(s.price, s.offer).toFixed(2)}
+                <td className="px-4 py-3">{s.order}</td>
+                <td className="px-4 py-3">{s.id}</td>
+                <td className="px-4 py-3">{s.name}</td>
+                <td className="px-4 py-3">
+                  {s.currency} {s.price.toLocaleString()}
+                  <div className="text-xs text-gray-500">
+                    After discount:{" "}
+                    {s.currency}{" "}
+                    {discountedPrice(s.price, s.percentSave).toLocaleString()}
+                  </div>
                 </td>
-                <td className="px-6 py-4">{s.createdAt}</td>
-                <td className="px-6 py-4">
+                <td className="px-4 py-3">{s.percentSave}%</td>
+                <td className="px-4 py-3">{s.numberOfListings}</td>
+                <td className="px-4 py-3">{s.limitPerAccount}</td>
+                <td className="px-4 py-3">{s.createdAt}</td>
+                <td className="px-4 py-3">
                   <span
-                    className={`px-3 py-1 rounded-xl text-xs text-white ${
+                    className={`px-2 py-1 rounded-xl text-xs text-white ${
                       s.status === "Active" ? "bg-green-500" : "bg-gray-500"
                     }`}
                   >
                     {s.status}
                   </span>
                 </td>
-                <td className="px-6 py-4 flex gap-2">
-                  <button
-                    onClick={() => openEdit(s)}
-                    className="px-3 py-1 bg-yellow-400 text-white rounded-xl hover:bg-yellow-500 text-xs"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => confirmDelete(s)}
-                    className="px-3 py-1 bg-red-500 text-white rounded-xl hover:bg-red-600 text-xs"
-                  >
-                    Delete
-                  </button>
+                <td className="px-4 py-3">
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() =>
+                        navigate(`edit/${s.id}`, { state: s })
+                      }
+                      className="px-3 py-1 bg-blue-400 text-white rounded-xl text-xs hover:bg-blue-500"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => confirmDelete(s)}
+                      className="px-3 py-1 bg-red-500 text-white rounded-xl text-xs hover:bg-red-600"
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}
 
             {processed.total === 0 && (
               <tr>
-                <td colSpan={8} className="px-6 py-8 text-center text-gray-500">
+                <td
+                  colSpan={10}
+                  className="px-4 py-6 text-center text-gray-500"
+                >
                   No subscriptions found
                 </td>
               </tr>
@@ -341,27 +312,28 @@ export default function SubscriptionDashboard() {
           </tbody>
         </table>
 
-        {/* footer: summary & pagination */}
-        <div className="flex items-center justify-between px-6 py-3 text-sm text-gray-600">
+        {/* Pagination */}
+        <div className="p-4 flex justify-between text-sm text-gray-700">
           <div>
-            Showing {processed.pageItems.length} of {processed.total}{" "}
-            subscriptions
+            Showing {processed.pageItems.length} of {processed.total}
           </div>
           <div className="flex items-center gap-2">
             <button
-              onClick={() => setPage((p) => Math.max(1, p - 1))}
-              className="px-3 py-1 border rounded-xl disabled:opacity-50"
               disabled={page === 1}
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              className="border px-3 py-1 rounded-xl disabled:opacity-50"
             >
               Prev
             </button>
             <span>
-              Page {page} / {processed.pages}
+              {page} / {processed.pages}
             </span>
             <button
-              onClick={() => setPage((p) => Math.min(processed.pages, p + 1))}
-              className="px-3 py-1 border rounded-xl disabled:opacity-50"
               disabled={page === processed.pages}
+              onClick={() =>
+                setPage((p) => Math.min(processed.pages, p + 1))
+              }
+              className="border px-3 py-1 rounded-xl disabled:opacity-50"
             >
               Next
             </button>
@@ -369,266 +341,28 @@ export default function SubscriptionDashboard() {
         </div>
       </div>
 
-      {/* Create / Edit Modal */}
-      {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
-          <div className="bg-white rounded-2xl p-6 w-full max-w-2xl shadow-lg relative max-h-[90vh] overflow-y-auto">
-            {/* Close button */}
-            <button
-              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
-              onClick={() => {
-                setShowModal(false);
-                setIsEditing(false);
-                setEditItem(null);
-              }}
-            >
-              ✕
-            </button>
-
-            <h3 className="text-lg font-semibold text-gray-700 mb-2">
-              {isEditing ? "Edit Subscription" : "Create Subscription"}
-            </h3>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Name */}
-              <div className="flex flex-col">
-                <label className="text-sm font-medium mb-1">Name</label>
-                <input
-                  name="name"
-                  value={form.name || ""}
-                  onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  className="border border-gray-300 rounded-xl px-3 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
-                  placeholder="e.g. Premium Package"
-                />
-              </div>
-
-              {/* Price */}
-              <div className="flex flex-col">
-                <label className="text-sm font-medium mb-1">Price (USD)</label>
-                <input
-                  name="price"
-                  type="number"
-                  min={0}
-                  step="0.01"
-                  value={form.price ?? 0}
-                  onChange={(e) =>
-                    setForm({ ...form, price: Number(e.target.value) })
-                  }
-                  className="border border-gray-300 rounded-xl px-3 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
-                />
-              </div>
-
-              {/* Offer */}
-              <div className="flex flex-col">
-                <label className="text-sm font-medium mb-1">Offer (%)</label>
-                <input
-                  name="offer"
-                  type="number"
-                  min={0}
-                  max={100}
-                  value={form.offer ?? 0}
-                  onChange={(e) =>
-                    setForm({
-                      ...form,
-                      offer: Math.max(0, Math.min(100, Number(e.target.value))),
-                    })
-                  }
-                  className="border border-gray-300 rounded-xl px-3 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
-                />
-              </div>
-
-              {/* Created At */}
-              <div className="flex flex-col">
-                <label className="text-sm font-medium mb-1">Created At</label>
-                <input
-                  name="createdAt"
-                  type="date"
-                  value={
-                    form.createdAt || new Date().toISOString().slice(0, 10)
-                  }
-                  onChange={(e) =>
-                    setForm({ ...form, createdAt: e.target.value })
-                  }
-                  className="border border-gray-300 rounded-xl px-3 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
-                />
-              </div>
-
-              {/* Description */}
-              <div className="md:col-span-2 flex flex-col">
-                <label className="text-sm font-medium mb-1">Description</label>
-                <textarea
-                  name="description"
-                  value={form.description || ""}
-                  onChange={(e) =>
-                    setForm({ ...form, description: e.target.value })
-                  }
-                  rows={3}
-                  className="border border-gray-300 rounded-xl px-3 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
-                  placeholder="Short description of subscription features"
-                />
-              </div>
-
-              {/* Status */}
-              <div className="flex flex-col">
-                <label className="text-sm font-medium mb-1">Status</label>
-                <select
-                  name="status"
-                  value={form.status || "Active"}
-                  onChange={(e) =>
-                    setForm({
-                      ...form,
-                      status: e.target.value as "Active" | "Inactive",
-                    })
-                  }
-                  className="border border-gray-300 rounded-xl px-3 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
-                >
-                  <option>Active</option>
-                  <option>Inactive</option>
-                </select>
-              </div>
-
-              {/* Image Limit */}
-              <div className="flex flex-col">
-                <label className="text-sm font-medium mb-1">Image Limit</label>
-                <input
-                  type="number"
-                  min={1}
-                  value={form.imageLimit ?? 5}
-                  onChange={(e) =>
-                    setForm({ ...form, imageLimit: Number(e.target.value) })
-                  }
-                  className="border border-gray-300 rounded-xl px-3 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
-                />
-              </div>
-
-              {/* Image Upload */}
-              <div className="md:col-span-2 flex flex-col">
-                <label className="text-sm font-medium mb-1">
-                  Upload Images
-                </label>
-                <input
-                  type="file"
-                  multiple
-                  accept="image/*"
-                  onChange={(e) => {
-                    const files = e.target.files;
-                    if (!files) return;
-                    const fileArray = Array.from(files);
-
-                    // enforce limit
-                    const limit = form.imageLimit ?? 5;
-                    if (fileArray.length > limit) {
-                      alert(`You can upload up to ${limit} images`);
-                      fileArray.splice(limit);
-                    }
-
-                    setForm({ ...form, images: fileArray });
-                  }}
-                  className="border border-gray-300 rounded-xl px-3 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
-                />
-
-                {/* Preview uploaded images */}
-                {form.images && form.images.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mt-2">
-                    {form.images.map((img, idx) => (
-                      <div
-                        key={idx}
-                        className="w-20 h-20 border rounded-xl overflow-hidden relative"
-                      >
-                        <img
-                          src={URL.createObjectURL(img)}
-                          alt="preview"
-                          className="w-full h-full object-cover"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => {
-                            const newImages = form.images?.filter(
-                              (_, i) => i !== idx
-                            );
-                            setForm({ ...form, images: newImages });
-                          }}
-                          className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center"
-                        >
-                          ×
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              {/* Live Discount Preview */}
-              <div className="flex flex-col">
-                <label className="text-sm font-medium mb-1">
-                  Discount Preview
-                </label>
-                <div className="border border-gray-200 rounded-xl px-3 py-2 bg-gray-50">
-                  <div className="text-sm text-gray-600">
-                    Base: ${Number(form.price ?? 0).toFixed(2)}
-                  </div>
-                  <div className="text-sm text-gray-600">
-                    Offer: {Number(form.offer ?? 0)}%
-                  </div>
-                  <div className="text-sm font-medium mt-2">
-                    After Discount: $
-                    {discountedPrice(
-                      Number(form.price ?? 0),
-                      Number(form.offer ?? 0)
-                    ).toFixed(2)}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Modal Buttons */}
-            <div className="flex justify-end gap-4 pt-4">
-              <button
-                onClick={() => {
-                  setShowModal(false);
-                  setIsEditing(false);
-                  setEditItem(null);
-                }}
-                className="border border-gray-300 rounded-xl px-6 py-2 hover:bg-gray-100"
-              >
-                Cancel
-              </button>
-
-              <button
-                onClick={() => saveSubscription()}
-                className="bg-blue-600 text-white rounded-xl px-6 py-2 hover:bg-blue-700"
-              >
-                {isEditing ? "Update Subscription" : "Save Subscription"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Delete confirmation modal */}
+      {/* Delete Modal */}
       {showDeleteConfirm && deleteTarget && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
-          <div className="bg-white rounded-2xl p-6 w-full max-w-md shadow-lg">
-            <h3 className="text-lg font-semibold mb-2">Delete Subscription</h3>
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-2xl w-full max-w-md shadow-lg">
+            <h3 className="text-lg font-semibold mb-2">
+              Delete Subscription
+            </h3>
             <p className="text-sm text-gray-600 mb-4">
               Are you sure you want to delete{" "}
               <strong>{deleteTarget.name}</strong>? This action cannot be
               undone.
             </p>
-
             <div className="flex justify-end gap-3">
               <button
-                onClick={() => {
-                  setShowDeleteConfirm(false);
-                  setDeleteTarget(null);
-                }}
-                className="px-4 py-2 rounded-xl border hover:bg-gray-100"
+                className="px-4 py-2 border rounded-xl hover:bg-gray-100"
+                onClick={() => setShowDeleteConfirm(false)}
               >
                 Cancel
               </button>
               <button
+                className="px-4 py-2 bg-red-600 text-white rounded-xl hover:bg-red-700"
                 onClick={doDelete}
-                className="px-4 py-2 rounded-xl bg-red-600 text-white hover:bg-red-700"
               >
                 Delete
               </button>
@@ -638,4 +372,6 @@ export default function SubscriptionDashboard() {
       )}
     </div>
   );
-}
+};
+
+export default SubscriptionPage;
