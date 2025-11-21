@@ -18,7 +18,7 @@ import Buttons from "./pages/Dashboard/UiElements/Buttons";
 import LineChart from "./pages/Dashboard/Charts/LineChart";
 import BarChart from "./pages/Dashboard/Charts/BarChart";
 import Calendar from "./pages/Dashboard/Calendar";
-import BasicTables from "./pages/Dashboard/Tables/BasicTables";
+// import BasicTables from "./pages/Dashboard/Tables/BasicTables";
 import FormElements from "./pages/Dashboard/Forms/FormElements";
 import Blank from "./pages/Dashboard/Blank";
 import AppLayout from "./layout/AppLayout";
@@ -28,7 +28,6 @@ import PropertyDetailsPage from "./pages/Future/PropertyDetailsPage";
 import VerifyEmailPage from "./pages/Auth/VerifyEmailPage";
 import Chatbot from "./components/Chatbot";
 import SubscribePopup from "./components/SubscribePopup";
-import PostProperty from "./components/dashboard/RealEstate/PostProperty";
 import DashboardHome from "./pages/Dashboard/Dashboard/Home";
 import LookingForPropertiesDashboard from "./pages/Dashboard/homeListing/LookingForPropertiesDashboard";
 import PropertyCarouselDashboard from "./pages/Dashboard/homeListing/PropertyCarouselDashboard";
@@ -50,17 +49,20 @@ import CustomerManagement from "./components/dashboard/Management/CustomerManage
 import LoginPopupDashboard from "./pages/Dashboard/homeListing/PopupDashboard";
 import SubscribePopupDashboard from "./components/dashboard/homeListing/SubscribePopupCrud";
 import Projects from "./components/dashboard/RealEstate/Projects";
-import Features from "./components/dashboard/RealEstate/Features"
+import Features from "./components/dashboard/RealEstate/Features";
 import Investores from "./components/dashboard/RealEstate/Investors";
 import BlogCategories from "./components/dashboard/BlogDash/BlogCategories";
 import Categories from "./components/dashboard/RealEstate/Categories";
-import Reviews from "./components/dashboard/RealEstate/Reviews"
-import Subscription from "./pages/Dashboard/subscription/Subscription"
+import Reviews from "./components/dashboard/RealEstate/Reviews";
 import BlogTag from "./components/dashboard/BlogDash/BlogTag";
 import AmenitiesProperty from "./pages/Properties/AmenitiesProperty";
 import PostPropertyPage from "./pages/Dashboard/RealEstate/PostProperty";
 import AmenitiesHome from "./components/home/AmenitiesHome";
-
+import SubscriptionForm from "./components/dashboard/Subscription/SubscriptionForm";
+import Subscriptions from "./pages/Dashboard/subscription/Subscriptions";
+import AdminRole from "./components/dashboard/Management/AdminRole";
+import AdminRoleForm from "./components/dashboard/Management/AdminRoleForm";
+import PlatformAdministration from "./components/dashboard/PlatformAdministration/PlatformAdministration";
 
 function App() {
   const dispatch = useDispatch<AppDispatch>();
@@ -78,24 +80,24 @@ function App() {
       <ScrollToTop />
       {showPopup && (
         <SubscribePopup
-          // handleClose={() => setShowPopup(false)} // <-- Pass handleClose here
+        // handleClose={() => setShowPopup(false)} // <-- Pass handleClose here
         />
       )}
       <Chatbot />
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/blog" element={<Blog/>} />
-        <Route path="/projects" element={<AmenitiesProperty/>}/>
+        <Route path="/blog" element={<Blog />} />
+        <Route path="/projects" element={<AmenitiesProperty />} />
         <Route path="/blog/:id" element={<BlogDetails />} />
         <Route path="/amenities" element={<AmenitiesHome />} />
-        <Route path="/city/:cityName" element={<CityProperty/>} />
+        <Route path="/city/:cityName" element={<CityProperty />} />
         <Route path="/propertydeatilspage" element={<PropertyDetailsPage />} />
         <Route path="/verify-email/:token" element={<VerifyEmailPage />} />
 
         <Route element={<RequireAuth />}>
           <Route path="/dashboard" element={<AppLayout />}>
             {/*/dashboard */}
-            <Route index element={<DashboardHome/>} />
+            <Route index element={<DashboardHome />} />
 
             <Route path="profile" element={<UserProfiles />} />
             <Route path="calendar" element={<Calendar />} />
@@ -112,8 +114,14 @@ function App() {
               element={<PropertyCarouselDashboard />}
             />
             <Route path="RentToOwn" element={<RentToOwnDashboard />} />
-            <Route path="/dashboard/login-popup"element={<LoginPopupDashboard />}/>
-            <Route path="/dashboard/subscribe-popup"element={<SubscribePopupDashboard />}/>
+            <Route
+              path="/dashboard/login-popup"
+              element={<LoginPopupDashboard />}
+            />
+            <Route
+              path="/dashboard/subscribe-popup"
+              element={<SubscribePopupDashboard />}
+            />
             <Route path="HeroSearchCrud" element={<HeroSearchDashboard />} />
             <Route path="SplitCardCrud" element={<SplitCardDashboard />} />
             <Route
@@ -122,28 +130,49 @@ function App() {
             />
             <Route path="NewHomes" element={<NewHomesDashboard />} />
             <Route path="MostPopular" element={<MostPopularDashboard />} />
-            <Route path="MustSellProperty" element={<MustSellPropertyDashboard />} />
-            <Route path="TrendingYoutube" element={<TrendingYoutubeDashboard />} />
+            <Route
+              path="MustSellProperty"
+              element={<MustSellPropertyDashboard />}
+            />
+            <Route
+              path="TrendingYoutube"
+              element={<TrendingYoutubeDashboard />}
+            />
             <Route path="NewsProperty" element={<NewsPropertyDashboard />} />
-            <Route path="ThailandSecrets" element={<ThailandSecretsDashboard />} />
+            <Route
+              path="ThailandSecrets"
+              element={<ThailandSecretsDashboard />}
+            />
 
             {/* {Real EState} */}
-            <Route path="/dashboard/Projects" element={<Projects/>}/>
-            <Route path="/dashboard/amenities" element={<Features/>}/>
-            <Route path="/dashboard/Investors" element={<Investores/>}/>
-            <Route path="/dashboard/propertyCategories" element={<Categories/>} />
-            <Route path="/dashboard/reviews" element={<Reviews/>} />
+            <Route path="/dashboard/Projects" element={<Projects />} />
+            <Route path="/dashboard/amenities" element={<Features />} />
+            <Route path="/dashboard/Investors" element={<Investores />} />
+            <Route
+              path="/dashboard/propertyCategories"
+              element={<Categories />}
+            />
+            <Route path="/dashboard/reviews" element={<Reviews />} />
 
             {/* {Subscription} */}
-            <Route path="/dashboard/subscription" element={<Subscription/>} />
+            <Route path="subscriptions" element={<Subscriptions />} />
+            <Route path="subscriptions/create" element={<SubscriptionForm />} />
+            <Route
+              path="subscriptions/edit/:id"
+              element={<SubscriptionForm />}
+            />
 
             {/* Tables */}
-            <Route path="basic-tables" element={<BasicTables />} />
+            <Route path="/dashboard/platform-administration" element={<PlatformAdministration />} />
+            {/* <Route path="basic-tables" element={<BasicTables />} /> */}
             <Route path="CustomerManagement" element={<CustomerManagement />} />
+            <Route path="AdminRole" element={<AdminRole />} />
+            <Route path="AdminRole/create" element={<AdminRoleForm />} />
+            <Route path="AdminRole/edit/:id" element={<AdminRoleForm />} />
             <Route path="PropertyTable" element={<PostPropertyPage />} />
-            <Route path="Blog" element={<BlogDashboard/>} />
-            <Route path="tags" element={<BlogTag/>} />
-            <Route path="Categories" element={<BlogCategories/>} />
+            <Route path="Blog" element={<BlogDashboard />} />
+            <Route path="tags" element={<BlogTag />} />
+            <Route path="Categories" element={<BlogCategories />} />
 
             {/* UI Elements */}
             <Route path="alerts" element={<Alerts />} />
